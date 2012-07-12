@@ -8,7 +8,15 @@ define([
 	],
 	function ($, _, Backbone, tmpl, RecordsMiniView) {
 		var RecordsRecentView = Backbone.View.extend({
+			initialize: function () {		
+				this.template = _.template(tmpl);
+				this.collection.on('change', this.render, this);
+			},
+			render: function () {				
+				this.$el.html(this.template);
 
+				return this;
+			}
 		});
 
 		return RecordsRecentView;

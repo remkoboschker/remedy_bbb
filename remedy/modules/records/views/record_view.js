@@ -12,15 +12,16 @@ define([
 
 	], 
 
-	function ($, _, Backbone, mainTmpl, PersonalView, MedicalsView, IcesView, TelecomsView, AddressesView){
+	function ($, _, Backbone, tmpl, PersonalView, MedicalsView, IcesView, TelecomsView, AddressesView){
 
-		var MainView = Backbone.View.extend({
+		var RecordView = Backbone.View.extend({
 			
-			el: '#record',
+			el: '#content',
 			
 			initialize: function () {
-
-				this.template = _.template(mainTmpl);
+				this.model = {};
+				this.views = {};
+				this.template = _.template(tmpl);
 
 				//rerendering the main template loses the connection to the subviews
 				//rerendering therefore show an empty template. the subviews exist, but are
@@ -64,7 +65,7 @@ define([
 				return this;
 			}
 		});
-		return MainView;
+		return RecordView;
 	}
 );
 

@@ -305,7 +305,7 @@ define('text',['module'], function (module) {
     return text;
 });
 
-define('text!templates/main.html',[],function () { return '\n<div id="navbar" class="navbar">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav pull-right">\n                <li class="active"><a href="records">dossiers</a></li>\n                <li><a href="admin">administratie</a></li>\n            </ul>\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="record" class="container-fluid mainPanel active">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n                <hr>\n                <ul class="nav nav-footer pull-right">\n                    <li><a href="/regelingen#voorwaarden">voorwaarden</a></li>\n                    <li><a href="/regelingen#privacy">privacy</a></li>\n                    <li><a href="/regelingen#ip">intellectueel eigendom</a></li>\n                    <li><a href="/">over Remedy</a></li>\n                    <li><a href="/helpdesk">helpdesk</a></li>\n                    <li><a href="/contact">contact</a></li>\n                </ul>\n        </footer>\n    </div>   \n</div>\n';});
+define('text!templates/main.html',[],function () { return '\n<div id="navbar" class="navbar">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav pull-right">\n                <li class="active"><a href="/#records">dossiers</a></li>\n                <li><a href="">administratie</a></li>\n            </ul>\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="record" class="container-fluid mainPanel active">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n                <hr>\n                <ul class="nav nav-footer pull-right">\n                    <li><a href="/regelingen#voorwaarden">voorwaarden</a></li>\n                    <li><a href="/regelingen#privacy">privacy</a></li>\n                    <li><a href="/regelingen#ip">intellectueel eigendom</a></li>\n                    <li><a href="/">over Remedy</a></li>\n                    <li><a href="/helpdesk">helpdesk</a></li>\n                    <li><a href="/contact">contact</a></li>\n                </ul>\n        </footer>\n    </div>   \n</div>\n';});
 
 /*!
  * jQuery JavaScript Library v1.7.2
@@ -15314,49 +15314,345 @@ function(navTemplate, $, _, Backbone) {
 
 });
 
-define('records/record_router',[
+define('text!modules/records/templates/records.html',[],function () { return '<div class="row-fluid">                        \n    <div class="span4">\n        <section id="appointments"></section>\n    </div>\n    <div class="span4">\n        <section id="records_recent"></section>\n    </div>\n    <div class="span4">\n        <section id="records_search"></section>\n    </div>\n            \n</div>';});
+
+define('text!modules/records/templates/records_search.html',[],function () { return '<h3> zoeken </h3>\n<input type="search" placeholder="filter op naam, telefoonnummer of geboortedatum" results="0" incremental="true" autofocus="">\n<div class="listitems" id="records_search_result"></div>';});
+
+define('text!modules/records/templates/records_mini.html',[],function () { return '<div class="row-fluid item">\n    <div class="span5">\n        <img class="passphoto" src="http://placehold.it/70x70">\n    </div>\n    <div class="span7">\n        <p><strong>voornaam</strong></p>\n        <p><strong>achternaam</strong><p>\n        <p>telefoonummer</p>\n        <p>geboortedatum</p>\n    </div>\n</div>';});
+
+define('records/views/records_mini_view',[
 	"jquery",
 	"lodash",
 	"backbone",
-	"plugins/backbone.subroute"
-	], 
 
-	function ($, _, Backbone){
-
-		var Router = Backbone.SubRoute.extend({
-			routes: {
-				"": "index",
-				":id": "defaultPanel",
-				":id/:panel": "selectPanel",
-				":id/:panel/:item": "selectItem",
-			},
-			initialize: function () {
-				console.log('new recordRouter');
-				
-			},
-			index: function () {
-				console.log("index");
-			},
-			defaultPanel: function (id) {
-				console.log("record nummer: " + id);
-			},
-			selectPanel: function (id, panel) {
-				console.log("record nummer: " + id);
-				console.log("panel naam: " + panel);
-			},
-			selectItem: function (id, panel, item) {
-				console.log("record nummer: " + id);
-				console.log("panel naam: " + panel);
-				console.log("item nummer: " + item);
-			},
-			other: function () {
-				console.log("other");
-			},
+	"text!modules/records/templates/records_mini.html"
+	],
+	function ($, _, Backbone, tmpl) {
+		var RecordsMiniView = Backbone.View.extend({
 
 		});
-		return Router;
+
+		return RecordsMiniView;
 	}
 );
+define('records/views/records_search_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+
+	"text!modules/records/templates/records_search.html",
+	"records/views/records_mini_view"
+	],
+	function ($, _, Backbone, tmpl, RecordsMiniView) {
+		var RecordsSearchView = Backbone.View.extend({
+
+		});
+
+		return RecordsSearchView;
+	}
+);
+define('text!modules/records/templates/records_recent.html',[],function () { return '<h3>recente dossiers</h3>\n<div class="control-group">\n    <label class="control-label" for="select01">filter</label>\n    <div class="controls">\n      \t<select id="select01">\n        \t<option>soort 1</option>\n        \t<option>soort 2</option>\n        \t<option>soort 3</option>\n        \t<option>soort 4</option>\n      \t</select>\n    </div>\n</div>\n<div class="listitems" id="records_recent_result"></div>';});
+
+define('records/views/records_recent_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+
+	"text!modules/records/templates/records_recent.html",
+	"records/views/records_mini_view"
+	],
+	function ($, _, Backbone, tmpl, RecordsMiniView) {
+		var RecordsRecentView = Backbone.View.extend({
+
+		});
+
+		return RecordsRecentView;
+	}
+);
+define('text!modules/records/templates/appointments.html',[],function () { return '<h3>afspraken</h3>\n<div class="pagination">\n    <ul>\n        <li><a href="#">«</a></li>\n        <li><a href="">di 19 juni</a></li>\n        <li><a href="#">»</a></li>\n    </ul>\n</div>\n<div class="listitems" id="appointments_result"></div>';});
+
+define('text!modules/records/templates/appointments_mini.html',[],function () { return '<div class="row-fluid item">\n    <div class="span5">\n        <img class="passphoto" src="http://placehold.it/70x70">\n    </div>\n    <div class="span7">\n        <p class="smallfont">type - start - stop<p>\n        <p><strong>voornaam</strong></p>\n        <p><strong>achternaam</strong><p>\n        <p>doel beschrijving</p>\n    </div>\n</div>';});
+
+define('records/views/appointments_mini_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+
+	"text!modules/records/templates/appointments_mini.html"
+	],
+	function ($, _, Backbone, tmpl) {
+		var AppointmentsMiniView = Backbone.View.extend({
+
+		});
+
+		return AppointmentsMiniView;
+	}
+);
+define('records/views/appointments_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+
+	"text!modules/records/templates/appointments.html",
+	"records/views/appointments_mini_view"
+	],
+	function ($, _, Backbone, tmpl, AppointmentsMiniView) {
+		var AppointmentsView = Backbone.View.extend({
+
+		});
+
+		return AppointmentsView;
+	}
+);
+define('records/views/records_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+
+	"text!modules/records/templates/records.html",
+	"records/views/records_search_view",
+	"records/views/records_recent_view",
+	"records/views/appointments_view"
+	],
+	function ($, _, Backbone, tmpl, RecordsSearchView, RecordsRecentView, AppointmentsView) {
+		var RecordsView = Backbone.View.extend({
+
+		});
+
+		return RecordsView;
+	}
+);
+define('text!modules/records/templates/record.html',[],function () { return '<div class="row-fluid">                        \n    <div class="span4">\n        <section id="personal"></section>\n        <section id="medicals"></section>\n        <section id="ices"></section>\n        <section id="telecoms"></section>\n        <section id="addresses"></section>                                 \n    </div>\n    <div class="span8">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active"><a href="#client_record_consults" data-toggle="tab">consults</a></li>\n                <li><a href="#client_record_treatments" data-toggle="tab">behandelingen</a></li>\n                <li><a href="#client_record_photos" data-toggle="tab">foto&#39;s</a></li>\n                <li><a href="#client_record_notes" data-toggle="tab">aantekeningen</a></li>\n                <li><a href="#client_record_offers" data-toggle="tab">offertes</a></li>\n                <li><a href="#client_record_receipts" data-toggle="tab">bonnen</a></li>        \n                <li><a href="#client_record_service" data-toggle="tab">service</a></li>\n                <li><a href="#client_record_log" data-toggle="tab">log</a></li>\n                <li><a href="#client_record_management" data-toggle="tab">beheer</a></li>\n            </ul>\n            <div class="tab-content">\n            </div>\n        </div>    \n    </div>\n</div>';});
+
+define('text!records/templates/personal.html',[],function () { return '<div id="client_record_person">\n        <h3><%= initials %> <%= last_name%> ( <%= first_name %> )</h3>\n        <div class="row-fluid">\n            <div class="span5">\n                <img class="passphoto" src="http://placehold.it/180x240">\n            </div>\n            <div class="span7">\n                <table class="table">\n                    <tbody>\n                        <tr id="sex">\n                            <th>geslacht</th>\n                            <td><%= sex %></td>\n                        </tr>\n                        <tr id="age">\n                            <th>leeftijd</th>\n                            <td>function age in model </td>\n                        </tr>\n                        <tr id="date_of_birth">\n                            <th>geboren</th>\n                            <td><%= date_of_birth %></td>\n                        </tr>\n                        <tr id="id_number">\n                            <th>bsn</th>\n                            <td><%= id_number %></td>\n                        </tr>\n                        <tr id="id_document">\n                            <th>legitimatie</th>\n                            <td>link</td>\n                        </tr>\n                        <tr id="insurance_company">\n                            <th>verzekeraar</th>\n                            <td><%= insurance_company %></td>\n                        </tr>\n                        <tr id="insurance_number">\n                            <th>polisnummer</th>\n                            <td><%= insurance_number %></td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>    ';});
+
+define('records/views/personal_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"text!records/templates/personal.html"
+	], 
+
+	function ($, _, Backbone, tmpl){
+
+		var PersonalView = Backbone.View.extend({
+
+			initialize: function () {
+				
+				this.template = _.template(tmpl);
+				this.model.on('change', this.render, this);
+			},
+
+			render: function () {
+				
+				this.$el.html(this.template(this.model.toJSON()));
+
+				return this;
+			}
+		});
+
+		return PersonalView;
+	}
+);
+define('text!records/templates/medicals.html',[],function () { return '<div id="client_record_medical">\n        <h3>medische gegevens</h3>        \n        <table class="table">\n            <thead>\n                <tr>\n                    <th>type</th>\n                    <th>beschrijving</th>\n                    <th>start</th>\n                    <th>stop</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr id="">\n                    <td>gevoeligheid</td>\n                    <td>lidocaine</td>\n                    <td>actief</td>\n                    <td>actief</td>\n                </tr>\n                <tr id="">\n                    <td>allergie</td>\n                    <td>antibiotica</td>\n                    <td>actief</td>\n                    <td>actief</td>\n                </tr>\n                <tr id="">\n                    <td>zwangerschap</td>\n                    <td></td>\n                    <td>11-11-1111</td>\n                    <td>11-18-1111</td> \n                </tr>\n                <tr id="">\n                    <td>intoxicatie</td>\n                    <td>alcohol</td>\n                    <td>actief</td>\n                    <td>actief</td>\n                </tr>\n                <tr id="">\n                    <td>cardiologie</td>\n                    <td>hart</td>\n                    <td>12-12-1212</td>\n                    <td>12-12-1212</td>\n                </tr>\n                <tr id="">\n                    <td>medicatie</td>\n                    <td>paracetamol 3x daags</td>\n                    <td>12121212fff</td>\n                    <td>1213kkk1212</td>\n                </tr>\n                <tr id="">\n                    <td>beperking</td>\n                    <td>gehoor -70dB </td>\n                    <td>geboorte</td>\n                    <td>actief</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
+
+define('records/views/medicals_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"text!records/templates/medicals.html"
+	], 
+
+	function ($, _, Backbone, tmpl){
+
+		var MedicalsView = Backbone.View.extend({
+
+			initialize: function () {
+
+				this.template = _.template(tmpl);
+				this.model.on('change', this.render, this);
+			},
+
+			render: function () {
+
+				this.$el.html(this.template(this.model.toJSON()));
+
+				return this;
+			}
+		});
+
+		return MedicalsView;
+	}
+);
+define('text!records/templates/ices.html',[],function () { return '<div id="ices">\n        <h3>in case of emergency</h3>\n        <table class="table">\n            <thead>\n                <tr>\n                    <th>voornaam</th>\n                    <th>achternaam</th>\n                    <th>relatie</th>\n                    <th>telecom</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr id="ice_1">\n                    <td>voornaam</td>\n                    <td>achternaam</td>                    \n                    <td>echtgenoot</td>          \n                    <td>+3161234566</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
+
+define('records/views/ices_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"text!records/templates/ices.html"
+	], 
+
+	function ($, _, Backbone, tmpl){
+
+		var IcesView = Backbone.View.extend({
+
+			initialize: function () {
+
+				this.template = _.template(tmpl);
+				this.model.on('change', this.render, this);
+			},
+
+			render: function () {
+
+				this.$el.html(this.template(this.model.toJSON()));
+
+				return this;
+			}
+		});
+
+		return IcesView;
+	}
+);
+define('text!records/templates/telecoms.html',[],function () { return '<div id="client_record_telecommunication">\n        <h3>telecommunicatie</h3>\n        <table class="table">\n            <tbody>\n                <tr id="mob_phone">\n                    <th>mobiel</th>\n                    <td>0612345678</td>\n                </tr>\n                <tr id="private_email">\n                    <th>prive email</th>\n                    <td>voornaam.achternaam@provider.com</td>\n                  \n                </tr>\n                <tr id="www_twitter">\n                    <th>twitter</th>\n                    <td>url</td>\n                  \n                </tr>\n                <tr id="telecom_preference_language">\n                    <th>language</th>\n                    <td>engels</td>\n                </tr>\n                <tr id="telecom_preference_mode">\n                    <th>preferred</th>\n                    <td>mobiele telefoon</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
+
+define('records/views/telecoms_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"text!records/templates/telecoms.html"
+	], 
+
+	function ($, _, Backbone, tmpl){
+
+		var TelecomsView = Backbone.View.extend({
+
+			initialize: function () {
+
+				this.template = _.template(tmpl);
+				this.model.on('change', this.render, this);
+			},
+
+			render: function () {
+
+				this.$el.html(this.template(this.model.toJSON()));
+
+				return this;
+			}
+		});
+
+		return TelecomsView;
+	}
+);
+define('text!records/templates/addresses.html',[],function () { return '<div id="client_record_address">\n        <h3>adressen</h3>\n        <table class="table">\n            <tbody>\n                <tr id="address">\n                    <th rowspan="3">thuis</th>\n                    <td>en als ik een hele lange straatnaam nummer toevoeging</td>\n                </tr>\n                <tr id="address">\n                    <td>1111 AA stadsnaam</td>\n                </tr>\n                <tr id="address">\n                    <td>provincie landsnaam</td>\n                </tr>\n                <tr id="address">\n                    <th rowspan="3">werk</th>\n                    <td>straatnaam nummer toevoeging</td>\n                </tr>\n                <tr id="address">\n                    <td>1111 AA stadsnaam</td>\n                </tr>\n                <tr id="address">\n                    <td>provincie landsnaam</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
+
+define('records/views/addresses_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"text!records/templates/addresses.html"
+	], 
+
+	function ($, _, Backbone, tmpl){
+
+		var AddressesView = Backbone.View.extend({
+
+			initialize: function () {
+				
+				this.template = _.template(tmpl);
+				this.model.on('change', this.render, this);
+			},
+
+			render: function () {
+
+				this.$el.html(this.template(this.model.toJSON()));
+
+				return this;
+			}
+		});
+
+		return AddressesView;
+	}
+);
+define('records/views/record_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+
+	"text!modules/records/templates/record.html",
+	"records/views/personal_view",
+	"records/views/medicals_view",
+	"records/views/ices_view",
+	"records/views/telecoms_view",
+	"records/views/addresses_view",
+
+	], 
+
+	function ($, _, Backbone, mainTmpl, PersonalView, MedicalsView, IcesView, TelecomsView, AddressesView){
+
+		var MainView = Backbone.View.extend({
+			
+			el: '#record',
+			
+			initialize: function () {
+
+				this.template = _.template(mainTmpl);
+
+				//rerendering the main template loses the connection to the subviews
+				//rerendering therefore show an empty template. the subviews exist, but are
+				//not attached to the dom.
+				this.$el.html(this.template);
+
+				this.personalView = new PersonalView({
+						model: this.model,
+						el: "#personal"
+					});
+				this.medicalsView = new MedicalsView({
+						model: this.model,
+						el: "#medicals"
+					});
+				this.icesView = new IcesView({
+						model: this.model,
+						el: "#ices"
+					});
+				this.telecomsView = new TelecomsView({
+						model: this.model,
+						el: "#telecoms"
+					});
+				this.addressesView = new AddressesView({
+						model: this.model,
+						el: "#addresses"
+					});
+			},
+			
+			render: function () {
+
+				this.personalView.render();
+
+				this.medicalsView.render();
+
+				this.icesView.render();
+
+				this.telecomsView.render();
+
+				this.addressesView.render();
+
+				return this;
+			}
+		});
+		return MainView;
+	}
+);
+
+
+
+
+
+
+
+
+
+
 
 define('records/models/record_model',[
 	"jquery",
@@ -15413,232 +15709,6 @@ define('records/models/record_model',[
 );
 
 
-define('text!modules/records/templates/main.html',[],function () { return '<div class="row-fluid">                        \n    <div class="span4">\n            <section id="personal"></section>\n            <section id="medicals"></section>\n            <section id="ices"></section>\n            <section id="telecoms"></section>\n            <section id="addresses"></section>                                 \n    </div>\n    <div class="span8">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active"><a href="#client_record_consults" data-toggle="tab">consults</a></li>\n                <li><a href="#client_record_treatments" data-toggle="tab">behandelingen</a></li>\n                <li><a href="#client_record_photos" data-toggle="tab">foto&#39;s</a></li>\n                <li><a href="#client_record_notes" data-toggle="tab">aantekeningen</a></li>\n                <li><a href="#client_record_offers" data-toggle="tab">offertes</a></li>\n                <li><a href="#client_record_receipts" data-toggle="tab">bonnen</a></li>        \n                <li><a href="#client_record_service" data-toggle="tab">service</a></li>\n                <li><a href="#client_record_log" data-toggle="tab">log</a></li>\n                <li><a href="#client_record_management" data-toggle="tab">beheer</a></li>\n            </ul>\n            <div class="tab-content">\n            </div>\n        </div>    \n    </div>\n</div>';});
-
-define('text!records/templates/personal.html',[],function () { return '<div id="client_record_person">\n        <h3><%= initials %> <%= last_name%> ( <%= first_name %> )</h3>\n        <div class="row-fluid">\n            <div class="span5">\n                <img class="passphoto" src="http://placehold.it/180x240">\n            </div>\n            <div class="span7">\n                <table class="table">\n                    <tbody>\n                        <tr id="sex">\n                            <th>geslacht</th>\n                            <td><%= sex %></td>\n                        </tr>\n                        <tr id="age">\n                            <th>leeftijd</th>\n                            <td>function age in model </td>\n                        </tr>\n                        <tr id="date_of_birth">\n                            <th>geboren</th>\n                            <td><%= date_of_birth %></td>\n                        </tr>\n                        <tr id="id_number">\n                            <th>bsn</th>\n                            <td><%= id_number %></td>\n                        </tr>\n                        <tr id="id_document">\n                            <th>legitimatie</th>\n                            <td>link</td>\n                        </tr>\n                        <tr id="insurance_company">\n                            <th>verzekeraar</th>\n                            <td><%= insurance_company %></td>\n                        </tr>\n                        <tr id="insurance_number">\n                            <th>polisnummer</th>\n                            <td><%= insurance_number %></td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>    ';});
-
-define('records/views/personal_view',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"text!records/templates/personal.html"
-	], 
-
-	function ($, _, Backbone, tmpl){
-
-		var PersonalView = Backbone.View.extend({
-
-			initialize: function () {
-				
-			},
-
-			render: function () {
-
-				var template;
-
-				template = _.template(tmpl, this.model.toJSON());
-				this.$el.html(template);
-
-				return this;
-			}
-		});
-
-		return PersonalView;
-	}
-);
-define('text!records/templates/medicals.html',[],function () { return '<div id="client_record_medical">\n        <h3>medische gegevens</h3>        \n        <table class="table">\n            <thead>\n                <tr>\n                    <th>type</th>\n                    <th>beschrijving</th>\n                    <th>start</th>\n                    <th>stop</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr id="">\n                    <td>gevoeligheid</td>\n                    <td>lidocaine</td>\n                    <td>actief</td>\n                    <td>actief</td>\n                </tr>\n                <tr id="">\n                    <td>allergie</td>\n                    <td>antibiotica</td>\n                    <td>actief</td>\n                    <td>actief</td>\n                </tr>\n                <tr id="">\n                    <td>zwangerschap</td>\n                    <td></td>\n                    <td>11-11-1111</td>\n                    <td>11-18-1111</td> \n                </tr>\n                <tr id="">\n                    <td>intoxicatie</td>\n                    <td>alcohol</td>\n                    <td>actief</td>\n                    <td>actief</td>\n                </tr>\n                <tr id="">\n                    <td>cardiologie</td>\n                    <td>hart</td>\n                    <td>12-12-1212</td>\n                    <td>12-12-1212</td>\n                </tr>\n                <tr id="">\n                    <td>medicatie</td>\n                    <td>paracetamol 3x daags</td>\n                    <td>12121212fff</td>\n                    <td>1213kkk1212</td>\n                </tr>\n                <tr id="">\n                    <td>beperking</td>\n                    <td>gehoor -70dB </td>\n                    <td>geboorte</td>\n                    <td>actief</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
-
-define('records/views/medicals_view',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"text!records/templates/medicals.html"
-	], 
-
-	function ($, _, Backbone, tmpl){
-
-		var MedicalsView = Backbone.View.extend({
-
-			initialize: function () {
-				
-			},
-
-			render: function () {
-
-				var template;
-
-				template = _.template(tmpl, this.model.toJSON());
-				this.$el.html(template);
-
-				return this;
-			}
-		});
-
-		return MedicalsView;
-	}
-);
-define('text!records/templates/ices.html',[],function () { return '<div id="ices">\n        <h3>in case of emergency</h3>\n        <table class="table">\n            <thead>\n                <tr>\n                    <th>voornaam</th>\n                    <th>achternaam</th>\n                    <th>relatie</th>\n                    <th>telecom</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr id="ice_1">\n                    <td>voornaam</td>\n                    <td>achternaam</td>                    \n                    <td>echtgenoot</td>          \n                    <td>+3161234566</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
-
-define('records/views/ices_view',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"text!records/templates/ices.html"
-	], 
-
-	function ($, _, Backbone, tmpl){
-
-		var IcesView = Backbone.View.extend({
-
-			initialize: function () {
-				
-			},
-
-			render: function () {
-
-				var template;
-
-				template = _.template(tmpl, this.model.toJSON());
-				this.$el.html(template);
-
-				return this;
-			}
-		});
-
-		return IcesView;
-	}
-);
-define('text!records/templates/telecoms.html',[],function () { return '<div id="client_record_telecommunication">\n        <h3>telecommunicatie</h3>\n        <table class="table">\n            <tbody>\n                <tr id="mob_phone">\n                    <th>mobiel</th>\n                    <td>0612345678</td>\n                </tr>\n                <tr id="private_email">\n                    <th>prive email</th>\n                    <td>voornaam.achternaam@provider.com</td>\n                  \n                </tr>\n                <tr id="www_twitter">\n                    <th>twitter</th>\n                    <td>url</td>\n                  \n                </tr>\n                <tr id="telecom_preference_language">\n                    <th>language</th>\n                    <td>engels</td>\n                </tr>\n                <tr id="telecom_preference_mode">\n                    <th>preferred</th>\n                    <td>mobiele telefoon</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
-
-define('records/views/telecoms_view',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"text!records/templates/telecoms.html"
-	], 
-
-	function ($, _, Backbone, tmpl){
-
-		var TelecomsView = Backbone.View.extend({
-
-			initialize: function () {
-				
-			},
-
-			render: function () {
-
-				var template;
-
-				template = _.template(tmpl, this.model.toJSON());
-				this.$el.html(template);
-
-				return this;
-			}
-		});
-
-		return TelecomsView;
-	}
-);
-define('text!records/templates/addresses.html',[],function () { return '<div id="client_record_address">\n        <h3>adressen</h3>\n        <table class="table">\n            <tbody>\n                <tr id="address">\n                    <th rowspan="3">thuis</th>\n                    <td>en als ik een hele lange straatnaam nummer toevoeging</td>\n                </tr>\n                <tr id="address">\n                    <td>1111 AA stadsnaam</td>\n                </tr>\n                <tr id="address">\n                    <td>provincie landsnaam</td>\n                </tr>\n                <tr id="address">\n                    <th rowspan="3">werk</th>\n                    <td>straatnaam nummer toevoeging</td>\n                </tr>\n                <tr id="address">\n                    <td>1111 AA stadsnaam</td>\n                </tr>\n                <tr id="address">\n                    <td>provincie landsnaam</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
-
-define('records/views/addresses_view',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"text!records/templates/addresses.html"
-	], 
-
-	function ($, _, Backbone, tmpl){
-
-		var AddressesView = Backbone.View.extend({
-
-			initialize: function () {
-				
-			},
-
-			render: function () {
-
-				var template;
-
-				template = _.template(tmpl, this.model.toJSON());
-				this.$el.html(template);
-
-				return this;
-			}
-		});
-
-		return AddressesView;
-	}
-);
-define('records/views/main_view',[
-	"jquery",
-	"lodash",
-	"backbone",
-
-	"text!modules/records/templates/main.html",
-	"records/views/personal_view",
-	"records/views/medicals_view",
-	"records/views/ices_view",
-	"records/views/telecoms_view",
-	"records/views/addresses_view",
-
-	], 
-
-	function ($, _, Backbone, mainTmpl, PersonalView, MedicalsView, IcesView, TelecomsView, AddressesView){
-
-		var MainView = Backbone.View.extend({
-			
-			el: '#record',
-			
-			initialize: function () {
-				
-			},
-			
-			events: {
-				"change": "render"
-			},
-			
-			render: function () {
-
-				var template;
-				var personalView;
-				var medicalsView;
-				var icesView;
-				var telecomsView;
-				var addressesView;
-			
-				template = _.template(mainTmpl);
-				this.$el.html(template);
-
-				personalView = new PersonalView({model: this.model}).render();
-				medicalsView = new MedicalsView({model: this.model}).render();
-				icesView = new IcesView({model: this.model}).render();
-				telecomsView = new TelecomsView({model: this.model}).render();
-				addressesView = new AddressesView({model: this.model}).render();
-				
-				this.$("#personal").append(personalView.el);
-				this.$("#medicals").append(medicalsView.el);
-				this.$("#ices").append(icesView.el);
-				this.$("#telecoms").append(telecomsView.el);
-				this.$("#addresses").append(addressesView.el);
-
-				return this;
-			}
-		});
-		return MainView;
-	}
-);
-
-
-
-
-
-
-
-
-
-
-
 define('records/collections/record_collection',[
 	"jquery",
 	"lodash",
@@ -15673,138 +15743,107 @@ define('records/collections/record_collection',[
 
 
 
-define('records/record',[
+define('records/record_router',[
 	"jquery",
 	"lodash",
-	"backbone",
-
-	"records/record_router",
-	"records/models/record_model",
-	"records/views/main_view",
+	"records/views/records_view",
+	"records/views/record_view",
 	"records/collections/record_collection",
-	],
-
-	function ($, _, Backbone, Router, RecordModel, mainView, RecordCollection) {
-
-		var Record = function () {
-
-			this.router = new Router("records/");
-			//this.model new RecordModel();
-			this.collection = new RecordCollection();
-			this.collection.fetch();
-
-			if (this.collection.length === 0) {
-    			this.view = new mainView({
-    				model: this.collection.create()
-    			}); 
-  			} else {
-    			this.view = new mainView({
-    				model: this.collection.at(this.collection.length - 1)
-    			});
-  			}
-		};
-		return Record;
-	}
-);
-
-		
-/*		
-
-		Record.Views = {};
-
-		Record.Views.Personal = Backbone.View.extend({
-			template: "record/personal",
-			
-		});
-
-		Record.Views.Main = Backbone.View.extend({
-			el: '#record',
-			events: {
-				"change": "render"
+	"backbone",
+	"plugins/backbone.subroute"
+	], 
+	function ($, _, RecordsView, RecordView, RecordCollection, Backbone){
+		var Router = Backbone.SubRoute.extend({
+			routes: {
+				"": "index",
+				":id": "setRecord",
+				":id/:panel": "setRecord",
+				":id/:panel/:item": "setRecord"
 			},
-			render: function ( event ) {
-				var template;
+			initialize: function () {
+				this.views = {};
+				this.collection = new RecordCollection();
 
-				template = _.template(mainTmpl);
-				this.$el.html(template);
+				this.collection.fetch({
+					success: function (collection, response) {
 
+					},
+					error: function (collection, response) {
+						console.log("collection");
+						console.log(collection);
+						console.log("response");
+						console.log(response);
+					}
+				});
+			},
+			index: function () {
+				
+				if (!this.views.recordsView) {
+					this.view.recordsView = new RecordsView();
+				}
 
-				return this;
+				this.views.recordsView.collection = this.collection;				
+	  			this.views.recordsView.render();
+			},
+			setRecord: function (id, panel, item) {
+				//check input for valid format and existence
+				if (!id) {
+					id = 0;
+				}
+
+				if (!panel) {
+					panel = "consults";
+				}
+
+				if (!item) {
+					item = 0;
+				}
+
+				if (!this.views.recordView) {
+					this.views.recordView = new RecordView();
+				}
+
+				this.views.recordView.model = this.collection.get(id);
+				// set panel
+				// set panel item
+				tihs.views.recordView.render();
+
 			}
 		});
 
-		Record.Views.Medicals = Backbone.View.extend({
-			template: "record/medicals",
-			
-		});
+		return Router;
+	}
+);
 
-		Record.Views.Ices = Backbone.View.extend({
-			template: "record/ices",
-			
-		});
-
-		Record.Views.Telecoms = Backbone.View.extend({
-			template: "record/telecoms",
-			
-		});
-
-		Record.Views.Addresses = Backbone.View.extend({
-			template: "record/addresses",
-			
-		});
-
-
-		return Record;
-			
-	});
-*/;
 define('router',[
-
   "remedy",
-  "records/record"
+  "records/record_router"
 ],
 
-function(remedy, Record) {
+function(remedy, RecordRouter) {
 
   var Router = Backbone.Router.extend({
 
     routes: {
-      //routes handled by the remedy app framework
-      "": "index",
-
-      //routes handled by modules
-      "records/*subroute": "recordsRouter",
-      "*other": "other"
+     
+      "": "index"
     },
 
     initialize: function() {
 
       remedy.nav = new remedy.navView();
       remedy.nav.render();
-
+      remedy.routers = {};
+      remedy.routers.record = new RecordRouter("records/");
     },
-
 
     index: function () {
-      console.log("main router index");
-      this.navigate("records/", {trigger: true})
+
+      this.navigate("records", {trigger: true}) 
     },
-
-    recordsRouter: function () {
-
-      if (!remedy.record) {
-        remedy.record = new Record;
-      }
-
-      remedy.record.view.render();
-
-    }
-
-    
   });
 
   return Router;
-
 });
 
 require([
@@ -15822,8 +15861,9 @@ function(remedy, Router) {
   remedy.router = new Router();
   // Trigger the initial route and enable HTML5 History API support, set the
   // root folder to '/' by default.  Change in app.js.
-  Backbone.history.start({ pushState: true, root: remedy.root });
-
+  
+  Backbone.history.start({ pushState: false, root: remedy.root });
+  
   // All navigation that is relative should be passed through the navigate
   // method, to be processed by the router. If the link has a `data-bypass`
   // attribute, bypass the delegation completely.

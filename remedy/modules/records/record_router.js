@@ -34,10 +34,12 @@ define([
 			index: function () {
 				
 				if (!this.views.recordsView) {
-					this.view.recordsView = new RecordsView();
+					this.views.recordsView = new RecordsView({
+						collection: this.collection
+					});
+					console.log(this.views.recordsView);
 				}
-
-				this.views.recordsView.collection = this.collection;				
+				
 	  			this.views.recordsView.render();
 			},
 			setRecord: function (id, panel, item) {
