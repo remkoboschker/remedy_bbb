@@ -1,17 +1,20 @@
 define([
+  //template
+  "text!templates/main.html",
+
   // Libraries.
   "jquery",
   "lodash",
   "backbone",
 
   // Plugins.
-  "plugins/backbone.layoutmanager",
+  //"plugins/backbone.layoutmanager",
   "plugins/backbone.localStorage",
   "plugins/backbone.validations",
   "plugins/backbone.subroute"
 ],
 
-function($, _, Backbone) {
+function(navTemplate, $, _, Backbone) {
 
   // Provide a global location to place configuration settings and module
   // creation.
@@ -20,6 +23,20 @@ function($, _, Backbone) {
     root: "/"
   };
 
+  remedy.navView = Backbone.View.extend({
+    el: '#main',
+    render: function () {
+      var template;
+      
+      template = _.template(navTemplate);
+      this.$el.html(template);
+
+      return this;
+    }
+
+  });
+
+  /*
   // Localize or create a new JavaScript Template object.
   var JST = window.JST = window.JST || {};
 
@@ -44,7 +61,10 @@ function($, _, Backbone) {
   });
 
   // Mix Backbone.Events, modules, and layout management into the remedy object.
+  */
   return _.extend(remedy, {
+
+    /*
     // Create a custom object with a nested Views object.
     module: function(additionalProps) {
       return _.extend({ Views: {} }, additionalProps);
@@ -80,7 +100,7 @@ function($, _, Backbone) {
 
       // Return the reference, for later usage.
       return layout;
-    }
+    }*/
   }, Backbone.Events);
 
 });

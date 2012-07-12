@@ -1,10 +1,24 @@
 define([
-	"remedy"
+	"jquery",
+	"lodash",
+	"backbone",
+
+	//
+
+	//views
+	"records/views/main",
+	"records/views/personal",
+	"records/views/medicals",
+	"records/views/ices",
+	"records/views/telecoms",
+	"records/views/addresses",
+
+	"text!modules/records/templates/main.html"
 	],
 
-	function (remedy, collection, model, views) {
+	function (remedy, mainTmpl) {
 
-		var Record = remedy.module();
+		var Record = {};
 
 		Record.Router = Backbone.SubRoute.extend({
 			routes: {
@@ -13,31 +27,25 @@ define([
 				":id/:panel": "selectPanel",
 				":id/:panel/:item": "selectItem",
 			},
-
 			initialize: function () {
 				console.log('new recordRouter');
 				console.log(this);
 			},
-
 			index: function () {
 				console.log("index");
 			},
-
 			defaultPanel: function (id) {
 				console.log("record nummer: " + id);
 			},
-
 			selectPanel: function (id, panel) {
 				console.log("record nummer: " + id);
 				console.log("panel naam: " + panel);
 			},
-
 			selectItem: function (id, panel, item) {
 				console.log("record nummer: " + id);
 				console.log("panel naam: " + panel);
 				console.log("item nummer: " + item);
 			},
-
 			other: function () {
 				console.log("other");
 			},
@@ -66,6 +74,11 @@ define([
 
 			//nested collections need to be initialised
 			initialize: function() {
+
+				this.on("change", function () {
+					//Record.Views.Main.render();
+				})
+
 				/*this.logs = nestCollection(this, 'logs', new Logs(this.get('logs')));
 			    this.medicals = nestCollection(this, 'medicals', new Medicals(this.get('medicals')));
 			    this.ices = nestCollection(this, 'ices', new Ices(this.get('ices')));
@@ -83,13 +96,53 @@ define([
 
 
 		Record.Collection = Backbone.Collection.extend({
-  		
-  			model: Record,
-
+  			model: Record.Model,
   			localStorage: new Backbone.LocalStorage("Records")
 		});
 
-		Record.Views = views;
+		Record.Views = {};
+
+		Record.Views.Personal = Backbone.View.extend({
+			template: "record/personal",
+			
+		});
+
+		Record.Views.Main = Backbone.View.extend({
+			el: '#record',
+			events: {
+				"change": "render"
+			},
+			render: function ( event ) {
+				var template;
+
+				template = _.template(mainTmpl);
+				this.$el.html(template);
+
+
+				return this;
+			}
+		});
+
+		Record.Views.Medicals = Backbone.View.extend({
+			template: "record/medicals",
+			
+		});
+
+		Record.Views.Ices = Backbone.View.extend({
+			template: "record/ices",
+			
+		});
+
+		Record.Views.Telecoms = Backbone.View.extend({
+			template: "record/telecoms",
+			
+		});
+
+		Record.Views.Addresses = Backbone.View.extend({
+			template: "record/addresses",
+			
+		});
+
 
 		return Record;
 			

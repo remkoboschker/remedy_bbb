@@ -13,6 +13,10 @@ require.config({
     jquery: "../assets/js/libs/jquery",
     lodash: "../assets/js/libs/lodash",
     backbone: "../assets/js/libs/backbone",
+    text: "../assets/js/libs/text",
+
+    //modules
+    records: "modules/records"
 
   },
 
@@ -24,7 +28,7 @@ require.config({
     },
 
     // Backbone.LayoutManager depends on Backbone.
-    "plugins/backbone.layoutmanager": ["backbone"],
+    //"plugins/backbone.layoutmanager": ["backbone"],
     "plugins/backbone.localStorage": ["backbone"],
     "plugins/backbone.validations": ["backbone"],
     "plugins/backbone.subroute": ["backbone"]
