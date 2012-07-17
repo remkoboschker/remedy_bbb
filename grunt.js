@@ -15,7 +15,7 @@ module.exports = function(grunt) {
     // https://github.com/cowboy/grunt/blob/master/docs/task_lint.md
     lint: {
       files: [
-        "build/config.js", "remedy/**/*.js"
+        "build/config.js", "app/**/*.js"
       ]
     },
 
@@ -37,7 +37,7 @@ module.exports = function(grunt) {
     // remove this, ensure concat is updated accordingly.
     jst: {
       "dist/debug/templates.js": [
-        "remedy/templates/**/*.html"
+        "app/templates/**/*.html"
       ]
     },
 
@@ -120,7 +120,7 @@ module.exports = function(grunt) {
     // future other builders may be contributed as drop-in alternatives.
     requirejs: {
       // Include the main configuration file.
-      mainConfigFile: "remedy/config.js",
+      mainConfigFile: "app/config.js",
 
       // Output file.
       out: "dist/debug/require.js",

@@ -1,0 +1,6 @@
+nav>ul>li {
+	display: inline;
+	width: auto;
+	list-style-type: none;
+	padding: 10px 25px;
+}

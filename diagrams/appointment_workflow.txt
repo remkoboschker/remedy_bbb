@@ -1,0 +1,48 @@
+==========================================
+consult
+=========================================
+
+register arrival
+
+add new client          or          check client details
+
+make photos
+
+review history
+review warnings
+
+record examination
+record conclusion
+choose plan
+
+review consent          or          get consent
+
+make offer
+
+book next appointment   or          task booking of next appointment        or      do nothting     or    treat
+
+add personal notes      or          not
+
+====================================================
+treatment
+===================================================
+
+register arrival
+
+check client details
+
+make photos
+
+review history
+review warnings
+review consent          or          get consent
+
+record procedure
+
+book next appointment   or          task booking of next appointment        or      do nothting
+
+add personal notes      or      not
+
+receive payment         if app      book next appointment
+
+provide receipt

@@ -305,7 +305,7 @@ define('text',['module'], function (module) {
     return text;
 });
 
-define('text!templates/main.html',[],function () { return '\n<div id="navbar" class="navbar">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav pull-right">\n                <li class="active"><a href="/#records">dossiers</a></li>\n                <li><a href="">administratie</a></li>\n            </ul>\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="record" class="container-fluid mainPanel active">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n                <hr>\n                <ul class="nav nav-footer pull-right">\n                    <li><a href="/regelingen#voorwaarden">voorwaarden</a></li>\n                    <li><a href="/regelingen#privacy">privacy</a></li>\n                    <li><a href="/regelingen#ip">intellectueel eigendom</a></li>\n                    <li><a href="/">over Remedy</a></li>\n                    <li><a href="/helpdesk">helpdesk</a></li>\n                    <li><a href="/contact">contact</a></li>\n                </ul>\n        </footer>\n    </div>   \n</div>\n';});
+define('text!main.html',[],function () { return '\n<div id="navbar" class="navbar">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav pull-right">\n                <li class="active"><a href="/#records">dossiers</a></li>\n                <li><a href="">administratie</a></li>\n            </ul>\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="content" class="container-fluid mainPanel active">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n                <hr>\n                <ul class="nav nav-footer pull-right">\n                    <li><a href="/regelingen#voorwaarden">voorwaarden</a></li>\n                    <li><a href="/regelingen#privacy">privacy</a></li>\n                    <li><a href="/regelingen#ip">intellectueel eigendom</a></li>\n                    <li><a href="/">over Remedy</a></li>\n                    <li><a href="/helpdesk">helpdesk</a></li>\n                    <li><a href="/contact">contact</a></li>\n                </ul>\n        </footer>\n    </div>   \n</div>\n';});
 
 /*!
  * jQuery JavaScript Library v1.7.2
@@ -15209,7 +15209,7 @@ define("plugins/backbone.subroute", function(){});
 
 define('remedy',[
   //template
-  "text!templates/main.html",
+  "text!main.html",
 
   // Libraries.
   "jquery",
@@ -15229,7 +15229,8 @@ function(navTemplate, $, _, Backbone) {
   // creation.
   var remedy = {
     // The root path to run the application through.
-    root: "/"
+    root: "/",
+    modules: []
   };
 
   remedy.navView = Backbone.View.extend({
@@ -15244,6 +15245,23 @@ function(navTemplate, $, _, Backbone) {
     }
 
   });
+
+  // remove all references to a view
+  Backbone.View.prototype.close = function(){
+    console.log(this.el);
+    this.remove();
+    this.unbind();
+    if (this.model){
+      this.model.off(null, null, this);
+    }
+    if (this.collection){
+      this.collection.off(null, null, this);
+    }
+    //recursively call the function on any subviews
+    if (this.views){
+        _.each(this.views, function (view) {view.close();});
+    }
+  }
 
   /*
   // Localize or create a new JavaScript Template object.
@@ -15272,6 +15290,23 @@ function(navTemplate, $, _, Backbone) {
   // Mix Backbone.Events, modules, and layout management into the remedy object.
   */
   return _.extend(remedy, {
+
+    Proxy: function () {
+
+      var proxy = {};
+
+      _.extend(proxy, Backbone.Events);
+
+      proxy.on("all", function (event, args) {
+        remedy.trigger(event, args);
+      });
+
+      remedy.on("all", function (event, args) {
+        proxy.trigger(event, args);
+      });
+      return proxy;
+    }
+
 
     /*
     // Create a custom object with a nested Views object.
@@ -15314,8 +15349,6 @@ function(navTemplate, $, _, Backbone) {
 
 });
 
-define('text!modules/records/templates/records.html',[],function () { return '<div class="row-fluid">                        \n    <div class="span4">\n        <section id="appointments"></section>\n    </div>\n    <div class="span4">\n        <section id="records_recent"></section>\n    </div>\n    <div class="span4">\n        <section id="records_search"></section>\n    </div>\n            \n</div>';});
-
 define('text!modules/records/templates/records_search.html',[],function () { return '<h3> zoeken </h3>\n<input type="search" placeholder="filter op naam, telefoonnummer of geboortedatum" results="0" incremental="true" autofocus="">\n<div class="listitems" id="records_search_result"></div>';});
 
 define('text!modules/records/templates/records_mini.html',[],function () { return '<div class="row-fluid item">\n    <div class="span5">\n        <img class="passphoto" src="http://placehold.it/70x70">\n    </div>\n    <div class="span7">\n        <p><strong>voornaam</strong></p>\n        <p><strong>achternaam</strong><p>\n        <p>telefoonummer</p>\n        <p>geboortedatum</p>\n    </div>\n</div>';});
@@ -15345,13 +15378,22 @@ define('records/views/records_search_view',[
 	],
 	function ($, _, Backbone, tmpl, RecordsMiniView) {
 		var RecordsSearchView = Backbone.View.extend({
-
+			tagName: 'section',
+			className: 'span3',
+			initialize: function () {		
+				this.template = _.template(tmpl);
+				this.collection.on('change', this.render, this);
+			},
+			render: function () {		
+				this.$el.html(this.template);
+				return this;
+			}
 		});
 
 		return RecordsSearchView;
 	}
 );
-define('text!modules/records/templates/records_recent.html',[],function () { return '<h3>recente dossiers</h3>\n<div class="control-group">\n    <label class="control-label" for="select01">filter</label>\n    <div class="controls">\n      \t<select id="select01">\n        \t<option>soort 1</option>\n        \t<option>soort 2</option>\n        \t<option>soort 3</option>\n        \t<option>soort 4</option>\n      \t</select>\n    </div>\n</div>\n<div class="listitems" id="records_recent_result"></div>';});
+define('text!modules/records/templates/records_recent.html',[],function () { return '<h3>recente dossiers</h3>\n<div class="controls">\n  \t<select id="select01">\n    \t<option>vandaag</option>\n    \t<option>gisteren</option>\n    \t<option>afgelopen week</option>\n  \t</select>\n</div>\n<div class="listitems" id="records_recent_result"></div>';});
 
 define('records/views/records_recent_view',[
 	"jquery",
@@ -15363,7 +15405,17 @@ define('records/views/records_recent_view',[
 	],
 	function ($, _, Backbone, tmpl, RecordsMiniView) {
 		var RecordsRecentView = Backbone.View.extend({
+			tagName: 'section',
+			className: 'span3',
+			initialize: function () {		
+				this.template = _.template(tmpl);
+				this.collection.on('change', this.render, this);
+			},
+			render: function () {				
+				this.$el.html(this.template);
 
+				return this;
+			}
 		});
 
 		return RecordsRecentView;
@@ -15398,10 +15450,61 @@ define('records/views/appointments_view',[
 	],
 	function ($, _, Backbone, tmpl, AppointmentsMiniView) {
 		var AppointmentsView = Backbone.View.extend({
-
+			tagName: 'section',
+			className: 'span3',
+			initialize: function () {		
+				this.template = _.template(tmpl);
+				this.collection.on("change", this.render, this);
+			},
+			render: function () {				
+				this.$el.html(this.template);
+				return this;
+			}
 		});
 
 		return AppointmentsView;
+	}
+);
+define('text!modules/records/templates/records_new.html',[],function () { return '<h3>nieuwe dossiers</h3>\n<button class="btn" id="new_record">nieuw dossier</button>';});
+
+define('records/views/records_new_view',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"records/records",
+
+	"text!modules/records/templates/records_new.html"
+	],
+	function ($, _, Backbone, records, tmpl) {
+		var RecordsSearchView = Backbone.View.extend({
+			tagName: 'section',
+			className: 'span3',
+			initialize: function () {		
+				this.template = _.template(tmpl);
+				this.collection.on('change', this.render, this);
+			},
+			events: {
+				"click #new_record": "newRecord"
+			},
+			render: function () {				
+				this.$el.html(this.template);
+				return this;
+			},
+			newRecord: function () {
+
+				records.proxy.trigger("hi", "haai");
+				/*
+				var newRecord = this.collection.create();
+				
+				if (newRecord) {
+					this.collection.selected = newRecord.id;
+					this.collection.trigger("selected");
+				};
+				*/
+			}
+		});
+
+		return RecordsSearchView;
 	}
 );
 define('records/views/records_view',[
@@ -15409,22 +15512,43 @@ define('records/views/records_view',[
 	"lodash",
 	"backbone",
 
-	"text!modules/records/templates/records.html",
 	"records/views/records_search_view",
 	"records/views/records_recent_view",
-	"records/views/appointments_view"
+	"records/views/appointments_view",
+	"records/views/records_new_view"
 	],
-	function ($, _, Backbone, tmpl, RecordsSearchView, RecordsRecentView, AppointmentsView) {
-		var RecordsView = Backbone.View.extend({
+	function ($, _, Backbone,RecordsSearchView, RecordsRecentView,
+			AppointmentsView, RecordsNewView) {
 
+		var RecordsView = Backbone.View.extend({
+			className: "row-fluid",
+			initialize: function () {
+				
+				this.views = [];
+				this.views.push(new RecordsSearchView(
+					{collection: this.collection}));
+				this.views.push(new RecordsRecentView(
+					{collection: this.collection}));
+				this.views.push(new AppointmentsView(
+					{collection: this.collection}));
+				this.views.push(new RecordsNewView(
+					{collection: this.collection}));
+			},
+			render: function () {
+				_.each(
+					this.views,
+					function (view) {this.$el.append(view.render().el);}, 
+					this
+				);
+			}
 		});
 
 		return RecordsView;
 	}
 );
-define('text!modules/records/templates/record.html',[],function () { return '<div class="row-fluid">                        \n    <div class="span4">\n        <section id="personal"></section>\n        <section id="medicals"></section>\n        <section id="ices"></section>\n        <section id="telecoms"></section>\n        <section id="addresses"></section>                                 \n    </div>\n    <div class="span8">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active"><a href="#client_record_consults" data-toggle="tab">consults</a></li>\n                <li><a href="#client_record_treatments" data-toggle="tab">behandelingen</a></li>\n                <li><a href="#client_record_photos" data-toggle="tab">foto&#39;s</a></li>\n                <li><a href="#client_record_notes" data-toggle="tab">aantekeningen</a></li>\n                <li><a href="#client_record_offers" data-toggle="tab">offertes</a></li>\n                <li><a href="#client_record_receipts" data-toggle="tab">bonnen</a></li>        \n                <li><a href="#client_record_service" data-toggle="tab">service</a></li>\n                <li><a href="#client_record_log" data-toggle="tab">log</a></li>\n                <li><a href="#client_record_management" data-toggle="tab">beheer</a></li>\n            </ul>\n            <div class="tab-content">\n            </div>\n        </div>    \n    </div>\n</div>';});
+define('text!modules/records/templates/record.html',[],function () { return '<div class="row-fluid">                        \n    <div class="span4" id="left_column">                         \n    </div>\n    <div class="span8">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active"><a href="#client_record_consults" data-toggle="tab">consults</a></li>\n                <li><a href="#client_record_treatments" data-toggle="tab">behandelingen</a></li>\n                <li><a href="#client_record_photos" data-toggle="tab">foto&#39;s</a></li>\n                <li><a href="#client_record_notes" data-toggle="tab">aantekeningen</a></li>\n                <li><a href="#client_record_offers" data-toggle="tab">offertes</a></li>\n                <li><a href="#client_record_receipts" data-toggle="tab">bonnen</a></li>        \n                <li><a href="#client_record_service" data-toggle="tab">service</a></li>\n                <li><a href="#client_record_log" data-toggle="tab">log</a></li>\n                <li><a href="#client_record_management" data-toggle="tab">beheer</a></li>\n            </ul>\n            <div class="tab-content">\n            </div>\n        </div>    \n    </div>\n</div>';});
 
-define('text!records/templates/personal.html',[],function () { return '<div id="client_record_person">\n        <h3><%= initials %> <%= last_name%> ( <%= first_name %> )</h3>\n        <div class="row-fluid">\n            <div class="span5">\n                <img class="passphoto" src="http://placehold.it/180x240">\n            </div>\n            <div class="span7">\n                <table class="table">\n                    <tbody>\n                        <tr id="sex">\n                            <th>geslacht</th>\n                            <td><%= sex %></td>\n                        </tr>\n                        <tr id="age">\n                            <th>leeftijd</th>\n                            <td>function age in model </td>\n                        </tr>\n                        <tr id="date_of_birth">\n                            <th>geboren</th>\n                            <td><%= date_of_birth %></td>\n                        </tr>\n                        <tr id="id_number">\n                            <th>bsn</th>\n                            <td><%= id_number %></td>\n                        </tr>\n                        <tr id="id_document">\n                            <th>legitimatie</th>\n                            <td>link</td>\n                        </tr>\n                        <tr id="insurance_company">\n                            <th>verzekeraar</th>\n                            <td><%= insurance_company %></td>\n                        </tr>\n                        <tr id="insurance_number">\n                            <th>polisnummer</th>\n                            <td><%= insurance_number %></td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>    ';});
+define('text!records/templates/personal.html',[],function () { return '<div id="client_record_person">\n        <h3><%= initials %> <%= familyName%> ( <%= givenName %> )</h3>\n        <div class="row-fluid">\n            <div class="span5">\n                <img class="passphoto" src="http://placehold.it/180x240">\n            </div>\n            <div class="span7">\n                <table class="table">\n                    <tbody>\n                        <tr id="sex">\n                            <th>geslacht</th>\n                            <td><%= sex %></td>\n                        </tr>\n                        <tr id="age">\n                            <th>leeftijd</th>\n                            <td>function age in model </td>\n                        </tr>\n                        <tr id="date_of_birth">\n                            <th>geboren</th>\n                            <td><%= dateOfBirth %></td>\n                        </tr>\n                        <tr id="id_number">\n                            <th>bsn</th>\n                            <td><%= idNumber %></td>\n                        </tr>\n                        <tr id="id_document">\n                            <th>legitimatie</th>\n                            <td>link</td>\n                        </tr>\n                        <tr id="insurance_company">\n                            <th>verzekeraar</th>\n                            <td><%= insuranceCompany %></td>\n                        </tr>\n                        <tr id="insurance_number">\n                            <th>polisnummer</th>\n                            <td><%= insuranceNumber %></td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>    ';});
 
 define('records/views/personal_view',[
 	"jquery",
@@ -15436,15 +15560,18 @@ define('records/views/personal_view',[
 	function ($, _, Backbone, tmpl){
 
 		var PersonalView = Backbone.View.extend({
+			tagName: "section",
+			id: "personal",
+			className: "",
 
 			initialize: function () {
 				
 				this.template = _.template(tmpl);
-				this.model.on('change', this.render, this);
+				
+				this.model.on("change", this.render, this);
 			},
 
 			render: function () {
-				
 				this.$el.html(this.template(this.model.toJSON()));
 
 				return this;
@@ -15588,59 +15715,61 @@ define('records/views/record_view',[
 
 	], 
 
-	function ($, _, Backbone, mainTmpl, PersonalView, MedicalsView, IcesView, TelecomsView, AddressesView){
+	function ($, _, Backbone, tmpl, PersonalView, MedicalsView, IcesView,
+			TelecomsView, AddressesView){
 
-		var MainView = Backbone.View.extend({
-			
-			el: '#record',
+		var RecordView = Backbone.View.extend({
+			id: "record",
+			className: "row-fluid",
 			
 			initialize: function () {
+				
+				this.views = [];
+				this.template = _.template(tmpl);
 
-				this.template = _.template(mainTmpl);
-
-				//rerendering the main template loses the connection to the subviews
-				//rerendering therefore show an empty template. the subviews exist, but are
-				//not attached to the dom.
+				//rerendering the main template loses the connection to the
+				// subviews rerendering therefore show an empty template. the
+				// subviews exist, but are not attached to the dom.
 				this.$el.html(this.template);
 
-				this.personalView = new PersonalView({
-						model: this.model,
-						el: "#personal"
-					});
-				this.medicalsView = new MedicalsView({
-						model: this.model,
-						el: "#medicals"
-					});
-				this.icesView = new IcesView({
+				this.views.push(new PersonalView({model: this.model}));
+				this.views.push(
+					new MedicalsView({
+						model: this.model
+						
+					})
+				);
+				this.views.push(
+					new IcesView({
 						model: this.model,
 						el: "#ices"
-					});
-				this.telecomsView = new TelecomsView({
+					})
+				);
+				this.views.push(
+					new TelecomsView({
 						model: this.model,
 						el: "#telecoms"
-					});
-				this.addressesView = new AddressesView({
+					})
+				);
+				this.views.push(
+					new AddressesView({
 						model: this.model,
 						el: "#addresses"
-					});
-			},
-			
+					})
+				);
+			},	
 			render: function () {
 
-				this.personalView.render();
-
-				this.medicalsView.render();
-
-				this.icesView.render();
-
-				this.telecomsView.render();
-
-				this.addressesView.render();
-
+				_.each(
+					this.views,
+					function (view) {this.$('left_column').append(view.render().el);}, 
+					this
+				);
 				return this;
 			}
 		});
-		return MainView;
+
+		return RecordView;
 	}
 );
 
@@ -15654,7 +15783,42 @@ define('records/views/record_view',[
 
 
 
-define('records/models/record_model',[
+define('nestCollection/nestCollection',[
+	"lodash"
+], function (_){
+
+	// https://gist.github.com/1610397 nestCollection helper function by https://gist.github.com/geddesign
+
+	var nestCollection = function(model, attributeName, nestedCollection) {
+		    //setup nested references
+		    for (var i = 0; i < nestedCollection.length; i++) {
+		      model.attributes[attributeName][i] = nestedCollection.at(i).attributes;
+		    }
+		    //create empty arrays if none
+
+		    nestedCollection.bind('add', function (initiative) {
+		      if (!model.get(attributeName)) {
+		        model.attributes[attributeName] = [];
+		      }
+		      model.get(attributeName).push(initiative.attributes);
+		    });
+
+		    nestedCollection.bind('remove', function (initiative) {
+		      var updateObj = {};
+		      updateObj[attributeName] = _.without(model.get(attributeName), initiative.attributes);
+		      model.set(updateObj);
+		    });
+
+		    return nestedCollection;
+	  };
+
+	return nestCollection;
+
+});
+
+
+
+define('records/models/medical_model',[
 	"jquery",
 	"lodash",
 	"backbone"
@@ -15662,47 +15826,730 @@ define('records/models/record_model',[
 
 	function ($, _, Backbone) {
 
-		var RecordModel = Backbone.Model.extend({
+		var MedicalModel = Backbone.Model.extend({
+
+			defaults: {
+				type: "", // allergy, sensitivity, condition, medication,
+						  // impairment, intoxication
+				description: "",
+				start: "",
+				stop: "",
+				note: false // is there a note available expanding on the
+							// issue?
+			},
+
+			initialize: function () {}
+
+		});
+	
+		return MedicalModel;
+	}
+);
+define('records/collections/medical_collection',[
+	"jquery",
+	"lodash",
+	"records/models/medical_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var MedicalCollection = Backbone.Collection.extend({
+
+  			model: Model,
+		});
+
+		return MedicalCollection;
+	}
+);
+define('records/models/ice_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var IceModel = Backbone.Model.extend({
 
 			//simple attributes get a default value
 			defaults: {
-				  "client_number"		:"klant nummer"
-	    		, "initials"			:"initialen"
-	    		, "first_name"			:"voornaam"
-			    , "last_name"			:"achternaam"
-			    , "id_number"			:"bsn"
-			    , "id_document_scr"		:"/src/scans/paspoort_placeholder.png"
-			    , "passphoto_src"		:"/src/photos/passphoto_placeholder.png"
-			    , "passphoto_thumbnail"	:"/src/photos/passphoto_thumbnail_placeholder.png"
-			    , "insurance_company"	:"maatschappij"
-			    , "insurance_number"	:"polisnummer"
-			    , "sex"					:"geslacht"
-			    , "date_of_birth"		:"geboortedatum"
-			    , "created"				:""
-			    , "updated"				:""
+				givenName: "",
+				familyName: "",
+				relation: "",
+				telecomIdentifier: ""
+			},
+
+			initialize: function () {},
+
+		});
+	
+		return IceModel;
+	}
+);
+define('records/collections/ice_collection',[
+	"jquery",
+	"lodash",
+	"records/models/ice_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var IceCollection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return IceCollection;
+	}
+);
+define('records/models/telecom_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var TelecomModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				description: "",// private phone, private mail, twitter,
+								// facebook, linkedin, work phone, work mail,
+								// website, language, preferred
+				identifier: ""
+			},
+
+			initialize: function () {},
+
+		});
+	
+		return TelecomModel;
+	}
+);
+define('records/collections/telecom_collection',[
+	"jquery",
+	"lodash",
+	"records/models/telecom_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var TelecomCollection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return TelecomCollection;
+	}
+);
+define('records/models/address_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var AddressModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				street: "",
+				number: "",
+				extension: "",
+				postalcode: "",
+				city: "",
+				provinceOrState: "",
+				country: ""
+			},
+
+			initialize: function () {},
+
+		});
+	
+		return AddressModel;
+	}
+);
+define('records/collections/address_collection',[
+	"jquery",
+	"lodash",
+	"records/models/address_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var AddressCollection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return AddressCollection;
+	}
+);
+define('records/models/consult_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var ConsultModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				history: "",
+				examination: "",
+				conclusion: "",
+				plan: "",
+				consultant: "", //employee
+				start: "",
+				finish: "",
+				location: "",  // room
+				motivation: "", //free text
+				type: "" // from segmentation
 			},
 
 			//nested collections need to be initialised
 			initialize: function() {
 
-				this.on("change", function () {
-					//Record.Views.Main.render();
-				})
 
-				/*this.logs = nestCollection(this, 'logs', new Logs(this.get('logs')));
-			    this.medicals = nestCollection(this, 'medicals', new Medicals(this.get('medicals')));
-			    this.ices = nestCollection(this, 'ices', new Ices(this.get('ices')));
-			    this.consults = new Consults;
-			    this.treatments = new Treatments;
-			    this.telecoms = new Telecoms;
-			    this.addresses = new Addresses;
-			    this.photo_sets = new Photo_sets;
-			    this.offers = new Offers;
-			    this.receipts = new Receipts;
-			    this.notes = new Notes;
-			    this.ices = new Ices;*/
+				
 			}
 		});
+	
+		return ConsultModel;
+	}
+);
+define('records/collections/consult_collection',[
+	"jquery",
+	"lodash",
+	"records/models/consult_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var Collection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return Collection;
+	}
+);
+define('records/models/injection_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var InjectionModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				product: "", // serialnumber from store
+				amount: "", // in ml can be entered in units -> convert to ml
+				locationName: "", // location can be mapped from coord
+				locationX: "",
+				locationY: "" 
+			},
+
+			initialize: function () {},
+
+			convertToMl: function () {},
+
+			mapLocationName: function () {}
+		});
+	
+		return InjectionModel;
+	}
+);
+define('records/collections/injection_collection',[
+	"jquery",
+	"lodash",
+	"records/models/injection_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var Collection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return Collection;
+	}
+);
+define('records/models/treatment_model',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"nestCollection/nestCollection",
+	"records/collections/injection_collection"
+	],
+
+	function ($, _, Backbone, nestCollection, Injections) {
+
+		var TreatmentModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				physician: "",
+				start: "",
+				stop: "",
+				location: "",  // room
+				motivation: ""
+			},
+
+			//nested collections need to be initialised
+			initialize: function() {
+				this.injections = nestCollection(this, 'injections',
+						new Injections(this.get('injections')));
+				this.injections.add();
+
+
+				
+			}
+		});
+	
+		return TreatmentModel;
+	}
+);
+define('records/collections/treatment_collection',[
+	"jquery",
+	"lodash",
+	"records/models/treatment_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var Collection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return Collection;
+	}
+);
+define('records/models/photo_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var PhotoModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				photoSrc: "", 	//does the photo need some sort of id to tie it
+								//back to the client of its type etc.? Or is
+								//it safer not to do that. How big is the 
+								//chance of loosing the link?
+				type: "" //front left right above nose ...
+			},
+
+			initialize: function () {}
+
+		});
+	
+		return PhotoModel;
+	}
+);
+define('records/collections/photo_collection',[
+	"jquery",
+	"lodash",
+	"records/models/photo_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var Collection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return Collection;
+	}
+);
+define('records/models/photo_set_model',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"nestCollection/nestCollection",
+	"records/collections/photo_collection"
+	],
+
+	function ($, _, Backbone, nestCollection, PhotoCollection) {
+
+		var PhotoSetModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				type: "",
+				photographer: "",
+				datetime: ""
+			},
+
+			initialize: function () {
+
+				this.photos = nestCollection(this, 'photos',
+			    		new PhotoCollection(this.get('photos')));
+				this.photos.add();
+			}
+
+		});
+	
+		return PhotoSetModel;
+	}
+);
+define('records/collections/photo_set_collection',[
+	"jquery",
+	"lodash",
+	"records/models/photo_set_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var Collection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return Collection;
+	}
+);
+define('records/models/note_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var NoteModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				author: "",
+				datetime: "",
+				content: "",
+				access: ""
+			},
+
+			initialize: function () {}
+
+		});
+	
+		return NoteModel;
+	}
+);
+define('records/collections/note_collection',[
+	"jquery",
+	"lodash",
+	"records/models/note_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var Collection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return Collection;
+	}
+);
+define('records/models/offer_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var OfferModel = Backbone.Model.extend({
+
+			defaults: {
+				date: "",
+				number: "",
+				issuer: "",
+				singedCopySrc: "",
+				discount: 0,
+				treatments: "", // how to easily set groups of treatments?
+				pricingModel: ""
+			},
+
+			initialize: function () {
+				this.setDate();
+				this.setNumber();
+				this.setIssuer();
+			},
+
+			setDate: function () {},
+
+			setNumber: function () {},
+
+			setIssuer: function () {},
+
+			getTotal: function () {}
+
+		});
+	
+		return OfferModel;
+	}
+);
+define('records/collections/offer_collection',[
+	"jquery",
+	"lodash",
+	"records/models/offer_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var Collection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return Collection;
+	}
+);
+define('records/models/receipt_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var ReceiptModel = Backbone.Model.extend({
+
+			defaults: {
+				date: "",
+				number: "",
+				issuer: "",
+				treatments: "",
+				offer: "",
+				discount: "",
+				pricingmodel: "",
+				paid: false,
+				paymentMethod : "",
+				vatRate: "",
+				vat: "",
+				subtotal: "", // ex vat
+				total: "",
+				issued: false, // was the receipt given to the client
+				receivedBy: "" // who got the money
+			},
+
+			initialize: function () {
+				this.setDate();
+				this.setNumber();
+				this.setIssuer();
+				this.setDiscount();
+				this.setPricingmodel();
+			},
+
+			setDate: function () {},
+
+			setNumber: function () {},
+
+			setIssuer: function () {},
+
+			setDiscount: function () {
+				this.discount = this.getDiscountFromOffer();
+			},
+
+
+			setPricingmodel: function () {
+				this.pricingmodel = this.getPricingmodelFromOffer();
+			},
+
+			getDiscountFromOffer: function () {},
+
+			getPricingmodelFromOffer: function () {}
+		});
+	
+		return ReceiptModel;
+	}
+);
+define('records/collections/receipt_collection',[
+	"jquery",
+	"lodash",
+	"records/models/receipt_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var Collection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return Collection;
+	}
+);
+define('records/models/log_entry_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var LogEntryModel = Backbone.Model.extend({
+
+			defaults: {
+				"user": "",
+				"datetime": "",
+				"event": "",
+				"key": "",
+				"value": ""
+			},
+
+			initialize: function () {
+				this.setDateTime();
+			},
+
+			setDateTime: function () {
+				this.datetime = "" // need to refactor and roll in to base 
+									//object?
+			}
+
+		});
+	
+		return LogEntryModel;
+	}
+);
+define('records/collections/log_collection',[
+	"jquery",
+	"lodash",
+	"records/models/log_entry_model",
+	"backbone"
+	], 
+
+	function ($, _, Model, Backbone){
+
+		var Collection = Backbone.Collection.extend({
+
+  			model: Model
+		});
+
+		return Collection;
+	}
+);
+define('records/models/record_model',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"nestCollection/nestCollection",
+	"records/collections/medical_collection",
+	"records/collections/ice_collection",
+	"records/collections/telecom_collection",
+	"records/collections/address_collection",
+	"records/collections/consult_collection",
+	"records/collections/treatment_collection",
+	"records/collections/photo_set_collection",
+	"records/collections/note_collection",
+	"records/collections/offer_collection",
+	"records/collections/receipt_collection",
+	"records/collections/log_collection"
+	],
+
+	function ($, _, Backbone, nestCollection,
+			Medicals, Ices, Telecoms, Addresses, Consults, Treatments,
+			PhotoSets, Notes, Offers, Receipts, Logs) {
+
+		var RecordModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				// personal
+				"client_number"		:"klant nummer",
+	    		"initials"			:"initialen",
+	    		"givenName"			:"voornaam",
+			    "familyName"			:"achternaam",
+			    "idNumber"			:"bsn",
+			    "idDocumentScr"		:"/src/scans/paspoort_placeholder.png",
+			    "passphotoSrc"		:"/src/photos/passphoto_placeholder.png",
+			    "passphotoThumbnail"	:"/src/photos/passphoto_thumbnail_placeholder.png",
+			    "insuranceCompany"	:"maatschappij",
+			    "insuranceNumber"	:"polisnummer",
+			    "sex"					:"geslacht",
+			    "dateOfBirth"		:"geboortedatum",
+
+			    // management
+			    "created"				:"",
+			    "updated"				:"",
+
+			    //service
+			},
+
+			//nested collections need to be initialised
+			initialize: function() {
+
+			    this.medicals = nestCollection(this, 'medicals',
+			    		new Medicals(this.get('medicals')));
+			    this.medicals.add();
+
+			    this.ices = nestCollection(this, 'ices',
+			    		new Ices(this.get('ices')));
+			    this.ices.add();
+
+			    this.telecoms = nestCollection(this, 'telecoms',
+			    		new Telecoms(this.get('telecoms')));
+			    this.ices.add();
+
+			    this.addresses = nestCollection(this, 'addresses',
+			    		new Addresses(this.get('addresses')));
+			    this.addresses.add();
+
+			    this.consults = nestCollection(this, 'consults',
+			    		new Consults(this.get('consults')));
+			    this.consults.add();
+
+			    this.treatments = nestCollection(this, 'treatments',
+			    		new Treatments(this.get('treatments')));
+			    this.treatments.add();
+
+			    this.photoSets = nestCollection(this, 'photoSets',
+			    		new PhotoSets(this.get('photoSets')));
+			    this.photoSets.add();
+
+			    this.notes = nestCollection(this, 'notes',
+			    		new Notes(this.get('notes')));
+			    this.notes.add();
+
+			    this.offers = nestCollection(this, 'offers',
+			    		new Offers(this.get('offers')));
+			    this.offers.add();
+
+			    this.receipts = nestCollection(this, 'receipts',
+			    		new Receipts(this.get('receipts')));
+			    this.receipts.add();
+
+			    this.logs = nestCollection(this, 'logs',
+						new Logs(this.get('logs')));
+			    this.logs.add();
+			}
+		})
 	
 		return RecordModel;
 	}
@@ -15746,46 +16593,34 @@ define('records/collections/record_collection',[
 define('records/record_router',[
 	"jquery",
 	"lodash",
+	"remedy",
 	"records/views/records_view",
 	"records/views/record_view",
 	"records/collections/record_collection",
 	"backbone",
 	"plugins/backbone.subroute"
 	], 
-	function ($, _, RecordsView, RecordView, RecordCollection, Backbone){
+	function ($, _, remedy, RecordsView, RecordView, RecordCollection, Backbone){
 		var Router = Backbone.SubRoute.extend({
 			routes: {
-				"": "index",
-				":id": "setRecord",
-				":id/:panel": "setRecord",
-				":id/:panel/:item": "setRecord"
+				"": "showRecords",
+				":id": "showRecord",
+				":id/:panel": "showRecord",
+				":id/:panel/:item": "showRecord"
 			},
 			initialize: function () {
-				this.views = {};
 				this.collection = new RecordCollection();
-
-				this.collection.fetch({
-					success: function (collection, response) {
-
-					},
-					error: function (collection, response) {
-						console.log("collection");
-						console.log(collection);
-						console.log("response");
-						console.log(response);
-					}
-				});
+				this.collection.on("selected", this.selectRecord, this);
 			},
-			index: function () {
-				
-				if (!this.views.recordsView) {
-					this.view.recordsView = new RecordsView();
-				}
-
-				this.views.recordsView.collection = this.collection;				
-	  			this.views.recordsView.render();
+			showRecords: function () {
+				var view;
+				this.collection.fetch();
+				view = new RecordsView({collection: this.collection});
+				this.showView(view);
 			},
-			setRecord: function (id, panel, item) {
+			showRecord: function (id, panel, item) {
+				var view;
+				var record;
 				//check input for valid format and existence
 				if (!id) {
 					id = 0;
@@ -15799,28 +16634,62 @@ define('records/record_router',[
 					item = 0;
 				}
 
-				if (!this.views.recordView) {
-					this.views.recordView = new RecordView();
+				record = this.collection.get(id);
+				console.log(record);
+				view = new RecordView({model: record});
+				this.showView(view);
+			},
+			showView: function (view) {
+
+			    if (this.currentView) {
+			      this.currentView.close();
+			    }
+
+			    this.currentView = view;
+			    this.currentView.render();
+			    console.log(this.currentView.el);
+			    $('#content').html(this.currentView.el);
+			},
+			selectRecord: function () {
+				var id = this.collection.selected;
+				
+				if (id) {
+					console.log(this.collection.get(id));
+					this.navigate(id);
+					this.showRecord(id);
 				}
-
-				this.views.recordView.model = this.collection.get(id);
-				// set panel
-				// set panel item
-				tihs.views.recordView.render();
-
 			}
+				
 		});
 
 		return Router;
 	}
 );
 
+define('records/records',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"remedy",
+	"records/record_router"
+	],
+
+	function ($, _, Backbone, remedy, Router) {
+
+		var Records = function () {
+			this.router = new Router("records/");
+			this.proxy = new remedy.Proxy;
+		}
+
+		return Records;
+	}
+);
 define('router',[
   "remedy",
-  "records/record_router"
+  "records/records"
 ],
 
-function(remedy, RecordRouter) {
+function(remedy, Records) {
 
   var Router = Backbone.Router.extend({
 
@@ -15831,10 +16700,9 @@ function(remedy, RecordRouter) {
 
     initialize: function() {
 
-      remedy.nav = new remedy.navView();
-      remedy.nav.render();
-      remedy.routers = {};
-      remedy.routers.record = new RecordRouter("records/");
+      var nav = new remedy.navView();
+      nav.render();
+      remedy.modules.push(new Records);
     },
 
     index: function () {
@@ -15908,7 +16776,10 @@ require.config({
     text: "../assets/js/libs/text",
 
     //modules
-    records: "modules/records"
+    records: "modules/records",
+    stores: "modules/stores",
+    ledgers: "modules/ledger",
+    nestCollection: "modules/nestCollection"
 
   },
 

@@ -1,0 +1,117 @@
+Record
+    client number
+    initials
+    first name
+    last name
+    id number
+    id document
+    passphoto
+    passphoto thumbnail
+    insurance company
+    insurance number
+    sex
+    date of birth
+    created
+    updated
+    
+    Logs
+    Medicals
+    Appointments
+    Telecoms
+    Addresses
+    Photos
+    Offers
+    Receipts
+    Notes
+    Ices
+    
+Logs
+    log entry
+    
+log_entry
+    datetime
+    employee
+    action
+    key
+    value
+
+    
+Appointments
+    appointment
+    total moved
+    total no-show
+    total cancelled
+    
+appointment
+    employee
+    datetime start
+    datetime end
+    status
+    purpose
+    type
+    location
+    
+Telecoms
+    telecom
+    
+telecom
+    type
+    value
+    
+Addresses
+    address
+
+address
+    type
+    street
+    number
+    extension
+    postal code
+    city
+    province
+    country
+    
+Photosets
+    photoset
+
+photoset
+    datetime
+    employee
+    type
+    Photos
+    
+Photos
+    type
+    src
+    
+Offers
+    
+Receipts
+
+Notes
+    note
+    
+note
+    datetime
+    content
+    employee
+    access
+
+Ices
+    ice
+
+ice
+    first name
+    last name
+    relation
+    Telecoms
+
+Medicals
+    medical
+
+medical
+    type
+    description
+    start
+    stop
+    
