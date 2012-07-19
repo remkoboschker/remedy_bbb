@@ -19,7 +19,7 @@ define([
 				country: ""
 			},
 
-			initialize: function () {},
+			initialize: function () {}
 
 		});
 	

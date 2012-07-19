@@ -1,27 +1,27 @@
 define([
-	"jquery",
-	"lodash",
-	"backbone"
-	],
+    "jquery",
+    "lodash",
+    "backbone"
+    ],
 
-	function ($, _, Backbone) {
+    function ($, _, Backbone) {
 
-		var MedicalModel = Backbone.Model.extend({
+        var MedicalModel = Backbone.Model.extend({
 
-			defaults: {
-				type: "", // allergy, sensitivity, condition, medication,
-						  // impairment, intoxication
-				description: "",
-				start: "",
-				stop: "",
-				note: false // is there a note available expanding on the
-							// issue?
-			},
+            defaults: {
+                type: "", // allergy, sensitivity, condition, medication,
+                          // impairment, intoxication
+                description: "",
+                start: "",
+                stop: "",
+                note: false // is there a note available expanding on the
+                            // issue?
+            },
 
-			initialize: function () {}
+            initialize: function () {}
 
-		});
-	
-		return MedicalModel;
-	}
+        });
+    
+        return MedicalModel;
+    }
 );

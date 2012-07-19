@@ -1,34 +1,23 @@
 define([
 	"jquery",
 	"lodash",
-	"backbone"
+	"backbone",
+	"remedy",
+	"ledgers/collections/sales_ledger_collection"
 	],
 
-	function ($, _, Backbone) {
+	function ($, _, Backbone, remedy, SalesLedger) {
 
-		var Ledgers = function (remedy) {
+		var Ledgers = function () {
 			
-			
-			var proxy = _.extend({}, Backbone.Events);
-      		
-		    proxy.on("all", function (event, args) {
-		    	event = "ledgers:" + event;
-		    	remedy.trigger(event, args);
-		    });
-		    
-		    remedy.on("all", function (event, args) {
-		    	var eventSpaces = event.split(":");
-		    	if(eventSpaces.shift() !== "ledgers"){
-		    		proxy.trigger(eventSpaces, args);
-		    	} 
-		    });
+			var salesLedger = new SalesLedger();
 
-			remedy.on("records:hi", function(msg) {
-        console.log('ledger proxy says: ' + msg);
-      });
+			remedy.on("ledgers:addSale", function (saleInformation) {
+				console.log(saleInformation);
+			});
 
-		}
+		};
 
 		return Ledgers;
 	}
-)
+);

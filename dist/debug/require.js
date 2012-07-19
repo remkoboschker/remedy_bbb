@@ -1,3 +1,321 @@
+/**
+ * almond 0.1.1 Copyright (c) 2011, The Dojo Foundation All Rights Reserved.
+ * Available via the MIT or new BSD license.
+ * see: http://github.com/jrburke/almond for details
+ */
+//Going sloppy to avoid 'use strict' string cost, but strict practices should
+//be followed.
+/*jslint sloppy: true */
+/*global setTimeout: false */
+
+var requirejs, require, define;
+(function (undef) {
+    var defined = {},
+        waiting = {},
+        config = {},
+        defining = {},
+        aps = [].slice,
+        main, req;
+
+    /**
+     * Given a relative module name, like ./something, normalize it to
+     * a real name that can be mapped to a path.
+     * @param {String} name the relative name
+     * @param {String} baseName a real name that the name arg is relative
+     * to.
+     * @returns {String} normalized name
+     */
+    function normalize(name, baseName) {
+        var baseParts = baseName && baseName.split("/"),
+            map = config.map,
+            starMap = (map && map['*']) || {},
+            nameParts, nameSegment, mapValue, foundMap, i, j, part;
+
+        //Adjust any relative paths.
+        if (name && name.charAt(0) === ".") {
+            //If have a base name, try to normalize against it,
+            //otherwise, assume it is a top-level require that will
+            //be relative to baseUrl in the end.
+            if (baseName) {
+                //Convert baseName to array, and lop off the last part,
+                //so that . matches that "directory" and not name of the baseName's
+                //module. For instance, baseName of "one/two/three", maps to
+                //"one/two/three.js", but we want the directory, "one/two" for
+                //this normalization.
+                baseParts = baseParts.slice(0, baseParts.length - 1);
+
+                name = baseParts.concat(name.split("/"));
+
+                //start trimDots
+                for (i = 0; (part = name[i]); i++) {
+                    if (part === ".") {
+                        name.splice(i, 1);
+                        i -= 1;
+                    } else if (part === "..") {
+                        if (i === 1 && (name[2] === '..' || name[0] === '..')) {
+                            //End of the line. Keep at least one non-dot
+                            //path segment at the front so it can be mapped
+                            //correctly to disk. Otherwise, there is likely
+                            //no path mapping for a path starting with '..'.
+                            //This can still fail, but catches the most reasonable
+                            //uses of ..
+                            return true;
+                        } else if (i > 0) {
+                            name.splice(i - 1, 2);
+                            i -= 2;
+                        }
+                    }
+                }
+                //end trimDots
+
+                name = name.join("/");
+            }
+        }
+
+        //Apply map config if available.
+        if ((baseParts || starMap) && map) {
+            nameParts = name.split('/');
+
+            for (i = nameParts.length; i > 0; i -= 1) {
+                nameSegment = nameParts.slice(0, i).join("/");
+
+                if (baseParts) {
+                    //Find the longest baseName segment match in the config.
+                    //So, do joins on the biggest to smallest lengths of baseParts.
+                    for (j = baseParts.length; j > 0; j -= 1) {
+                        mapValue = map[baseParts.slice(0, j).join('/')];
+
+                        //baseName segment has  config, find if it has one for
+                        //this name.
+                        if (mapValue) {
+                            mapValue = mapValue[nameSegment];
+                            if (mapValue) {
+                                //Match, update name to the new value.
+                                foundMap = mapValue;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                foundMap = foundMap || starMap[nameSegment];
+
+                if (foundMap) {
+                    nameParts.splice(0, i, foundMap);
+                    name = nameParts.join('/');
+                    break;
+                }
+            }
+        }
+
+        return name;
+    }
+
+    function makeRequire(relName, forceSync) {
+        return function () {
+            //A version of a require function that passes a moduleName
+            //value for items that may need to
+            //look up paths relative to the moduleName
+            return req.apply(undef, aps.call(arguments, 0).concat([relName, forceSync]));
+        };
+    }
+
+    function makeNormalize(relName) {
+        return function (name) {
+            return normalize(name, relName);
+        };
+    }
+
+    function makeLoad(depName) {
+        return function (value) {
+            defined[depName] = value;
+        };
+    }
+
+    function callDep(name) {
+        if (waiting.hasOwnProperty(name)) {
+            var args = waiting[name];
+            delete waiting[name];
+            defining[name] = true;
+            main.apply(undef, args);
+        }
+
+        if (!defined.hasOwnProperty(name)) {
+            throw new Error('No ' + name);
+        }
+        return defined[name];
+    }
+
+    /**
+     * Makes a name map, normalizing the name, and using a plugin
+     * for normalization if necessary. Grabs a ref to plugin
+     * too, as an optimization.
+     */
+    function makeMap(name, relName) {
+        var prefix, plugin,
+            index = name.indexOf('!');
+
+        if (index !== -1) {
+            prefix = normalize(name.slice(0, index), relName);
+            name = name.slice(index + 1);
+            plugin = callDep(prefix);
+
+            //Normalize according
+            if (plugin && plugin.normalize) {
+                name = plugin.normalize(name, makeNormalize(relName));
+            } else {
+                name = normalize(name, relName);
+            }
+        } else {
+            name = normalize(name, relName);
+        }
+
+        //Using ridiculous property names for space reasons
+        return {
+            f: prefix ? prefix + '!' + name : name, //fullName
+            n: name,
+            p: plugin
+        };
+    }
+
+    function makeConfig(name) {
+        return function () {
+            return (config && config.config && config.config[name]) || {};
+        };
+    }
+
+    main = function (name, deps, callback, relName) {
+        var args = [],
+            usingExports,
+            cjsModule, depName, ret, map, i;
+
+        //Use name if no relName
+        relName = relName || name;
+
+        //Call the callback to define the module, if necessary.
+        if (typeof callback === 'function') {
+
+            //Pull out the defined dependencies and pass the ordered
+            //values to the callback.
+            //Default to [require, exports, module] if no deps
+            deps = !deps.length && callback.length ? ['require', 'exports', 'module'] : deps;
+            for (i = 0; i < deps.length; i++) {
+                map = makeMap(deps[i], relName);
+                depName = map.f;
+
+                //Fast path CommonJS standard dependencies.
+                if (depName === "require") {
+                    args[i] = makeRequire(name);
+                } else if (depName === "exports") {
+                    //CommonJS module spec 1.1
+                    args[i] = defined[name] = {};
+                    usingExports = true;
+                } else if (depName === "module") {
+                    //CommonJS module spec 1.1
+                    cjsModule = args[i] = {
+                        id: name,
+                        uri: '',
+                        exports: defined[name],
+                        config: makeConfig(name)
+                    };
+                } else if (defined.hasOwnProperty(depName) || waiting.hasOwnProperty(depName)) {
+                    args[i] = callDep(depName);
+                } else if (map.p) {
+                    map.p.load(map.n, makeRequire(relName, true), makeLoad(depName), {});
+                    args[i] = defined[depName];
+                } else if (!defining[depName]) {
+                    throw new Error(name + ' missing ' + depName);
+                }
+            }
+
+            ret = callback.apply(defined[name], args);
+
+            if (name) {
+                //If setting exports via "module" is in play,
+                //favor that over return value and exports. After that,
+                //favor a non-undefined return value over exports use.
+                if (cjsModule && cjsModule.exports !== undef &&
+                    cjsModule.exports !== defined[name]) {
+                    defined[name] = cjsModule.exports;
+                } else if (ret !== undef || !usingExports) {
+                    //Use the return value from the function.
+                    defined[name] = ret;
+                }
+            }
+        } else if (name) {
+            //May just be an object definition for the module. Only
+            //worry about defining if have a module name.
+            defined[name] = callback;
+        }
+    };
+
+    requirejs = require = req = function (deps, callback, relName, forceSync) {
+        if (typeof deps === "string") {
+            //Just return the module wanted. In this scenario, the
+            //deps arg is the module name, and second arg (if passed)
+            //is just the relName.
+            //Normalize module name, if it contains . or ..
+            return callDep(makeMap(deps, callback).f);
+        } else if (!deps.splice) {
+            //deps is a config object, not an array.
+            config = deps;
+            if (callback.splice) {
+                //callback is an array, which means it is a dependency list.
+                //Adjust args if there are dependencies
+                deps = callback;
+                callback = relName;
+                relName = null;
+            } else {
+                deps = undef;
+            }
+        }
+
+        //Support require(['a'])
+        callback = callback || function () {};
+
+        //Simulate async callback;
+        if (forceSync) {
+            main(undef, deps, callback, relName);
+        } else {
+            setTimeout(function () {
+                main(undef, deps, callback, relName);
+            }, 15);
+        }
+
+        return req;
+    };
+
+    /**
+     * Just drops the config on the floor, but returns req in case
+     * the config return value is used.
+     */
+    req.config = function (cfg) {
+        config = cfg;
+        return req;
+    };
+
+    define = function (name, deps, callback) {
+
+        //This module may not have dependencies
+        if (!deps.splice) {
+            //deps is not an array, so probably means
+            //an object literal or factory function for
+            //the value. Adjust args.
+            callback = deps;
+            deps = [];
+        }
+
+        waiting[name] = [name, deps, callback];
+    };
+
+    define.amd = {
+        jQuery: true
+    };
+}());
+
+this['JST'] = this['JST'] || {};
+
+
 
 /**
  * @license RequireJS text 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -15133,80 +15451,92 @@ Backbone.Validations.Model.noConflict =  function() {
 
 define("plugins/backbone.validations", function(){});
 
-// Copyright (C) 2012 Model N, Inc.  
-// Released under the MIT License
+// backbone-subroute.js v0.2
 //
-// Backbone.SubRoute extends the functionality of Backbone.Router such that each of an application's modules
-// can define its own module-specific routes.  This eliminates the need for one monolithic Router configuration,
-// The base router can instead act as a simple delegator that forwards module-specific routes to the
-// appropriate module-specific SubRoute.
+// Copyright (C) 2012 Dave Cadwallader, Model N, Inc.  
+// Distributed under the MIT License
 //
-// For example, given this URL:
-//   http://example.org/myModule/foo/bar
-//
-// ...the base router would be responsible for invoking and delegating to the proper module based on "myModule".
-// The module would then have its own SubRoute which would have its own mappings for the foo/bar part.
-//
-// This project is based on a Gist by Tim Branyan: https://gist.github.com/1235317
+// Documentation and full license available at:
+// https://github.com/ModelN/backbone.subroute
 
-if (!Backbone) {
-    throw new Error('Backbone.Subroute: Backbone dependency was not found');
-}
-
-Backbone.SubRoute = Backbone.Router.extend( {
-    constructor:function ( prefix, options ) {
-        var routes = {};
-
-        // Prefix is optional, set to empty string if not passed
-        this.prefix = prefix = prefix || "";
-
-        // Allow for optionally omitting trailing /.  Since base routes do not
-        // trigger with a trailing / this is actually kind of important =)
-        if ( prefix.substr( -1 ) != "/" ) {
-            prefix = prefix + '/';
-        }
-
-        // Every route needs to be prefixed
-        _.each( this.routes, function ( callback, path ) {
-            if ( path ) {
-                routes[prefix + path] = callback;
-            } else {
-                // If the path is "" just set to prefix, this is to comply
-                // with how Backbone expects base paths to look gallery vs gallery/
-                routes[prefix.substr( 0, prefix.length - 1 )] = callback;
-            }
-        } );
-
-        // Must override with prefixed routes
-        this.routes = routes;
-
-        // Required to have Backbone set up routes
-        Backbone.Router.prototype.constructor.call( this, options );
-
-        // grab the full URL
-        var hash = Backbone.history.getHash();
-
-        // check if there is already a part of the URL that this subview cares about...
-        var hashPart = hash.substr( prefix.length, hash.length );
-
-        // ...if so, trigger the subroute immediately.  this supports the case where 
-        // a user directly navigates to a URL with a subroute on the first page load.
-        if ( hashPart && hashPart != "" ) {
-            Backbone.history.loadUrl( prefix + hashPart );
-        }
-    },
-    navigate:function ( route, options ) {
-        if ( route.substr( 0, 1 ) != '/' && route.indexOf( this.prefix.substr( 0,
-                this.prefix.length - 1 ) ) != 0 ) {
-            route = this.prefix + route;
-        }
-        Backbone.Router.prototype.navigate.call( this, route, options );
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // Register as an AMD module if available...
+        define('plugins/backbone.subroute',['lodash', 'backbone'], factory);
+    } else {
+        // Browser globals for the unenlightened...
+        factory(_, Backbone);
     }
-} );
+}(function(_, Backbone){
 
+    Backbone.SubRoute = Backbone.Router.extend( {
+        constructor:function ( prefix, options ) {
+            var routes = {};
 
-define("plugins/backbone.subroute", function(){});
+            // Prefix is optional, set to empty string if not passed
+            this.prefix = prefix = prefix || "";
 
+            // SubRoute instances may be instantiated using a prefix with or without a trailing slash.
+            // If the prefix does *not* have a trailing slash, we need to insert a slash as a separator
+            // between the prefix and the sub-route path for each route that we register with Backbone.        
+            var separator =
+                    ( prefix.substr( -1 ) === "/" )
+                            ? ""
+                            : "/";
+
+            // if you want to match "books" and "books/" without creating separate routes, set this
+            // option to "true" and the sub-router will automatically create those routes for you.
+            var createTrailingSlashRoutes = options && options.createTrailingSlashRoutes;
+
+            // Register each sub-route with Backbone by combining the prefix and the sub-route path 
+            _.each( this.routes, function ( callback, path ) {
+                if ( path ) {
+
+                    // strip off any leading slashes in the sub-route path, 
+                    // since we already handle inserting them when needed.
+                    if (path.substr(0) === "/") {
+                        path = path.substr(1, path.length);
+                    }
+
+                    routes[prefix + separator + path] = callback;
+
+                    if (createTrailingSlashRoutes) {
+                        routes[prefix + separator + path + "/"] = callback;
+                    }
+
+                } else {
+                    // default routes (those with a path equal to the empty string) 
+                    // are simply registered using the prefix as the route path.
+                    routes[prefix] = callback;
+
+                    if (createTrailingSlashRoutes) {
+                        routes[prefix + "/"] = callback;
+                    }
+                }
+            } );
+
+            // Override the local sub-routes with the fully-qualified routes that we just set up.
+            this.routes = routes;
+
+            // Required to have Backbone set up routes
+            Backbone.Router.prototype.constructor.call( this, options );
+
+            // grab the full URL
+            var hash = Backbone.history.getHash();
+
+            // Trigger the subroute immediately.  this supports the case where 
+            // a user directly navigates to a URL with a subroute on the first page load.
+            Backbone.history.loadUrl( hash );
+        },
+        navigate:function ( route, options ) {
+            if ( route.substr( 0, 1 ) != '/' && route.indexOf( this.prefix.substr( 0,
+                    this.prefix.length - 1 ) ) != 0 ) {
+                route = this.prefix + route;
+            }
+            Backbone.Router.prototype.navigate.call( this, route, options );
+        }
+    } );
+}));
 define('remedy',[
   //template
   "text!main.html",
@@ -15230,7 +15560,8 @@ function(navTemplate, $, _, Backbone) {
   var remedy = {
     // The root path to run the application through.
     root: "/",
-    modules: []
+    modules: [],
+    currentUser: "Remko"
   };
 
   remedy.navView = Backbone.View.extend({
@@ -15243,12 +15574,11 @@ function(navTemplate, $, _, Backbone) {
 
       return this;
     }
-
   });
 
   // remove all references to a view
   Backbone.View.prototype.close = function(){
-    console.log(this.el);
+
     this.remove();
     this.unbind();
     if (this.model){
@@ -15259,109 +15589,863 @@ function(navTemplate, $, _, Backbone) {
     }
     //recursively call the function on any subviews
     if (this.views){
-        _.each(this.views, function (view) {view.close();});
-    }
-  }
-
-  /*
-  // Localize or create a new JavaScript Template object.
-  var JST = window.JST = window.JST || {};
-
-  // Configure LayoutManager with Backbone Boilerplate defaults.
-  Backbone.LayoutManager.configure({
-    paths: {
-      layout: "remedy/templates/layouts/",
-      template: "remedy/templates/"
-    },
-
-    fetch: function(path) {
-      path = path + ".html";
-
-      if (!JST[path]) {
-        $.ajax({ url: "/" + path, async: false }).then(function(contents) {
-          JST[path] = _.template(contents);
+        _.each(this.views, function (view) {
+            view.close();
         });
-      } 
-      
-      return JST[path];
     }
-  });
+  };
 
-  // Mix Backbone.Events, modules, and layout management into the remedy object.
-  */
-  return _.extend(remedy, {
+  return _.extend(remedy, {}, Backbone.Events);
+});
 
-    Proxy: function () {
+define('nestCollection/nestCollection',[
+    "lodash"
+], function (_){
 
-      var proxy = {};
+    // https://gist.github.com/1610397 nestCollection helper function by https://gist.github.com/geddesign
 
-      _.extend(proxy, Backbone.Events);
+    var nestCollection = function(model, attributeName, nestedCollection) {
+            //setup nested references
+            for (var i = 0; i < nestedCollection.length; i++) {
+              model.attributes[attributeName][i] = nestedCollection.at(i).attributes;
+            }
+            //create empty arrays if none
 
-      proxy.on("all", function (event, args) {
-        remedy.trigger(event, args);
-      });
+            nestedCollection.bind('add', function (initiative) {
+              if (!model.get(attributeName)) {
+                model.attributes[attributeName] = [];
+              }
+              model.get(attributeName).push(initiative.attributes);
+            });
 
-      remedy.on("all", function (event, args) {
-        proxy.trigger(event, args);
-      });
-      return proxy;
-    }
+            nestedCollection.bind('remove', function (initiative) {
+              var updateObj = {};
+              updateObj[attributeName] = _.without(model.get(attributeName), initiative.attributes);
+              model.set(updateObj);
+            });
 
+            return nestedCollection;
+      };
 
-    /*
-    // Create a custom object with a nested Views object.
-    module: function(additionalProps) {
-      return _.extend({ Views: {} }, additionalProps);
-    },
-
-    // Helper for specific layouts.
-    useLayout: function(name) {
-      // If already using this Layout, then don't re-inject into the DOM.
-      if (this.layout && this.layout.options.template === name) {
-        return this.layout;
-      }
-
-      // If a layout already exists, remove it from the DOM.
-      if (this.layout) {
-        this.layout.remove();
-      }
-
-      // Create a new Layout.
-      var layout = new Backbone.Layout({
-        template: name,
-        className: "layout " + name,
-        id: "layout"
-      });
-
-      // Insert into the DOM.
-      $("#main").empty().append(layout.el);
-
-      // Render the layout.
-      layout.render();
-
-      // Cache the reference on the Router.
-      this.layout = layout;
-
-      // Return the reference, for later usage.
-      return layout;
-    }*/
-  }, Backbone.Events);
+    return nestCollection;
 
 });
 
-define('text!modules/records/templates/records_search.html',[],function () { return '<h3> zoeken </h3>\n<input type="search" placeholder="filter op naam, telefoonnummer of geboortedatum" results="0" incremental="true" autofocus="">\n<div class="listitems" id="records_search_result"></div>';});
 
-define('text!modules/records/templates/records_mini.html',[],function () { return '<div class="row-fluid item">\n    <div class="span5">\n        <img class="passphoto" src="http://placehold.it/70x70">\n    </div>\n    <div class="span7">\n        <p><strong>voornaam</strong></p>\n        <p><strong>achternaam</strong><p>\n        <p>telefoonummer</p>\n        <p>geboortedatum</p>\n    </div>\n</div>';});
 
-define('records/views/records_mini_view',[
+define('records/models/medical_model',[
+    "jquery",
+    "lodash",
+    "backbone"
+    ],
+
+    function ($, _, Backbone) {
+
+        var MedicalModel = Backbone.Model.extend({
+
+            defaults: {
+                type: "", // allergy, sensitivity, condition, medication,
+                          // impairment, intoxication
+                description: "",
+                start: "",
+                stop: "",
+                note: false // is there a note available expanding on the
+                            // issue?
+            },
+
+            initialize: function () {}
+
+        });
+    
+        return MedicalModel;
+    }
+);
+define('records/collections/medical_collection',[
+    "jquery",
+    "lodash",
+    "records/models/medical_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var MedicalCollection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return MedicalCollection;
+    }
+);
+define('records/models/ice_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var IceModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				givenName: "",
+				familyName: "",
+				relation: "",
+				telecomIdentifier: ""
+			},
+
+			initialize: function () {}
+
+		});
+	
+		return IceModel;
+	}
+);
+define('records/collections/ice_collection',[
+    "jquery",
+    "lodash",
+    "records/models/ice_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var IceCollection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return IceCollection;
+    }
+);
+define('records/models/telecom_model',[
+    "jquery",
+    "lodash",
+    "backbone"
+    ],
+
+    function ($, _, Backbone) {
+
+        var TelecomModel = Backbone.Model.extend({
+
+            //simple attributes get a default value
+            defaults: {
+                description: "",// private phone, private mail, twitter,
+                                // facebook, linkedin, work phone, work mail,
+                                // website, language, preferred
+                identifier: ""
+            },
+
+            initialize: function () {}
+
+        });
+    
+        return TelecomModel;
+    }
+);
+define('records/collections/telecom_collection',[
+    "jquery",
+    "lodash",
+    "records/models/telecom_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var TelecomCollection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return TelecomCollection;
+    }
+);
+define('records/models/address_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var AddressModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				street: "",
+				number: "",
+				extension: "",
+				postalcode: "",
+				city: "",
+				provinceOrState: "",
+				country: ""
+			},
+
+			initialize: function () {}
+
+		});
+	
+		return AddressModel;
+	}
+);
+define('records/collections/address_collection',[
+    "jquery",
+    "lodash",
+    "records/models/address_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var AddressCollection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return AddressCollection;
+    }
+);
+define('records/models/consult_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var ConsultModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				history: "",
+				examination: "",
+				conclusion: "",
+				plan: "",
+				consultant: "", //employee
+				start: "",
+				finish: "",
+				location: "",  // room
+				motivation: "", //free text
+				type: "" // from segmentation
+			},
+
+			//nested collections need to be initialised
+			initialize: function() {
+
+
+				
+			}
+		});
+	
+		return ConsultModel;
+	}
+);
+define('records/collections/consult_collection',[
+    "jquery",
+    "lodash",
+    "records/models/consult_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var Collection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return Collection;
+    }
+);
+define('records/models/injection_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var InjectionModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				product: "", // serialnumber from store
+				amount: "", // in ml can be entered in units -> convert to ml
+				locationName: "", // location can be mapped from coord
+				locationX: "",
+				locationY: "" 
+			},
+
+			initialize: function () {},
+
+			convertToMl: function () {},
+
+			mapLocationName: function () {}
+		});
+	
+		return InjectionModel;
+	}
+);
+define('records/collections/injection_collection',[
+    "jquery",
+    "lodash",
+    "records/models/injection_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var Collection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return Collection;
+    }
+);
+define('records/models/treatment_model',[
+    "jquery",
+    "lodash",
+    "backbone",
+    "nestCollection/nestCollection",
+    "records/collections/injection_collection"
+    ],
+
+    function ($, _, Backbone, nestCollection, Injections) {
+
+        var TreatmentModel = Backbone.Model.extend({
+
+            //simple attributes get a default value
+            defaults: {
+                physician: "",
+                start: "",
+                stop: "",
+                location: "",  // room
+                motivation: ""
+            },
+
+            //nested collections need to be initialised
+            initialize: function() {
+                this.injections = nestCollection(this, 'injections',
+                        new Injections(this.get('injections')));
+                this.injections.add();
+
+
+                
+            }
+        });
+    
+        return TreatmentModel;
+    }
+);
+define('records/collections/treatment_collection',[
+    "jquery",
+    "lodash",
+    "records/models/treatment_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var Collection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return Collection;
+    }
+);
+define('records/models/photo_model',[
+    "jquery",
+    "lodash",
+    "backbone"
+    ],
+
+    function ($, _, Backbone) {
+
+        var PhotoModel = Backbone.Model.extend({
+
+            //simple attributes get a default value
+            defaults: {
+                photoSrc: "",   //does the photo need some sort of id to tie it
+                                //back to the client of its type etc.? Or is
+                                //it safer not to do that. How big is the 
+                                //chance of loosing the link?
+                type: "" //front left right above nose ...
+            },
+
+            initialize: function () {}
+
+        });
+    
+        return PhotoModel;
+    }
+);
+define('records/collections/photo_collection',[
+    "jquery",
+    "lodash",
+    "records/models/photo_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var Collection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return Collection;
+    }
+);
+define('records/models/photo_set_model',[
+    "jquery",
+    "lodash",
+    "backbone",
+    "nestCollection/nestCollection",
+    "records/collections/photo_collection"
+    ],
+
+    function ($, _, Backbone, nestCollection, PhotoCollection) {
+
+        var PhotoSetModel = Backbone.Model.extend({
+
+            //simple attributes get a default value
+            defaults: {
+                type: "",
+                photographer: "",
+                datetime: ""
+            },
+
+            initialize: function () {
+
+                this.photos = nestCollection(this, 'photos',
+                        new PhotoCollection(this.get('photos')));
+                this.photos.add();
+            }
+
+        });
+    
+        return PhotoSetModel;
+    }
+);
+define('records/collections/photo_set_collection',[
+    "jquery",
+    "lodash",
+    "records/models/photo_set_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var Collection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return Collection;
+    }
+);
+define('records/models/note_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var NoteModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				author: "",
+				datetime: "",
+				content: "",
+				access: ""
+			},
+
+			initialize: function () {}
+
+		});
+	
+		return NoteModel;
+	}
+);
+define('records/collections/note_collection',[
+    "jquery",
+    "lodash",
+    "records/models/note_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var Collection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return Collection;
+    }
+);
+define('records/models/offer_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var OfferModel = Backbone.Model.extend({
+
+			defaults: {
+				date: "",
+				number: "",
+				issuer: "",
+				singedCopySrc: "",
+				discount: 0,
+				treatments: "", // how to easily set groups of treatments?
+				pricingModel: ""
+			},
+
+			initialize: function () {
+				this.setDate();
+				this.setNumber();
+				this.setIssuer();
+			},
+
+			setDate: function () {},
+
+			setNumber: function () {},
+
+			setIssuer: function () {},
+
+			getTotal: function () {}
+
+		});
+	
+		return OfferModel;
+	}
+);
+define('records/collections/offer_collection',[
+    "jquery",
+    "lodash",
+    "records/models/offer_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var Collection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return Collection;
+    }
+);
+define('records/models/receipt_model',[
+    "jquery",
+    "lodash",
+    "backbone"
+    ],
+
+    function ($, _, Backbone) {
+
+        var ReceiptModel = Backbone.Model.extend({
+
+            defaults: {
+                date: "",
+                number: "",
+                issuer: "",
+                treatments: "",
+                offer: "",
+                discount: "",
+                pricingmodel: "",
+                paid: false,
+                paymentMethod : "",
+                vatRate: "",
+                vat: "",
+                subtotal: "", // ex vat
+                total: "",
+                issued: false, // was the receipt given to the client
+                receivedBy: "" // who got the money
+            },
+
+            initialize: function () {
+                this.setDate();
+                this.setNumber();
+                this.setIssuer();
+                this.setDiscount();
+                this.setPricingmodel();
+            },
+
+            setDate: function () {},
+
+            setNumber: function () {},
+
+            setIssuer: function () {},
+
+            setDiscount: function () {
+                this.discount = this.getDiscountFromOffer();
+            },
+
+
+            setPricingmodel: function () {
+                this.pricingmodel = this.getPricingmodelFromOffer();
+            },
+
+            getDiscountFromOffer: function () {},
+
+            getPricingmodelFromOffer: function () {}
+        });
+    
+        return ReceiptModel;
+    }
+);
+define('records/collections/receipt_collection',[
+    "jquery",
+    "lodash",
+    "records/models/receipt_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var Collection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return Collection;
+    }
+);
+define('records/models/log_entry_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var LogEntryModel = Backbone.Model.extend({
+
+			defaults: {
+				"user": "",
+				"datetime": "",
+				"event": "",
+				"key": "",
+				"value": ""
+			},
+
+			initialize: function () {
+				this.setDateTime();
+			},
+
+			setDateTime: function () {
+				this.datetime = ""; // need to refactor and roll in to base 
+									//object?
+			}
+
+		});
+	
+		return LogEntryModel;
+	}
+);
+define('records/collections/log_collection',[
+    "jquery",
+    "lodash",
+    "records/models/log_entry_model",
+    "backbone"
+    ], 
+
+    function ($, _, Model, Backbone){
+
+        var Collection = Backbone.Collection.extend({
+
+            model: Model
+        });
+
+        return Collection;
+    }
+);
+define('records/models/record_model',[
+    "jquery",
+    "lodash",
+    "backbone",
+    "nestCollection/nestCollection",
+    "records/collections/medical_collection",
+    "records/collections/ice_collection",
+    "records/collections/telecom_collection",
+    "records/collections/address_collection",
+    "records/collections/consult_collection",
+    "records/collections/treatment_collection",
+    "records/collections/photo_set_collection",
+    "records/collections/note_collection",
+    "records/collections/offer_collection",
+    "records/collections/receipt_collection",
+    "records/collections/log_collection"
+    ],
+
+    function ($, _, Backbone, nestCollection,
+            Medicals, Ices, Telecoms, Addresses, Consults, Treatments,
+            PhotoSets, Notes, Offers, Receipts, Logs) {
+
+        var RecordModel = Backbone.Model.extend({
+
+            //simple attributes get a default value
+            defaults: {
+                // personal
+                "client_number": "klant nummer",
+                "initials": "initialen",
+                "givenName": "voornaam",
+                "familyName": "achternaam",
+                "idNumber": "bsn",
+                "idDocumentScr": "/src/scans/paspoort_placeholder.png",
+                "passphotoSrc": "/src/photos/passphoto_placeholder.png",
+                "passphotoThumbnail": 
+                        "/src/photos/passphoto_thumbnail_placeholder.png",
+                "insuranceCompany": "maatschappij",
+                "insuranceNumber": "polisnummer",
+                "sex": "geslacht",
+                "dateOfBirth": "31-12-1999",
+
+                // management
+                "created": "",
+                "updated": "",
+                "viewed": 0
+
+                //service
+            },
+
+            //nested collections need to be initialised
+            initialize: function() {
+
+                this.medicals = nestCollection(this, 'medicals',
+                        new Medicals(this.get('medicals')));
+                this.medicals.add();
+
+                this.ices = nestCollection(this, 'ices',
+                        new Ices(this.get('ices')));
+                this.ices.add();
+
+                this.telecoms = nestCollection(this, 'telecoms',
+                        new Telecoms(this.get('telecoms')));
+                this.telecoms.add();
+
+                this.addresses = nestCollection(this, 'addresses',
+                        new Addresses(this.get('addresses')));
+                this.addresses.add();
+
+
+                this.consults = nestCollection(this, 'consults',
+                        new Consults(this.get('consults')));
+                this.consults.add();
+
+                this.treatments = nestCollection(this, 'treatments',
+                        new Treatments(this.get('treatments')));
+                this.treatments.add();
+
+                this.photoSets = nestCollection(this, 'photoSets',
+                        new PhotoSets(this.get('photoSets')));
+                this.photoSets.add();
+
+                this.notes = nestCollection(this, 'notes',
+                        new Notes(this.get('notes')));
+                this.notes.add();
+
+                this.offers = nestCollection(this, 'offers',
+                        new Offers(this.get('offers')));
+                this.offers.add();
+
+                this.receipts = nestCollection(this, 'receipts',
+                        new Receipts(this.get('receipts')));
+                this.receipts.add();
+
+                this.logs = nestCollection(this, 'logs',
+                        new Logs(this.get('logs')));
+                this.logs.add();
+            }
+        });
+    
+        return RecordModel;
+    }
+);
+
+
+define('records/collections/record_collection',[
+    "jquery",
+    "lodash",
+    "records/models/record_model",
+    "backbone",
+    "plugins/backbone.localStorage"
+
+    
+    ], 
+
+    function ($, _, RecordModel, Backbone){
+
+        var RecordCollection = Backbone.Collection.extend({
+
+            model: RecordModel,
+            
+            localStorage: new Backbone.LocalStorage("Records")
+        });
+
+        return RecordCollection;
+    }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+define('text!modules/records/templates/records_search.html',[],function () { return '<h3> zoeken </h3>\n<input id="search" type="search" placeholder="filter op naam, telefoonnummer of geboortedatum" results="0" incremental="true" autofocus="">\n<div class="listitems" id="search_result"></div>';});
+
+define('text!modules/records/templates/record_mini.html',[],function () { return '<div class="span4">\n    <img class="passphoto" src="http://placehold.it/70x70">\n</div>\n<div class="span7">\n    <p><strong><%= givenName %></strong></p>\n    <p><strong><%= familyName %></strong><p>\n    <p>telefoen</p>\n    <p><%= dateOfBirth %></p>\n</div>\n';});
+
+define('records/views/record_mini_view',[
 	"jquery",
 	"lodash",
 	"backbone",
 
-	"text!modules/records/templates/records_mini.html"
+	"text!modules/records/templates/record_mini.html"
 	],
+
 	function ($, _, Backbone, tmpl) {
 		var RecordsMiniView = Backbone.View.extend({
+
+			tagName: "section",
+			className: "row-fluid item",
+
+			initialize: function () {
+
+				this.template = _.template(tmpl);
+			},
+
+			events: {
+				"click": "select"
+			},
+
+			render: function () {
+
+				this.$el.html(this.template(this.model.toJSON()));
+
+				return this;
+			},
+
+			select: function () {
+
+				this.model.trigger("selected", this.model.id);
+			}
 
 		});
 
@@ -15374,26 +16458,94 @@ define('records/views/records_search_view',[
 	"backbone",
 
 	"text!modules/records/templates/records_search.html",
-	"records/views/records_mini_view"
+	"records/views/record_mini_view"
 	],
-	function ($, _, Backbone, tmpl, RecordsMiniView) {
+
+	function ($, _, Backbone, tmpl, RecordMiniView) {
 		var RecordsSearchView = Backbone.View.extend({
+
 			tagName: 'section',
-			className: 'span3',
-			initialize: function () {		
-				this.template = _.template(tmpl);
-				this.collection.on('change', this.render, this);
+			className: 'span3 column',
+			id: "search_records",
+
+			events: {
+				"keyup input#search": "renderList"
 			},
-			render: function () {		
+
+			initialize: function () {
+
+				this.template = _.template(tmpl);
+
+				this.collection.on("change add", this.render, this);
+
+				this.foundRecordViews = [];
+
+			},
+
+			render: function () {
+
 				this.$el.html(this.template);
+				this.renderList();
+
 				return this;
+			},
+
+			renderList: function () {
+
+				//clean up first
+				_.each(this.foundRecordViews, function (view) {
+
+					view.close();
+
+				}, this);
+
+				//reset the foundRecordViewslist
+				this.foundRecordViews = [];
+
+				//add the views of the records that match the filter
+				this.filter();
+
+				//render and append the views of the records found
+				_.each(this.foundRecordViews, function (view) {
+					
+					view.render();
+					this.$('#search_result').append(view.el);
+
+				}, this);
+
+				return this;
+			},
+
+			filter: function () {
+
+				var filterStr = this.$("input#search").val();
+				var values;
+				
+				this.collection.each(function (record) {
+
+					values += " ";
+					values = record.get("givenName");
+					values += " ";
+					values += record.get("familyName");
+					values += " ";
+					values += record.get("dateOfBirth");
+					values += " ";
+
+					if (values.match(filterStr)) {
+
+						this.foundRecordViews.push(
+							new RecordMiniView({model: record}));
+					}
+
+				}, this);
 			}
+
 		});
 
 		return RecordsSearchView;
 	}
 );
-define('text!modules/records/templates/records_recent.html',[],function () { return '<h3>recente dossiers</h3>\n<div class="controls">\n  \t<select id="select01">\n    \t<option>vandaag</option>\n    \t<option>gisteren</option>\n    \t<option>afgelopen week</option>\n  \t</select>\n</div>\n<div class="listitems" id="records_recent_result"></div>';});
+define('text!modules/records/templates/records_recent.html',[],function () { return '<h3>recente dossiers</h3>\n<div class="controls">\n  \t<select name="selectRecent">\n    \t<option value="today" selected="selected">vandaag</option>\n    \t<option value="yesterday">gisteren</option>\n    \t<option value="lastWeek">afgelopen week</option>\n  \t</select>\n</div>\n<div class="listitems" id="records_recent_result"></div>';});
 
 define('records/views/records_recent_view',[
 	"jquery",
@@ -15401,20 +16553,103 @@ define('records/views/records_recent_view',[
 	"backbone",
 
 	"text!modules/records/templates/records_recent.html",
-	"records/views/records_mini_view"
+	"records/views/record_mini_view"
 	],
-	function ($, _, Backbone, tmpl, RecordsMiniView) {
+	function ($, _, Backbone, tmpl, RecordMiniView) {
+		
 		var RecordsRecentView = Backbone.View.extend({
-			tagName: 'section',
-			className: 'span3',
-			initialize: function () {		
+
+			tagName: "section",
+			className: "span3 column",
+			id: "recent_records",
+
+			initialize: function () {
+
 				this.template = _.template(tmpl);
-				this.collection.on('change', this.render, this);
+
+				//B! list gets rendered for nothing just before view is removed
+				this.collection.on("view change", this.renderList, this);
+
+				this.recentRecordViews = [];
 			},
-			render: function () {				
+			
+			events: {
+				"change select": "renderList"
+			},
+			
+			render: function () {
+
 				this.$el.html(this.template);
 
+				this.renderList();
+
 				return this;
+			},
+
+			renderList: function () {
+
+				console.log("recent records renderList");
+				//clean up first
+				_.each(this.recentRecordViews, function (view) {
+
+					view.close();
+
+				}, this);
+
+				//reset the foundRecordViewslist
+				this.recentRecordViews = [];
+
+				//add the views of the records that match the filter
+				this.filter();
+
+				//render and append the views of the records found
+				_.each(this.recentRecordViews, function (view) {
+					
+					view.render();
+					this.$("#records_recent_result").append(view.el);
+
+				}, this);
+
+				return this;
+			},
+
+			filter: function () {
+
+				var viewedInMs;
+				var recent;
+				var nowInMs = new Date().valueOf();
+				var back = this.$("option:selected").val();
+				var dayInMs = 24 * 60 * 60 * 1000;
+
+				if (back === "today") {
+
+					recent = nowInMs - 1 * dayInMs;
+
+				} else if (back === "yesterday") {
+
+					recent = nowInMs - 2 * dayInMs;
+
+				} else if (back === "lastWeek") {
+
+					recent = nowInMs - 7 * dayInMs;
+
+				} else {
+					throw new Error("invalid select value");
+				}
+
+				console.log(recent);
+				
+				this.collection.each(function (record) {
+
+					console.log(record.get("viewed"));
+
+					if (recent < record.get("viewed")) {
+
+						this.recentRecordViews.push(
+							new RecordMiniView({model: record}));
+					}
+
+				}, this);
 			}
 		});
 
@@ -15450,8 +16685,10 @@ define('records/views/appointments_view',[
 	],
 	function ($, _, Backbone, tmpl, AppointmentsMiniView) {
 		var AppointmentsView = Backbone.View.extend({
-			tagName: 'section',
-			className: 'span3',
+			
+			tagName: "section",
+			className: "span3 column",
+
 			initialize: function () {		
 				this.template = _.template(tmpl);
 				this.collection.on("change", this.render, this);
@@ -15465,42 +16702,100 @@ define('records/views/appointments_view',[
 		return AppointmentsView;
 	}
 );
-define('text!modules/records/templates/records_new.html',[],function () { return '<h3>nieuwe dossiers</h3>\n<button class="btn" id="new_record">nieuw dossier</button>';});
+define('text!modules/records/templates/records_new.html',[],function () { return '<h3>nieuwe dossiers</h3>\n<button class="btn" id="new_record">nieuw dossier</button>\n<div class="listitems" id="new_records_list"></div>';});
 
 define('records/views/records_new_view',[
 	"jquery",
 	"lodash",
 	"backbone",
-	"records/records",
 
-	"text!modules/records/templates/records_new.html"
+	"text!modules/records/templates/records_new.html",
+	"records/views/record_mini_view"
 	],
-	function ($, _, Backbone, records, tmpl) {
+	function ($, _, Backbone, tmpl, RecordMiniView) {
+		
 		var RecordsSearchView = Backbone.View.extend({
-			tagName: 'section',
-			className: 'span3',
-			initialize: function () {		
+			
+			tagName: "section",
+			className: "span3 column",
+			id: "new_records",
+
+			initialize: function () {
+
 				this.template = _.template(tmpl);
-				this.collection.on('change', this.render, this);
+
+				this.collection.on("add", this.renderList, this);
+
+				this.newRecordViews = [];
 			},
+			
 			events: {
 				"click #new_record": "newRecord"
 			},
-			render: function () {				
+			
+			render: function () {
+
 				this.$el.html(this.template);
+
+				this.renderList();
+
 				return this;
 			},
+			
 			newRecord: function () {
 
-				records.proxy.trigger("hi", "haai");
-				/*
-				var newRecord = this.collection.create();
+				var datetime = new Date().toISOString();
+
+				var newRecord = this.collection.create({	
+						created: datetime,
+						updated: datetime
+					},
+					{wait: true});
+			},
+
+			renderList: function () {
+
+				//clean up first
+				_.each(this.newRecordViews, function (view) {
+
+					view.close();
+
+				}, this);
+
+				//reset the foundRecordViewslist
+				this.newRecordViews = [];
+
+				//add the views of the records that match the filter
+				this.filter();
+
+				//render and append the views of the records found
+				_.each(this.newRecordViews, function (view) {
+					
+					view.render();
+					this.$('#new_records_list').append(view.el);
+
+				}, this);
+
+				return this;
+			},
+
+			filter: function () {
+
+				var created;
+				var updated;
 				
-				if (newRecord) {
-					this.collection.selected = newRecord.id;
-					this.collection.trigger("selected");
-				};
-				*/
+				this.collection.each(function (record) {
+
+					created = record.get("created");
+					updated = record.get("updated");
+
+					if (created === updated) {
+
+						this.newRecordViews.push(
+							new RecordMiniView({model: record}));
+					}
+
+				}, this);
 			}
 		});
 
@@ -15521,9 +16816,12 @@ define('records/views/records_view',[
 			AppointmentsView, RecordsNewView) {
 
 		var RecordsView = Backbone.View.extend({
+
 			className: "row-fluid",
+			id: "records",
+
 			initialize: function () {
-				
+
 				this.views = [];
 				this.views.push(new RecordsSearchView(
 					{collection: this.collection}));
@@ -15546,7 +16844,7 @@ define('records/views/records_view',[
 		return RecordsView;
 	}
 );
-define('text!modules/records/templates/record.html',[],function () { return '<div class="row-fluid">                        \n    <div class="span4" id="left_column">                         \n    </div>\n    <div class="span8">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active"><a href="#client_record_consults" data-toggle="tab">consults</a></li>\n                <li><a href="#client_record_treatments" data-toggle="tab">behandelingen</a></li>\n                <li><a href="#client_record_photos" data-toggle="tab">foto&#39;s</a></li>\n                <li><a href="#client_record_notes" data-toggle="tab">aantekeningen</a></li>\n                <li><a href="#client_record_offers" data-toggle="tab">offertes</a></li>\n                <li><a href="#client_record_receipts" data-toggle="tab">bonnen</a></li>        \n                <li><a href="#client_record_service" data-toggle="tab">service</a></li>\n                <li><a href="#client_record_log" data-toggle="tab">log</a></li>\n                <li><a href="#client_record_management" data-toggle="tab">beheer</a></li>\n            </ul>\n            <div class="tab-content">\n            </div>\n        </div>    \n    </div>\n</div>';});
+define('text!modules/records/templates/record.html',[],function () { return '<div class="span4 column" id="left_column"></div>\n<div class="span8 column">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active"><a href="#client_record_consults" data-toggle="tab">consults</a></li>\n                <li><a href="#client_record_treatments" data-toggle="tab">behandelingen</a></li>\n                <li><a href="#client_record_photos" data-toggle="tab">foto&#39;s</a></li>\n                <li><a href="#client_record_notes" data-toggle="tab">aantekeningen</a></li>\n                <li><a href="#client_record_offers" data-toggle="tab">offertes</a></li>\n                <li><a href="#client_record_receipts" data-toggle="tab">bonnen</a></li>        \n                <li><a href="#client_record_service" data-toggle="tab">service</a></li>\n                <li><a href="#client_record_log" data-toggle="tab">log</a></li>\n                <li><a href="#client_record_management" data-toggle="tab">beheer</a></li>\n            </ul>\n            <div class="tab-content">\n            </div>\n        </div>    \n    </div>\n';});
 
 define('text!records/templates/personal.html',[],function () { return '<div id="client_record_person">\n        <h3><%= initials %> <%= familyName%> ( <%= givenName %> )</h3>\n        <div class="row-fluid">\n            <div class="span5">\n                <img class="passphoto" src="http://placehold.it/180x240">\n            </div>\n            <div class="span7">\n                <table class="table">\n                    <tbody>\n                        <tr id="sex">\n                            <th>geslacht</th>\n                            <td><%= sex %></td>\n                        </tr>\n                        <tr id="age">\n                            <th>leeftijd</th>\n                            <td>function age in model </td>\n                        </tr>\n                        <tr id="date_of_birth">\n                            <th>geboren</th>\n                            <td><%= dateOfBirth %></td>\n                        </tr>\n                        <tr id="id_number">\n                            <th>bsn</th>\n                            <td><%= idNumber %></td>\n                        </tr>\n                        <tr id="id_document">\n                            <th>legitimatie</th>\n                            <td>link</td>\n                        </tr>\n                        <tr id="insurance_company">\n                            <th>verzekeraar</th>\n                            <td><%= insuranceCompany %></td>\n                        </tr>\n                        <tr id="insurance_number">\n                            <th>polisnummer</th>\n                            <td><%= insuranceNumber %></td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>    ';});
 
@@ -15711,58 +17009,45 @@ define('records/views/record_view',[
 	"records/views/medicals_view",
 	"records/views/ices_view",
 	"records/views/telecoms_view",
-	"records/views/addresses_view",
-
+	"records/views/addresses_view"
 	], 
 
 	function ($, _, Backbone, tmpl, PersonalView, MedicalsView, IcesView,
 			TelecomsView, AddressesView){
 
 		var RecordView = Backbone.View.extend({
+			
 			id: "record",
 			className: "row-fluid",
 			
 			initialize: function () {
 				
-				this.views = [];
+				
 				this.template = _.template(tmpl);
 
-				//rerendering the main template loses the connection to the
-				// subviews rerendering therefore show an empty template. the
-				// subviews exist, but are not attached to the dom.
-				this.$el.html(this.template);
+				this.model.on("change", this.render());
+				this.model.trigger("view", this.model.id);
 
+				this.views = [];
 				this.views.push(new PersonalView({model: this.model}));
-				this.views.push(
-					new MedicalsView({
-						model: this.model
-						
-					})
-				);
-				this.views.push(
-					new IcesView({
-						model: this.model,
-						el: "#ices"
-					})
-				);
-				this.views.push(
-					new TelecomsView({
-						model: this.model,
-						el: "#telecoms"
-					})
-				);
-				this.views.push(
-					new AddressesView({
-						model: this.model,
-						el: "#addresses"
-					})
-				);
-			},	
+				this.views.push(new MedicalsView({model: this.model}));
+				this.views.push(new IcesView({model: this.model}));
+				this.views.push(new TelecomsView({model: this.model}));
+				this.views.push(new AddressesView({model: this.model}));
+			},
+
 			render: function () {
+
+				// without the silent a callback raised a vague error
+				this.model.save("viewed", Date.now(), {silent: true});
+
+				this.$el.html(this.template);
 
 				_.each(
 					this.views,
-					function (view) {this.$('left_column').append(view.render().el);}, 
+					function (view) {
+						this.$('#left_column').append(view.render().el);
+					}, 
 					this
 				);
 				return this;
@@ -15783,946 +17068,250 @@ define('records/views/record_view',[
 
 
 
-define('nestCollection/nestCollection',[
-	"lodash"
-], function (_){
-
-	// https://gist.github.com/1610397 nestCollection helper function by https://gist.github.com/geddesign
-
-	var nestCollection = function(model, attributeName, nestedCollection) {
-		    //setup nested references
-		    for (var i = 0; i < nestedCollection.length; i++) {
-		      model.attributes[attributeName][i] = nestedCollection.at(i).attributes;
-		    }
-		    //create empty arrays if none
-
-		    nestedCollection.bind('add', function (initiative) {
-		      if (!model.get(attributeName)) {
-		        model.attributes[attributeName] = [];
-		      }
-		      model.get(attributeName).push(initiative.attributes);
-		    });
-
-		    nestedCollection.bind('remove', function (initiative) {
-		      var updateObj = {};
-		      updateObj[attributeName] = _.without(model.get(attributeName), initiative.attributes);
-		      model.set(updateObj);
-		    });
-
-		    return nestedCollection;
-	  };
-
-	return nestCollection;
-
-});
-
-
-
-define('records/models/medical_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var MedicalModel = Backbone.Model.extend({
-
-			defaults: {
-				type: "", // allergy, sensitivity, condition, medication,
-						  // impairment, intoxication
-				description: "",
-				start: "",
-				stop: "",
-				note: false // is there a note available expanding on the
-							// issue?
-			},
-
-			initialize: function () {}
-
-		});
-	
-		return MedicalModel;
-	}
-);
-define('records/collections/medical_collection',[
-	"jquery",
-	"lodash",
-	"records/models/medical_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var MedicalCollection = Backbone.Collection.extend({
-
-  			model: Model,
-		});
-
-		return MedicalCollection;
-	}
-);
-define('records/models/ice_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var IceModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				givenName: "",
-				familyName: "",
-				relation: "",
-				telecomIdentifier: ""
-			},
-
-			initialize: function () {},
-
-		});
-	
-		return IceModel;
-	}
-);
-define('records/collections/ice_collection',[
-	"jquery",
-	"lodash",
-	"records/models/ice_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var IceCollection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return IceCollection;
-	}
-);
-define('records/models/telecom_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var TelecomModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				description: "",// private phone, private mail, twitter,
-								// facebook, linkedin, work phone, work mail,
-								// website, language, preferred
-				identifier: ""
-			},
-
-			initialize: function () {},
-
-		});
-	
-		return TelecomModel;
-	}
-);
-define('records/collections/telecom_collection',[
-	"jquery",
-	"lodash",
-	"records/models/telecom_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var TelecomCollection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return TelecomCollection;
-	}
-);
-define('records/models/address_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var AddressModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				street: "",
-				number: "",
-				extension: "",
-				postalcode: "",
-				city: "",
-				provinceOrState: "",
-				country: ""
-			},
-
-			initialize: function () {},
-
-		});
-	
-		return AddressModel;
-	}
-);
-define('records/collections/address_collection',[
-	"jquery",
-	"lodash",
-	"records/models/address_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var AddressCollection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return AddressCollection;
-	}
-);
-define('records/models/consult_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var ConsultModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				history: "",
-				examination: "",
-				conclusion: "",
-				plan: "",
-				consultant: "", //employee
-				start: "",
-				finish: "",
-				location: "",  // room
-				motivation: "", //free text
-				type: "" // from segmentation
-			},
-
-			//nested collections need to be initialised
-			initialize: function() {
-
-
-				
-			}
-		});
-	
-		return ConsultModel;
-	}
-);
-define('records/collections/consult_collection',[
-	"jquery",
-	"lodash",
-	"records/models/consult_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var Collection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return Collection;
-	}
-);
-define('records/models/injection_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var InjectionModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				product: "", // serialnumber from store
-				amount: "", // in ml can be entered in units -> convert to ml
-				locationName: "", // location can be mapped from coord
-				locationX: "",
-				locationY: "" 
-			},
-
-			initialize: function () {},
-
-			convertToMl: function () {},
-
-			mapLocationName: function () {}
-		});
-	
-		return InjectionModel;
-	}
-);
-define('records/collections/injection_collection',[
-	"jquery",
-	"lodash",
-	"records/models/injection_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var Collection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return Collection;
-	}
-);
-define('records/models/treatment_model',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"nestCollection/nestCollection",
-	"records/collections/injection_collection"
-	],
-
-	function ($, _, Backbone, nestCollection, Injections) {
-
-		var TreatmentModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				physician: "",
-				start: "",
-				stop: "",
-				location: "",  // room
-				motivation: ""
-			},
-
-			//nested collections need to be initialised
-			initialize: function() {
-				this.injections = nestCollection(this, 'injections',
-						new Injections(this.get('injections')));
-				this.injections.add();
-
-
-				
-			}
-		});
-	
-		return TreatmentModel;
-	}
-);
-define('records/collections/treatment_collection',[
-	"jquery",
-	"lodash",
-	"records/models/treatment_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var Collection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return Collection;
-	}
-);
-define('records/models/photo_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var PhotoModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				photoSrc: "", 	//does the photo need some sort of id to tie it
-								//back to the client of its type etc.? Or is
-								//it safer not to do that. How big is the 
-								//chance of loosing the link?
-				type: "" //front left right above nose ...
-			},
-
-			initialize: function () {}
-
-		});
-	
-		return PhotoModel;
-	}
-);
-define('records/collections/photo_collection',[
-	"jquery",
-	"lodash",
-	"records/models/photo_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var Collection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return Collection;
-	}
-);
-define('records/models/photo_set_model',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"nestCollection/nestCollection",
-	"records/collections/photo_collection"
-	],
-
-	function ($, _, Backbone, nestCollection, PhotoCollection) {
-
-		var PhotoSetModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				type: "",
-				photographer: "",
-				datetime: ""
-			},
-
-			initialize: function () {
-
-				this.photos = nestCollection(this, 'photos',
-			    		new PhotoCollection(this.get('photos')));
-				this.photos.add();
-			}
-
-		});
-	
-		return PhotoSetModel;
-	}
-);
-define('records/collections/photo_set_collection',[
-	"jquery",
-	"lodash",
-	"records/models/photo_set_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var Collection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return Collection;
-	}
-);
-define('records/models/note_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var NoteModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				author: "",
-				datetime: "",
-				content: "",
-				access: ""
-			},
-
-			initialize: function () {}
-
-		});
-	
-		return NoteModel;
-	}
-);
-define('records/collections/note_collection',[
-	"jquery",
-	"lodash",
-	"records/models/note_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var Collection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return Collection;
-	}
-);
-define('records/models/offer_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var OfferModel = Backbone.Model.extend({
-
-			defaults: {
-				date: "",
-				number: "",
-				issuer: "",
-				singedCopySrc: "",
-				discount: 0,
-				treatments: "", // how to easily set groups of treatments?
-				pricingModel: ""
-			},
-
-			initialize: function () {
-				this.setDate();
-				this.setNumber();
-				this.setIssuer();
-			},
-
-			setDate: function () {},
-
-			setNumber: function () {},
-
-			setIssuer: function () {},
-
-			getTotal: function () {}
-
-		});
-	
-		return OfferModel;
-	}
-);
-define('records/collections/offer_collection',[
-	"jquery",
-	"lodash",
-	"records/models/offer_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var Collection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return Collection;
-	}
-);
-define('records/models/receipt_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var ReceiptModel = Backbone.Model.extend({
-
-			defaults: {
-				date: "",
-				number: "",
-				issuer: "",
-				treatments: "",
-				offer: "",
-				discount: "",
-				pricingmodel: "",
-				paid: false,
-				paymentMethod : "",
-				vatRate: "",
-				vat: "",
-				subtotal: "", // ex vat
-				total: "",
-				issued: false, // was the receipt given to the client
-				receivedBy: "" // who got the money
-			},
-
-			initialize: function () {
-				this.setDate();
-				this.setNumber();
-				this.setIssuer();
-				this.setDiscount();
-				this.setPricingmodel();
-			},
-
-			setDate: function () {},
-
-			setNumber: function () {},
-
-			setIssuer: function () {},
-
-			setDiscount: function () {
-				this.discount = this.getDiscountFromOffer();
-			},
-
-
-			setPricingmodel: function () {
-				this.pricingmodel = this.getPricingmodelFromOffer();
-			},
-
-			getDiscountFromOffer: function () {},
-
-			getPricingmodelFromOffer: function () {}
-		});
-	
-		return ReceiptModel;
-	}
-);
-define('records/collections/receipt_collection',[
-	"jquery",
-	"lodash",
-	"records/models/receipt_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var Collection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return Collection;
-	}
-);
-define('records/models/log_entry_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var LogEntryModel = Backbone.Model.extend({
-
-			defaults: {
-				"user": "",
-				"datetime": "",
-				"event": "",
-				"key": "",
-				"value": ""
-			},
-
-			initialize: function () {
-				this.setDateTime();
-			},
-
-			setDateTime: function () {
-				this.datetime = "" // need to refactor and roll in to base 
-									//object?
-			}
-
-		});
-	
-		return LogEntryModel;
-	}
-);
-define('records/collections/log_collection',[
-	"jquery",
-	"lodash",
-	"records/models/log_entry_model",
-	"backbone"
-	], 
-
-	function ($, _, Model, Backbone){
-
-		var Collection = Backbone.Collection.extend({
-
-  			model: Model
-		});
-
-		return Collection;
-	}
-);
-define('records/models/record_model',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"nestCollection/nestCollection",
-	"records/collections/medical_collection",
-	"records/collections/ice_collection",
-	"records/collections/telecom_collection",
-	"records/collections/address_collection",
-	"records/collections/consult_collection",
-	"records/collections/treatment_collection",
-	"records/collections/photo_set_collection",
-	"records/collections/note_collection",
-	"records/collections/offer_collection",
-	"records/collections/receipt_collection",
-	"records/collections/log_collection"
-	],
-
-	function ($, _, Backbone, nestCollection,
-			Medicals, Ices, Telecoms, Addresses, Consults, Treatments,
-			PhotoSets, Notes, Offers, Receipts, Logs) {
-
-		var RecordModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				// personal
-				"client_number"		:"klant nummer",
-	    		"initials"			:"initialen",
-	    		"givenName"			:"voornaam",
-			    "familyName"			:"achternaam",
-			    "idNumber"			:"bsn",
-			    "idDocumentScr"		:"/src/scans/paspoort_placeholder.png",
-			    "passphotoSrc"		:"/src/photos/passphoto_placeholder.png",
-			    "passphotoThumbnail"	:"/src/photos/passphoto_thumbnail_placeholder.png",
-			    "insuranceCompany"	:"maatschappij",
-			    "insuranceNumber"	:"polisnummer",
-			    "sex"					:"geslacht",
-			    "dateOfBirth"		:"geboortedatum",
-
-			    // management
-			    "created"				:"",
-			    "updated"				:"",
-
-			    //service
-			},
-
-			//nested collections need to be initialised
-			initialize: function() {
-
-			    this.medicals = nestCollection(this, 'medicals',
-			    		new Medicals(this.get('medicals')));
-			    this.medicals.add();
-
-			    this.ices = nestCollection(this, 'ices',
-			    		new Ices(this.get('ices')));
-			    this.ices.add();
-
-			    this.telecoms = nestCollection(this, 'telecoms',
-			    		new Telecoms(this.get('telecoms')));
-			    this.ices.add();
-
-			    this.addresses = nestCollection(this, 'addresses',
-			    		new Addresses(this.get('addresses')));
-			    this.addresses.add();
-
-			    this.consults = nestCollection(this, 'consults',
-			    		new Consults(this.get('consults')));
-			    this.consults.add();
-
-			    this.treatments = nestCollection(this, 'treatments',
-			    		new Treatments(this.get('treatments')));
-			    this.treatments.add();
-
-			    this.photoSets = nestCollection(this, 'photoSets',
-			    		new PhotoSets(this.get('photoSets')));
-			    this.photoSets.add();
-
-			    this.notes = nestCollection(this, 'notes',
-			    		new Notes(this.get('notes')));
-			    this.notes.add();
-
-			    this.offers = nestCollection(this, 'offers',
-			    		new Offers(this.get('offers')));
-			    this.offers.add();
-
-			    this.receipts = nestCollection(this, 'receipts',
-			    		new Receipts(this.get('receipts')));
-			    this.receipts.add();
-
-			    this.logs = nestCollection(this, 'logs',
-						new Logs(this.get('logs')));
-			    this.logs.add();
-			}
-		})
-	
-		return RecordModel;
-	}
-);
-
-
-define('records/collections/record_collection',[
-	"jquery",
-	"lodash",
-	"records/models/record_model",
-	"backbone",
-	"plugins/backbone.localStorage"
-
-	
-	], 
-
-	function ($, _, RecordModel, Backbone){
-
-		var RecordCollection = Backbone.Collection.extend({
-
-  			model: RecordModel,
-  			
-  			localStorage: new Backbone.LocalStorage("Records")
-		});
-
-		return RecordCollection;
-	}
-);
-
-
-
-
-
-
-
-
-
-
-
-
 define('records/record_router',[
-	"jquery",
-	"lodash",
-	"remedy",
-	"records/views/records_view",
-	"records/views/record_view",
-	"records/collections/record_collection",
-	"backbone",
-	"plugins/backbone.subroute"
-	], 
-	function ($, _, remedy, RecordsView, RecordView, RecordCollection, Backbone){
-		var Router = Backbone.SubRoute.extend({
-			routes: {
-				"": "showRecords",
-				":id": "showRecord",
-				":id/:panel": "showRecord",
-				":id/:panel/:item": "showRecord"
-			},
-			initialize: function () {
-				this.collection = new RecordCollection();
-				this.collection.on("selected", this.selectRecord, this);
-			},
-			showRecords: function () {
-				var view;
-				this.collection.fetch();
-				view = new RecordsView({collection: this.collection});
-				this.showView(view);
-			},
-			showRecord: function (id, panel, item) {
-				var view;
-				var record;
-				//check input for valid format and existence
-				if (!id) {
-					id = 0;
-				}
+    "jquery",
+    "lodash",
+    "remedy",
+    "records/collections/record_collection",
+    "records/views/records_view",
+    "records/views/record_view",
+    "backbone",
+    "plugins/backbone.subroute"
+    ], 
+    function ($, _, remedy, RecordCollection, RecordsView, RecordView, Backbone){
+        var Router = Backbone.SubRoute.extend({
+            routes: {
+                "": "showRecords",
+                ":id": "showRecord",
+                ":id/:panel": "showRecord",
+                ":id/:panel/:item": "showRecord"
+            },
 
-				if (!panel) {
-					panel = "consults";
-				}
+            initialize: function (options) {
 
-				if (!item) {
-					item = 0;
-				}
+                this.collection = new RecordCollection();
+                this.collection.fetch();
+                this.collection.on("selected", this.selectRecord, this);
+            },
 
-				record = this.collection.get(id);
-				console.log(record);
-				view = new RecordView({model: record});
-				this.showView(view);
-			},
-			showView: function (view) {
+            showRecords: function () {
 
-			    if (this.currentView) {
-			      this.currentView.close();
-			    }
+                var view;
+                view = new RecordsView({collection: this.collection});
+                this.showView(view);
+            },
 
-			    this.currentView = view;
-			    this.currentView.render();
-			    console.log(this.currentView.el);
-			    $('#content').html(this.currentView.el);
-			},
-			selectRecord: function () {
-				var id = this.collection.selected;
-				
-				if (id) {
-					console.log(this.collection.get(id));
-					this.navigate(id);
-					this.showRecord(id);
-				}
-			}
-				
-		});
+            showRecord: function (id, panel, item) {
+                var view;
+                var record;
+                var idRegEx = /^[\d]+$/;
+                var cidRegEx = /^[\w]{8}\-[\w]{4}\-[\w]{4}\-[\w]{4}\-[\w]{12}$/;
 
-		return Router;
-	}
+                try {
+                    if (id.match(idRegEx) || id.match(cidRegEx)) {
+                        
+                        record = this.collection.get(id);
+
+                        if (record) {
+                            
+                            view = new RecordView({model: record});
+                            this.showView(view);
+                        
+                        } else {
+                            throw new Error("showRecord: record does not exist");
+                        }
+                    } else {
+                        throw new Error("showRecord: invalid record-id format");
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+                
+
+
+                /*
+                // first check for a valid record id (or cid)
+                // then check if the record exists
+                
+                
+                if (!panel) {
+                    panel = "consults";
+                }
+
+                if (!item) {
+                    item = 0;
+                }*/
+
+                
+                
+            },
+
+            showView: function (view) {
+
+                try {
+
+                    if (this.currentView) {
+
+                        this.currentView.close();
+                    }
+
+                    this.currentView = view;
+                    this.currentView.render();
+                    $('#content').append(this.currentView.el);
+
+                } catch (e) {
+                    console.log(e);
+                }
+            },
+            
+            selectRecord: function (id) {
+                
+                if (id) {
+                    this.showRecord(id);
+                    this.navigate("records/" + id);
+                }
+            }
+                
+        });
+
+        return Router;
+    }
 );
 
+define('ledgers/models/ledger_row_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var LedgerRowModel = Backbone.Model.extend({
+
+			defaults: {
+				date: "",
+				credit: true,
+				enteredBy: "",
+				amount: "",
+				description: "",
+				group: "" // pin, cash, creditcard or product collection
+			},
+
+			initialize: function () {}
+
+		});
+	
+		return LedgerRowModel;
+	}
+);
+define('ledgers/collections/sales_ledger_collection',[
+    "jquery",
+    "lodash",
+    "ledgers/models/ledger_row_model",
+    "backbone",
+    "plugins/backbone.localStorage"
+
+    
+    ], 
+
+    function ($, _, LedgerRowModel, Backbone){
+
+        var SalesLedgerCollection = Backbone.Collection.extend({
+
+            model: LedgerRowModel,
+            
+            localStorage: new Backbone.LocalStorage("SalesLedger")
+        });
+
+        return SalesLedgerCollection;
+    }
+);
+define('ledgers/ledgers',[
+	"jquery",
+	"lodash",
+	"backbone",
+	"remedy",
+	"ledgers/collections/sales_ledger_collection"
+	],
+
+	function ($, _, Backbone, remedy, SalesLedger) {
+
+		var Ledgers = function () {
+			
+			var salesLedger = new SalesLedger();
+
+			remedy.on("ledgers:addSale", function (saleInformation) {
+				console.log(saleInformation);
+			});
+
+		};
+
+		return Ledgers;
+	}
+);
 define('records/records',[
 	"jquery",
 	"lodash",
-	"backbone",
-	"remedy",
-	"records/record_router"
+	"backbone"
 	],
 
-	function ($, _, Backbone, remedy, Router) {
+	function ($, _, Backbone) {
 
-		var Records = function () {
-			this.router = new Router("records/");
-			this.proxy = new remedy.Proxy;
-		}
+		var Records = function (remedy) {
+
+		};
 
 		return Records;
 	}
 );
 define('router',[
   "remedy",
+  "records/record_router",
+  "ledgers/ledgers",
   "records/records"
 ],
 
-function(remedy, Records) {
+  function(remedy, RecordRouter, Ledgers, Records) {
 
-  var Router = Backbone.Router.extend({
+    var Router = Backbone.Router.extend({
 
-    routes: {
-     
-      "": "index"
-    },
+      routes: {
+       
+        "": "index"
+      },
 
-    initialize: function() {
+      initialize: function() {
 
-      var nav = new remedy.navView();
-      nav.render();
-      remedy.modules.push(new Records);
-    },
+        var nav = new remedy.navView();
+        nav.render();
 
-    index: function () {
+        this.subrouters = {};
 
-      this.navigate("records", {trigger: true}) 
-    },
-  });
+        remedy.modules.push(new Ledgers());
+        remedy.modules.push(new Records());
 
-  return Router;
-});
+      },
+
+      index: function () {
+
+        this.navigate("records", {trigger: true}); 
+      }
+    });
+
+    return Router;
+  }
+);
 
 require([
   // Application.
   "remedy",
 
   // Main Router.
-  "router"
+  "router",
+  "records/record_router"
 ],
 
-function(remedy, Router) {
+function(remedy, Router, RecordRouter) {
 
   // Define your master router on the application namespace and trigger all
   // navigation from this instance.
@@ -16731,7 +17320,11 @@ function(remedy, Router) {
   // root folder to '/' by default.  Change in app.js.
   
   Backbone.history.start({ pushState: false, root: remedy.root });
+
+  remedy.recordRouter = new RecordRouter("records",
+          {createTrailingSlashRoutes: true});
   
+
   // All navigation that is relative should be passed through the navigate
   // method, to be processed by the router. If the link has a `data-bypass`
   // attribute, bypass the delegation completely.
@@ -16778,7 +17371,7 @@ require.config({
     //modules
     records: "modules/records",
     stores: "modules/stores",
-    ledgers: "modules/ledger",
+    ledgers: "modules/ledgers",
     nestCollection: "modules/nestCollection"
 
   },

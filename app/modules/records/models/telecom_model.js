@@ -1,25 +1,25 @@
 define([
-	"jquery",
-	"lodash",
-	"backbone"
-	],
+    "jquery",
+    "lodash",
+    "backbone"
+    ],
 
-	function ($, _, Backbone) {
+    function ($, _, Backbone) {
 
-		var TelecomModel = Backbone.Model.extend({
+        var TelecomModel = Backbone.Model.extend({
 
-			//simple attributes get a default value
-			defaults: {
-				description: "",// private phone, private mail, twitter,
-								// facebook, linkedin, work phone, work mail,
-								// website, language, preferred
-				identifier: ""
-			},
+            //simple attributes get a default value
+            defaults: {
+                description: "",// private phone, private mail, twitter,
+                                // facebook, linkedin, work phone, work mail,
+                                // website, language, preferred
+                identifier: ""
+            },
 
-			initialize: function () {},
+            initialize: function () {}
 
-		});
-	
-		return TelecomModel;
-	}
+        });
+    
+        return TelecomModel;
+    }
 );

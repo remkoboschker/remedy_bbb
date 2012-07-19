@@ -15,7 +15,8 @@ define([
 				"batchNr": "",
 				"expiryDate": "",
 				"unitSize": ""
-				
+			},
+			
 			initialize: function () {}
 
 		});

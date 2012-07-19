@@ -3,10 +3,11 @@ require([
   "remedy",
 
   // Main Router.
-  "router"
+  "router",
+  "records/record_router"
 ],
 
-function(remedy, Router) {
+function(remedy, Router, RecordRouter) {
 
   // Define your master router on the application namespace and trigger all
   // navigation from this instance.
@@ -15,7 +16,11 @@ function(remedy, Router) {
   // root folder to '/' by default.  Change in app.js.
   
   Backbone.history.start({ pushState: false, root: remedy.root });
+
+  remedy.recordRouter = new RecordRouter("records",
+          {createTrailingSlashRoutes: true});
   
+
   // All navigation that is relative should be passed through the navigate
   // method, to be processed by the router. If the link has a `data-bypass`
   // attribute, bypass the delegation completely.

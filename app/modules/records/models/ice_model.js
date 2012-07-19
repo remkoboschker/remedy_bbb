@@ -16,7 +16,7 @@ define([
 				telecomIdentifier: ""
 			},
 
-			initialize: function () {},
+			initialize: function () {}
 
 		});
 	

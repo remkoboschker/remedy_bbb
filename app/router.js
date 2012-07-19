@@ -1,32 +1,37 @@
 define([
   "remedy",
-  "records/records",
-  "ledgers/ledgers"
+  "records/record_router",
+  "ledgers/ledgers",
+  "records/records"
 ],
 
-function(remedy, Records, Ledgers) {
+  function(remedy, RecordRouter, Ledgers, Records) {
 
-  var Router = Backbone.Router.extend({
+    var Router = Backbone.Router.extend({
 
-    routes: {
-     
-      "": "index"
-    },
+      routes: {
+       
+        "": "index"
+      },
 
-    initialize: function() {
+      initialize: function() {
 
-      var nav = new remedy.navView();
-      nav.render();
-      remedy.modules.push(new Records(remedy));
-      remedy.modules.push(new Ledgers(remedy));
-      console.log(remedy.modules);
-    },
+        var nav = new remedy.navView();
+        nav.render();
 
-    index: function () {
+        this.subrouters = {};
 
-      this.navigate("records", {trigger: true}) 
-    },
-  });
+        remedy.modules.push(new Ledgers());
+        remedy.modules.push(new Records());
 
-  return Router;
-});
+      },
+
+      index: function () {
+
+        this.navigate("records", {trigger: true}); 
+      }
+    });
+
+    return Router;
+  }
+);

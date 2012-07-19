@@ -8,8 +8,10 @@ define([
 	],
 	function ($, _, Backbone, tmpl, AppointmentsMiniView) {
 		var AppointmentsView = Backbone.View.extend({
-			tagName: 'section',
-			className: 'span3',
+			
+			tagName: "section",
+			className: "span3 column",
+
 			initialize: function () {		
 				this.template = _.template(tmpl);
 				this.collection.on("change", this.render, this);

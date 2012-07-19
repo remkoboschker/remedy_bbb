@@ -1,6 +1,6 @@
-/*@import "h5bp.css";*/
+/*@import "h5bp.css";
 @import "bootstrap.css";
-@import "bootstrap-responsive.css";
+@import "bootstrap-responsive.css";*/
 
 .nav-footer > li {
   float: left;
@@ -25,14 +25,28 @@ input {
 .listitems {
   background-color: #ffffff;
   padding: 0px;
+  margin-top: 18px;
 }
 .listitems > .item {
-  display: block;
-  padding: 4px 0px;
+  padding: 0px 0px;
+  width: 100%;
+  border: solid 1px lightgrey;
 }
+
+.listitems > .item:hover {
+  border: 1px solid black;
+  border-color: rgba(82, 168, 236, 0.8);
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+  outline: 0;
+  outline: thin dotted \9;
+  /* IE6-8 */ 
+}
+
 .listitems p {
   line-height: 12px;
-  margin:0px 0px 4px 0px;
+  margin: 0px 0px 4px 0px;
   text-align: right;
 }
 
@@ -97,12 +111,14 @@ th:hover {
   padding: 0px 15px;
 }
 
-h4, h3 {
-  /*border-top: 1px solid;
-  
-  border-bottom: 1px solid;
-  border-bottom-color: lightgrey;
-  padding: 6px 0px;*/
+h3 {
+  margin-bottom: 18px;
+  line-height: 18px
+}
+
+h4 {
+  font-size: 15px;
+  color: grey;
 }
 
 .accordion-body {
@@ -179,4 +195,16 @@ h4, h3 {
 
 #main > .active {
   display: block;
+}
+
+.column {
+  border: solid 2px whitesmoke;
+   -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  padding: 1.5%;
+}
+
+.nav-tabs > li > a {
+  font-size: 16px;
 }

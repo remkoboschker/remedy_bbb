@@ -8,58 +8,45 @@ define([
 	"records/views/medicals_view",
 	"records/views/ices_view",
 	"records/views/telecoms_view",
-	"records/views/addresses_view",
-
+	"records/views/addresses_view"
 	], 
 
 	function ($, _, Backbone, tmpl, PersonalView, MedicalsView, IcesView,
 			TelecomsView, AddressesView){
 
 		var RecordView = Backbone.View.extend({
+			
 			id: "record",
 			className: "row-fluid",
 			
 			initialize: function () {
 				
-				this.views = [];
+				
 				this.template = _.template(tmpl);
 
-				//rerendering the main template loses the connection to the
-				// subviews rerendering therefore show an empty template. the
-				// subviews exist, but are not attached to the dom.
-				this.$el.html(this.template);
+				this.model.on("change", this.render());
+				this.model.trigger("view", this.model.id);
 
+				this.views = [];
 				this.views.push(new PersonalView({model: this.model}));
-				this.views.push(
-					new MedicalsView({
-						model: this.model
-						
-					})
-				);
-				this.views.push(
-					new IcesView({
-						model: this.model,
-						el: "#ices"
-					})
-				);
-				this.views.push(
-					new TelecomsView({
-						model: this.model,
-						el: "#telecoms"
-					})
-				);
-				this.views.push(
-					new AddressesView({
-						model: this.model,
-						el: "#addresses"
-					})
-				);
-			},	
+				this.views.push(new MedicalsView({model: this.model}));
+				this.views.push(new IcesView({model: this.model}));
+				this.views.push(new TelecomsView({model: this.model}));
+				this.views.push(new AddressesView({model: this.model}));
+			},
+
 			render: function () {
+
+				// without the silent a callback raised a vague error
+				this.model.save("viewed", Date.now(), {silent: true});
+
+				this.$el.html(this.template);
 
 				_.each(
 					this.views,
-					function (view) {this.$('left_column').append(view.render().el);}, 
+					function (view) {
+						this.$('#left_column').append(view.render().el);
+					}, 
 					this
 				);
 				return this;

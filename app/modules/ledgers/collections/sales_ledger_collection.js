@@ -1,22 +1,22 @@
 define([
-	"jquery",
-	"lodash",
-	"ledgers/models/ledger_row_model",
-	"backbone",
-	"plugins/backbone.localStorage"
+    "jquery",
+    "lodash",
+    "ledgers/models/ledger_row_model",
+    "backbone",
+    "plugins/backbone.localStorage"
 
-	
-	], 
+    
+    ], 
 
-	function ($, _, LedgerRowModel, Backbone){
+    function ($, _, LedgerRowModel, Backbone){
 
-		var SalesLedgerCollection = Backbone.Collection.extend({
+        var SalesLedgerCollection = Backbone.Collection.extend({
 
-  			model: LedgerRowModel,
-  			
-  			localStorage: new Backbone.LocalStorage("SalesLedger")
-		});
+            model: LedgerRowModel,
+            
+            localStorage: new Backbone.LocalStorage("SalesLedger")
+        });
 
-		return SalesLedgerCollection;
-	}
+        return SalesLedgerCollection;
+    }
 );

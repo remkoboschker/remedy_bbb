@@ -21,7 +21,7 @@ define([
 			},
 
 			setDateTime: function () {
-				this.datetime = "" // need to refactor and roll in to base 
+				this.datetime = ""; // need to refactor and roll in to base 
 									//object?
 			}
 

@@ -12,17 +12,21 @@ define([
 			AppointmentsView, RecordsNewView) {
 
 		var RecordsView = Backbone.View.extend({
+
 			className: "row-fluid",
+			id: "records",
+
 			initialize: function () {
+
 				this.views = [];
 				this.views.push(new RecordsSearchView(
-					{collection: this.collection, proxy: this.options.proxy}));
+					{collection: this.collection}));
 				this.views.push(new RecordsRecentView(
-					{collection: this.collection, proxy: this.options.proxy}));
+					{collection: this.collection}));
 				this.views.push(new AppointmentsView(
-					{collection: this.collection, proxy: this.options.proxy}));
+					{collection: this.collection}));
 				this.views.push(new RecordsNewView(
-					{collection: this.collection, proxy: this.options.proxy}));
+					{collection: this.collection}));
 			},
 			render: function () {
 				_.each(

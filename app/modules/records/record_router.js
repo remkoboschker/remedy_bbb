@@ -1,77 +1,109 @@
 define([
-	"jquery",
-	"lodash",
-	"remedy",
-	"records/views/records_view",
-	"records/views/record_view",
-	"backbone",
-	"plugins/backbone.subroute"
-	], 
-	function ($, _, remedy, RecordsView, RecordView, Backbone){
-		var Router = Backbone.SubRoute.extend({
-			routes: {
-				"": "showRecords",
-				":id": "showRecord",
-				":id/:panel": "showRecord",
-				":id/:panel/:item": "showRecord"
-			},
-			initialize: function () {
-				//this.collection.on("selected", this.selectRecord, this);
-			},
-			showRecords: function () {
-				var view;
-				this.collection.fetch();
-				view = new RecordsView({
-						collection: this.collection,
-						proxy: this.proxy});
-				this.showView(view);
-			},
-			showRecord: function (id, panel, item) {
-				var view;
-				var record;
-				//check input for valid format and existence
-				if (!id) {
-					id = 0;
-				}
+    "jquery",
+    "lodash",
+    "remedy",
+    "records/collections/record_collection",
+    "records/views/records_view",
+    "records/views/record_view",
+    "backbone",
+    "plugins/backbone.subroute"
+    ], 
+    function ($, _, remedy, RecordCollection, RecordsView, RecordView, Backbone){
+        var Router = Backbone.SubRoute.extend({
+            routes: {
+                "": "showRecords",
+                ":id": "showRecord",
+                ":id/:panel": "showRecord",
+                ":id/:panel/:item": "showRecord"
+            },
 
-				if (!panel) {
-					panel = "consults";
-				}
+            initialize: function (options) {
 
-				if (!item) {
-					item = 0;
-				}
+                this.collection = new RecordCollection();
+                this.collection.fetch();
+                this.collection.on("selected", this.selectRecord, this);
+            },
 
-				record = this.collection.get(id);
-				console.log(record);
-				view = new RecordView({
-						model: record,
-						proxy: this.proxy});
-				this.showView(view);
-			},
-			showView: function (view) {
+            showRecords: function () {
 
-			    if (this.currentView) {
-			      this.currentView.close();
-			    }
+                var view;
+                view = new RecordsView({collection: this.collection});
+                this.showView(view);
+            },
 
-			    this.currentView = view;
-			    this.currentView.render();
-			    console.log(this.currentView.el);
-			    $('#content').html(this.currentView.el);
-			},
-			selectRecord: function () {
-				var id = this.collection.selected;
-				
-				if (id) {
-					console.log(this.collection.get(id));
-					this.navigate(id);
-					this.showRecord(id);
-				}
-			}
-				
-		});
+            showRecord: function (id, panel, item) {
+                var view;
+                var record;
+                var idRegEx = /^[\d]+$/;
+                var cidRegEx = /^[\w]{8}\-[\w]{4}\-[\w]{4}\-[\w]{4}\-[\w]{12}$/;
 
-		return Router;
-	}
+                try {
+                    if (id.match(idRegEx) || id.match(cidRegEx)) {
+                        
+                        record = this.collection.get(id);
+
+                        if (record) {
+                            
+                            view = new RecordView({model: record});
+                            this.showView(view);
+                        
+                        } else {
+                            throw new Error("showRecord: record does not exist");
+                        }
+                    } else {
+                        throw new Error("showRecord: invalid record-id format");
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+                
+
+
+                /*
+                // first check for a valid record id (or cid)
+                // then check if the record exists
+                
+                
+                if (!panel) {
+                    panel = "consults";
+                }
+
+                if (!item) {
+                    item = 0;
+                }*/
+
+                
+                
+            },
+
+            showView: function (view) {
+
+                try {
+
+                    if (this.currentView) {
+
+                        this.currentView.close();
+                    }
+
+                    this.currentView = view;
+                    this.currentView.render();
+                    $('#content').append(this.currentView.el);
+
+                } catch (e) {
+                    console.log(e);
+                }
+            },
+            
+            selectRecord: function (id) {
+                
+                if (id) {
+                    this.showRecord(id);
+                    this.navigate("records/" + id);
+                }
+            }
+                
+        });
+
+        return Router;
+    }
 );

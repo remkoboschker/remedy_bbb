@@ -1,17 +1,17 @@
 define([
-	"jquery",
-	"lodash",
-	"stores/models/product_item_model",
-	"backbone"
-	], 
+    "jquery",
+    "lodash",
+    "stores/models/product_item_model",
+    "backbone"
+    ], 
 
-	function ($, _, ProductItemModel, Backbone){
+    function ($, _, ProductItemModel, Backbone){
 
-		var ProductCollection = Backbone.Collection.extend({
+        var ProductCollection = Backbone.Collection.extend({
 
-  			model: ProductItemModel
-		});
+            model: ProductItemModel
+        });
 
-		return ProductCollection;
-	}
+        return ProductCollection;
+    }
 );

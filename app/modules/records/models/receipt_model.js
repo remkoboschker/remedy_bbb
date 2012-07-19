@@ -1,59 +1,59 @@
 define([
-	"jquery",
-	"lodash",
-	"backbone"
-	],
+    "jquery",
+    "lodash",
+    "backbone"
+    ],
 
-	function ($, _, Backbone) {
+    function ($, _, Backbone) {
 
-		var ReceiptModel = Backbone.Model.extend({
+        var ReceiptModel = Backbone.Model.extend({
 
-			defaults: {
-				date: "",
-				number: "",
-				issuer: "",
-				treatments: "",
-				offer: "",
-				discount: "",
-				pricingmodel: "",
-				paid: false,
-				paymentMethod : "",
-				vatRate: "",
-				vat: "",
-				subtotal: "", // ex vat
-				total: "",
-				issued: false, // was the receipt given to the client
-				receivedBy: "" // who got the money
-			},
+            defaults: {
+                date: "",
+                number: "",
+                issuer: "",
+                treatments: "",
+                offer: "",
+                discount: "",
+                pricingmodel: "",
+                paid: false,
+                paymentMethod : "",
+                vatRate: "",
+                vat: "",
+                subtotal: "", // ex vat
+                total: "",
+                issued: false, // was the receipt given to the client
+                receivedBy: "" // who got the money
+            },
 
-			initialize: function () {
-				this.setDate();
-				this.setNumber();
-				this.setIssuer();
-				this.setDiscount();
-				this.setPricingmodel();
-			},
+            initialize: function () {
+                this.setDate();
+                this.setNumber();
+                this.setIssuer();
+                this.setDiscount();
+                this.setPricingmodel();
+            },
 
-			setDate: function () {},
+            setDate: function () {},
 
-			setNumber: function () {},
+            setNumber: function () {},
 
-			setIssuer: function () {},
+            setIssuer: function () {},
 
-			setDiscount: function () {
-				this.discount = this.getDiscountFromOffer();
-			},
+            setDiscount: function () {
+                this.discount = this.getDiscountFromOffer();
+            },
 
 
-			setPricingmodel: function () {
-				this.pricingmodel = this.getPricingmodelFromOffer();
-			},
+            setPricingmodel: function () {
+                this.pricingmodel = this.getPricingmodelFromOffer();
+            },
 
-			getDiscountFromOffer: function () {},
+            getDiscountFromOffer: function () {},
 
-			getPricingmodelFromOffer: function () {}
-		});
-	
-		return ReceiptModel;
-	}
+            getPricingmodelFromOffer: function () {}
+        });
+    
+        return ReceiptModel;
+    }
 );

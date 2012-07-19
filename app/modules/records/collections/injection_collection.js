@@ -1,17 +1,17 @@
 define([
-	"jquery",
-	"lodash",
-	"records/models/injection_model",
-	"backbone"
-	], 
+    "jquery",
+    "lodash",
+    "records/models/injection_model",
+    "backbone"
+    ], 
 
-	function ($, _, Model, Backbone){
+    function ($, _, Model, Backbone){
 
-		var Collection = Backbone.Collection.extend({
+        var Collection = Backbone.Collection.extend({
 
-  			model: Model
-		});
+            model: Model
+        });
 
-		return Collection;
-	}
+        return Collection;
+    }
 );

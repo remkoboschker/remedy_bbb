@@ -1,31 +1,31 @@
 define([
-	"jquery",
-	"lodash",
-	"backbone",
-	"nestCollection/nestCollection",
-	"records/collections/photo_collection"
-	],
+    "jquery",
+    "lodash",
+    "backbone",
+    "nestCollection/nestCollection",
+    "records/collections/photo_collection"
+    ],
 
-	function ($, _, Backbone, nestCollection, PhotoCollection) {
+    function ($, _, Backbone, nestCollection, PhotoCollection) {
 
-		var PhotoSetModel = Backbone.Model.extend({
+        var PhotoSetModel = Backbone.Model.extend({
 
-			//simple attributes get a default value
-			defaults: {
-				type: "",
-				photographer: "",
-				datetime: ""
-			},
+            //simple attributes get a default value
+            defaults: {
+                type: "",
+                photographer: "",
+                datetime: ""
+            },
 
-			initialize: function () {
+            initialize: function () {
 
-				this.photos = nestCollection(this, 'photos',
-			    		new PhotoCollection(this.get('photos')));
-				this.photos.add();
-			}
+                this.photos = nestCollection(this, 'photos',
+                        new PhotoCollection(this.get('photos')));
+                this.photos.add();
+            }
 
-		});
-	
-		return PhotoSetModel;
-	}
+        });
+    
+        return PhotoSetModel;
+    }
 );

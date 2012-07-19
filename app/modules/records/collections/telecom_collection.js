@@ -1,17 +1,17 @@
 define([
-	"jquery",
-	"lodash",
-	"records/models/telecom_model",
-	"backbone"
-	], 
+    "jquery",
+    "lodash",
+    "records/models/telecom_model",
+    "backbone"
+    ], 
 
-	function ($, _, Model, Backbone){
+    function ($, _, Model, Backbone){
 
-		var TelecomCollection = Backbone.Collection.extend({
+        var TelecomCollection = Backbone.Collection.extend({
 
-  			model: Model
-		});
+            model: Model
+        });
 
-		return TelecomCollection;
-	}
+        return TelecomCollection;
+    }
 );
