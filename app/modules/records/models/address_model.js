@@ -19,7 +19,11 @@ define([
 				country: ""
 			},
 
-			initialize: function () {}
+			initialize: function () {
+
+			},
+
+			fetchAddress: function () {}
 
 		});
 	

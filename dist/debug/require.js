@@ -623,7 +623,7 @@ define('text',['module'], function (module) {
     return text;
 });
 
-define('text!main.html',[],function () { return '\n<div id="navbar" class="navbar">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav pull-right">\n                <li class="active"><a href="/#records">dossiers</a></li>\n                <li><a href="">administratie</a></li>\n            </ul>\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="content" class="container-fluid mainPanel active">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n                <hr>\n                <ul class="nav nav-footer pull-right">\n                    <li><a href="/regelingen#voorwaarden">voorwaarden</a></li>\n                    <li><a href="/regelingen#privacy">privacy</a></li>\n                    <li><a href="/regelingen#ip">intellectueel eigendom</a></li>\n                    <li><a href="/">over Remedy</a></li>\n                    <li><a href="/helpdesk">helpdesk</a></li>\n                    <li><a href="/contact">contact</a></li>\n                </ul>\n        </footer>\n    </div>   \n</div>\n';});
+define('text!main.html',[],function () { return '\n<div id="navbar" class="navbar navbar-fixed-top">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav">\n                <li class="active"><a href="/#">home</a></li>\n                <li><a href="/#records">dossiers</a></li>\n                <li><a href="/#stores">magazijn</a></li>\n                <li><a href="/#ledgers">boekhouding</a></li>\n                <li><a href="/#reports">rapportages</a></li>\n            </ul>\n            <ul class="nav pull-right">\n                <li><a href="/#helpdesk">helpdesk</a></li>\n                <li><a href="" class="navbar-text">test gebruiker</a></li>\n            </ul>\n\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="content" class="container-fluid">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n            <ul class="nav nav-footer pull-right">\n                <li><a href="/#regelingen/voorwaarden">voorwaarden</a></li>\n                <li><a href="/#regelingen/privacy">privacy</a></li>\n                <li><a href="/#regelingen/ip">intellectueel eigendom</a></li>\n                <li><a href="https://remedy.informatietuin.nl">Remedy</a></li>\n                <li><a href="/#contact">contact</a></li>\n            </ul>\n        </footer>\n    </div>   \n</div>';});
 
 /*!
  * jQuery JavaScript Library v1.7.2
@@ -15598,7 +15598,19 @@ function(navTemplate, $, _, Backbone) {
   return _.extend(remedy, {}, Backbone.Events);
 });
 
-define('nestCollection/nestCollection',[
+/**
+* Bootstrap.js by @fat & @mdo
+* Copyright 2012 Twitter, Inc.
+* http://www.apache.org/licenses/LICENSE-2.0.txt
+*/
+!function(a){a(function(){"use strict",a.support.transition=function(){var a=function(){var a=document.createElement("bootstrap"),b={WebkitTransition:"webkitTransitionEnd",MozTransition:"transitionend",OTransition:"oTransitionEnd",msTransition:"MSTransitionEnd",transition:"transitionend"},c;for(c in b)if(a.style[c]!==undefined)return b[c]}();return a&&{end:a}}()})}(window.jQuery),!function(a){var b='[data-dismiss="alert"]',c=function(c){a(c).on("click",b,this.close)};c.prototype.close=function(b){function f(){e.trigger("closed").remove()}var c=a(this),d=c.attr("data-target"),e;d||(d=c.attr("href"),d=d&&d.replace(/.*(?=#[^\s]*$)/,"")),e=a(d),b&&b.preventDefault(),e.length||(e=c.hasClass("alert")?c:c.parent()),e.trigger(b=a.Event("close"));if(b.isDefaultPrevented())return;e.removeClass("in"),a.support.transition&&e.hasClass("fade")?e.on(a.support.transition.end,f):f()},a.fn.alert=function(b){return this.each(function(){var d=a(this),e=d.data("alert");e||d.data("alert",e=new c(this)),typeof b=="string"&&e[b].call(d)})},a.fn.alert.Constructor=c,a(function(){a("body").on("click.alert.data-api",b,c.prototype.close)})}(window.jQuery),!function(a){var b=function(b,c){this.$element=a(b),this.options=a.extend({},a.fn.button.defaults,c)};b.prototype.setState=function(a){var b="disabled",c=this.$element,d=c.data(),e=c.is("input")?"val":"html";a+="Text",d.resetText||c.data("resetText",c[e]()),c[e](d[a]||this.options[a]),setTimeout(function(){a=="loadingText"?c.addClass(b).attr(b,b):c.removeClass(b).removeAttr(b)},0)},b.prototype.toggle=function(){var a=this.$element.parent('[data-toggle="buttons-radio"]');a&&a.find(".active").removeClass("active"),this.$element.toggleClass("active")},a.fn.button=function(c){return this.each(function(){var d=a(this),e=d.data("button"),f=typeof c=="object"&&c;e||d.data("button",e=new b(this,f)),c=="toggle"?e.toggle():c&&e.setState(c)})},a.fn.button.defaults={loadingText:"loading..."},a.fn.button.Constructor=b,a(function(){a("body").on("click.button.data-api","[data-toggle^=button]",function(b){var c=a(b.target);c.hasClass("btn")||(c=c.closest(".btn")),c.button("toggle")})})}(window.jQuery),!function(a){var b=function(b,c){this.$element=a(b),this.options=c,this.options.slide&&this.slide(this.options.slide),this.options.pause=="hover"&&this.$element.on("mouseenter",a.proxy(this.pause,this)).on("mouseleave",a.proxy(this.cycle,this))};b.prototype={cycle:function(b){return b||(this.paused=!1),this.options.interval&&!this.paused&&(this.interval=setInterval(a.proxy(this.next,this),this.options.interval)),this},to:function(b){var c=this.$element.find(".active"),d=c.parent().children(),e=d.index(c),f=this;if(b>d.length-1||b<0)return;return this.sliding?this.$element.one("slid",function(){f.to(b)}):e==b?this.pause().cycle():this.slide(b>e?"next":"prev",a(d[b]))},pause:function(a){return a||(this.paused=!0),clearInterval(this.interval),this.interval=null,this},next:function(){if(this.sliding)return;return this.slide("next")},prev:function(){if(this.sliding)return;return this.slide("prev")},slide:function(b,c){var d=this.$element.find(".active"),e=c||d[b](),f=this.interval,g=b=="next"?"left":"right",h=b=="next"?"first":"last",i=this,j=a.Event("slide");this.sliding=!0,f&&this.pause(),e=e.length?e:this.$element.find(".item")[h]();if(e.hasClass("active"))return;if(a.support.transition&&this.$element.hasClass("slide")){this.$element.trigger(j);if(j.isDefaultPrevented())return;e.addClass(b),e[0].offsetWidth,d.addClass(g),e.addClass(g),this.$element.one(a.support.transition.end,function(){e.removeClass([b,g].join(" ")).addClass("active"),d.removeClass(["active",g].join(" ")),i.sliding=!1,setTimeout(function(){i.$element.trigger("slid")},0)})}else{this.$element.trigger(j);if(j.isDefaultPrevented())return;d.removeClass("active"),e.addClass("active"),this.sliding=!1,this.$element.trigger("slid")}return f&&this.cycle(),this}},a.fn.carousel=function(c){return this.each(function(){var d=a(this),e=d.data("carousel"),f=a.extend({},a.fn.carousel.defaults,typeof c=="object"&&c);e||d.data("carousel",e=new b(this,f)),typeof c=="number"?e.to(c):typeof c=="string"||(c=f.slide)?e[c]():f.interval&&e.cycle()})},a.fn.carousel.defaults={interval:5e3,pause:"hover"},a.fn.carousel.Constructor=b,a(function(){a("body").on("click.carousel.data-api","[data-slide]",function(b){var c=a(this),d,e=a(c.attr("data-target")||(d=c.attr("href"))&&d.replace(/.*(?=#[^\s]+$)/,"")),f=!e.data("modal")&&a.extend({},e.data(),c.data());e.carousel(f),b.preventDefault()})})}(window.jQuery),!function(a){var b=function(b,c){this.$element=a(b),this.options=a.extend({},a.fn.collapse.defaults,c),this.options.parent&&(this.$parent=a(this.options.parent)),this.options.toggle&&this.toggle()};b.prototype={constructor:b,dimension:function(){var a=this.$element.hasClass("width");return a?"width":"height"},show:function(){var b,c,d,e;if(this.transitioning)return;b=this.dimension(),c=a.camelCase(["scroll",b].join("-")),d=this.$parent&&this.$parent.find("> .accordion-group > .in");if(d&&d.length){e=d.data("collapse");if(e&&e.transitioning)return;d.collapse("hide"),e||d.data("collapse",null)}this.$element[b](0),this.transition("addClass",a.Event("show"),"shown"),this.$element[b](this.$element[0][c])},hide:function(){var b;if(this.transitioning)return;b=this.dimension(),this.reset(this.$element[b]()),this.transition("removeClass",a.Event("hide"),"hidden"),this.$element[b](0)},reset:function(a){var b=this.dimension();return this.$element.removeClass("collapse")[b](a||"auto")[0].offsetWidth,this.$element[a!==null?"addClass":"removeClass"]("collapse"),this},transition:function(b,c,d){var e=this,f=function(){c.type=="show"&&e.reset(),e.transitioning=0,e.$element.trigger(d)};this.$element.trigger(c);if(c.isDefaultPrevented())return;this.transitioning=1,this.$element[b]("in"),a.support.transition&&this.$element.hasClass("collapse")?this.$element.one(a.support.transition.end,f):f()},toggle:function(){this[this.$element.hasClass("in")?"hide":"show"]()}},a.fn.collapse=function(c){return this.each(function(){var d=a(this),e=d.data("collapse"),f=typeof c=="object"&&c;e||d.data("collapse",e=new b(this,f)),typeof c=="string"&&e[c]()})},a.fn.collapse.defaults={toggle:!0},a.fn.collapse.Constructor=b,a(function(){a("body").on("click.collapse.data-api","[data-toggle=collapse]",function(b){var c=a(this),d,e=c.attr("data-target")||b.preventDefault()||(d=c.attr("href"))&&d.replace(/.*(?=#[^\s]+$)/,""),f=a(e).data("collapse")?"toggle":c.data();a(e).collapse(f)})})}(window.jQuery),!function(a){function d(){a(b).parent().removeClass("open")}var b='[data-toggle="dropdown"]',c=function(b){var c=a(b).on("click.dropdown.data-api",this.toggle);a("html").on("click.dropdown.data-api",function(){c.parent().removeClass("open")})};c.prototype={constructor:c,toggle:function(b){var c=a(this),e,f,g;if(c.is(".disabled, :disabled"))return;return f=c.attr("data-target"),f||(f=c.attr("href"),f=f&&f.replace(/.*(?=#[^\s]*$)/,"")),e=a(f),e.length||(e=c.parent()),g=e.hasClass("open"),d(),g||e.toggleClass("open"),!1}},a.fn.dropdown=function(b){return this.each(function(){var d=a(this),e=d.data("dropdown");e||d.data("dropdown",e=new c(this)),typeof b=="string"&&e[b].call(d)})},a.fn.dropdown.Constructor=c,a(function(){a("html").on("click.dropdown.data-api",d),a("body").on("click.dropdown",".dropdown form",function(a){a.stopPropagation()}).on("click.dropdown.data-api",b,c.prototype.toggle)})}(window.jQuery),!function(a){function c(){var b=this,c=setTimeout(function(){b.$element.off(a.support.transition.end),d.call(b)},500);this.$element.one(a.support.transition.end,function(){clearTimeout(c),d.call(b)})}function d(a){this.$element.hide().trigger("hidden"),e.call(this)}function e(b){var c=this,d=this.$element.hasClass("fade")?"fade":"";if(this.isShown&&this.options.backdrop){var e=a.support.transition&&d;this.$backdrop=a('<div class="modal-backdrop '+d+'" />').appendTo(document.body),this.options.backdrop!="static"&&this.$backdrop.click(a.proxy(this.hide,this)),e&&this.$backdrop[0].offsetWidth,this.$backdrop.addClass("in"),e?this.$backdrop.one(a.support.transition.end,b):b()}else!this.isShown&&this.$backdrop?(this.$backdrop.removeClass("in"),a.support.transition&&this.$element.hasClass("fade")?this.$backdrop.one(a.support.transition.end,a.proxy(f,this)):f.call(this)):b&&b()}function f(){this.$backdrop.remove(),this.$backdrop=null}function g(){var b=this;this.isShown&&this.options.keyboard?a(document).on("keyup.dismiss.modal",function(a){a.which==27&&b.hide()}):this.isShown||a(document).off("keyup.dismiss.modal")}var b=function(b,c){this.options=c,this.$element=a(b).delegate('[data-dismiss="modal"]',"click.dismiss.modal",a.proxy(this.hide,this))};b.prototype={constructor:b,toggle:function(){return this[this.isShown?"hide":"show"]()},show:function(){var b=this,c=a.Event("show");this.$element.trigger(c);if(this.isShown||c.isDefaultPrevented())return;a("body").addClass("modal-open"),this.isShown=!0,g.call(this),e.call(this,function(){var c=a.support.transition&&b.$element.hasClass("fade");b.$element.parent().length||b.$element.appendTo(document.body),b.$element.show(),c&&b.$element[0].offsetWidth,b.$element.addClass("in"),c?b.$element.one(a.support.transition.end,function(){b.$element.trigger("shown")}):b.$element.trigger("shown")})},hide:function(b){b&&b.preventDefault();var e=this;b=a.Event("hide"),this.$element.trigger(b);if(!this.isShown||b.isDefaultPrevented())return;this.isShown=!1,a("body").removeClass("modal-open"),g.call(this),this.$element.removeClass("in"),a.support.transition&&this.$element.hasClass("fade")?c.call(this):d.call(this)}},a.fn.modal=function(c){return this.each(function(){var d=a(this),e=d.data("modal"),f=a.extend({},a.fn.modal.defaults,d.data(),typeof c=="object"&&c);e||d.data("modal",e=new b(this,f)),typeof c=="string"?e[c]():f.show&&e.show()})},a.fn.modal.defaults={backdrop:!0,keyboard:!0,show:!0},a.fn.modal.Constructor=b,a(function(){a("body").on("click.modal.data-api",'[data-toggle="modal"]',function(b){var c=a(this),d,e=a(c.attr("data-target")||(d=c.attr("href"))&&d.replace(/.*(?=#[^\s]+$)/,"")),f=e.data("modal")?"toggle":a.extend({},e.data(),c.data());b.preventDefault(),e.modal(f)})})}(window.jQuery),!function(a){var b=function(a,b){this.init("tooltip",a,b)};b.prototype={constructor:b,init:function(b,c,d){var e,f;this.type=b,this.$element=a(c),this.options=this.getOptions(d),this.enabled=!0,this.options.trigger!="manual"&&(e=this.options.trigger=="hover"?"mouseenter":"focus",f=this.options.trigger=="hover"?"mouseleave":"blur",this.$element.on(e,this.options.selector,a.proxy(this.enter,this)),this.$element.on(f,this.options.selector,a.proxy(this.leave,this))),this.options.selector?this._options=a.extend({},this.options,{trigger:"manual",selector:""}):this.fixTitle()},getOptions:function(b){return b=a.extend({},a.fn[this.type].defaults,b,this.$element.data()),b.delay&&typeof b.delay=="number"&&(b.delay={show:b.delay,hide:b.delay}),b},enter:function(b){var c=a(b.currentTarget)[this.type](this._options).data(this.type);if(!c.options.delay||!c.options.delay.show)return c.show();clearTimeout(this.timeout),c.hoverState="in",this.timeout=setTimeout(function(){c.hoverState=="in"&&c.show()},c.options.delay.show)},leave:function(b){var c=a(b.currentTarget)[this.type](this._options).data(this.type);this.timeout&&clearTimeout(this.timeout);if(!c.options.delay||!c.options.delay.hide)return c.hide();c.hoverState="out",this.timeout=setTimeout(function(){c.hoverState=="out"&&c.hide()},c.options.delay.hide)},show:function(){var a,b,c,d,e,f,g;if(this.hasContent()&&this.enabled){a=this.tip(),this.setContent(),this.options.animation&&a.addClass("fade"),f=typeof this.options.placement=="function"?this.options.placement.call(this,a[0],this.$element[0]):this.options.placement,b=/in/.test(f),a.remove().css({top:0,left:0,display:"block"}).appendTo(b?this.$element:document.body),c=this.getPosition(b),d=a[0].offsetWidth,e=a[0].offsetHeight;switch(b?f.split(" ")[1]:f){case"bottom":g={top:c.top+c.height,left:c.left+c.width/2-d/2};break;case"top":g={top:c.top-e,left:c.left+c.width/2-d/2};break;case"left":g={top:c.top+c.height/2-e/2,left:c.left-d};break;case"right":g={top:c.top+c.height/2-e/2,left:c.left+c.width}}a.css(g).addClass(f).addClass("in")}},isHTML:function(a){return typeof a!="string"||a.charAt(0)==="<"&&a.charAt(a.length-1)===">"&&a.length>=3||/^(?:[^<]*<[\w\W]+>[^>]*$)/.exec(a)},setContent:function(){var a=this.tip(),b=this.getTitle();a.find(".tooltip-inner")[this.isHTML(b)?"html":"text"](b),a.removeClass("fade in top bottom left right")},hide:function(){function d(){var b=setTimeout(function(){c.off(a.support.transition.end).remove()},500);c.one(a.support.transition.end,function(){clearTimeout(b),c.remove()})}var b=this,c=this.tip();c.removeClass("in"),a.support.transition&&this.$tip.hasClass("fade")?d():c.remove()},fixTitle:function(){var a=this.$element;(a.attr("title")||typeof a.attr("data-original-title")!="string")&&a.attr("data-original-title",a.attr("title")||"").removeAttr("title")},hasContent:function(){return this.getTitle()},getPosition:function(b){return a.extend({},b?{top:0,left:0}:this.$element.offset(),{width:this.$element[0].offsetWidth,height:this.$element[0].offsetHeight})},getTitle:function(){var a,b=this.$element,c=this.options;return a=b.attr("data-original-title")||(typeof c.title=="function"?c.title.call(b[0]):c.title),a},tip:function(){return this.$tip=this.$tip||a(this.options.template)},validate:function(){this.$element[0].parentNode||(this.hide(),this.$element=null,this.options=null)},enable:function(){this.enabled=!0},disable:function(){this.enabled=!1},toggleEnabled:function(){this.enabled=!this.enabled},toggle:function(){this[this.tip().hasClass("in")?"hide":"show"]()}},a.fn.tooltip=function(c){return this.each(function(){var d=a(this),e=d.data("tooltip"),f=typeof c=="object"&&c;e||d.data("tooltip",e=new b(this,f)),typeof c=="string"&&e[c]()})},a.fn.tooltip.Constructor=b,a.fn.tooltip.defaults={animation:!0,placement:"top",selector:!1,template:'<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',trigger:"hover",title:"",delay:0}}(window.jQuery),!function(a){var b=function(a,b){this.init("popover",a,b)};b.prototype=a.extend({},a.fn.tooltip.Constructor.prototype,{constructor:b,setContent:function(){var a=this.tip(),b=this.getTitle(),c=this.getContent();a.find(".popover-title")[this.isHTML(b)?"html":"text"](b),a.find(".popover-content > *")[this.isHTML(c)?"html":"text"](c),a.removeClass("fade top bottom left right in")},hasContent:function(){return this.getTitle()||this.getContent()},getContent:function(){var a,b=this.$element,c=this.options;return a=b.attr("data-content")||(typeof c.content=="function"?c.content.call(b[0]):c.content),a},tip:function(){return this.$tip||(this.$tip=a(this.options.template)),this.$tip}}),a.fn.popover=function(c){return this.each(function(){var d=a(this),e=d.data("popover"),f=typeof c=="object"&&c;e||d.data("popover",e=new b(this,f)),typeof c=="string"&&e[c]()})},a.fn.popover.Constructor=b,a.fn.popover.defaults=a.extend({},a.fn.tooltip.defaults,{placement:"right",content:"",template:'<div class="popover"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'})}(window.jQuery),!function(a){function b(b,c){var d=a.proxy(this.process,this),e=a(b).is("body")?a(window):a(b),f;this.options=a.extend({},a.fn.scrollspy.defaults,c),this.$scrollElement=e.on("scroll.scroll.data-api",d),this.selector=(this.options.target||(f=a(b).attr("href"))&&f.replace(/.*(?=#[^\s]+$)/,"")||"")+" .nav li > a",this.$body=a("body"),this.refresh(),this.process()}"use strict",b.prototype={constructor:b,refresh:function(){var b=this,c;this.offsets=a([]),this.targets=a([]),c=this.$body.find(this.selector).map(function(){var b=a(this),c=b.data("target")||b.attr("href"),d=/^#\w/.test(c)&&a(c);return d&&c.length&&[[d.position().top,c]]||null}).sort(function(a,b){return a[0]-b[0]}).each(function(){b.offsets.push(this[0]),b.targets.push(this[1])})},process:function(){var a=this.$scrollElement.scrollTop()+this.options.offset,b=this.$scrollElement[0].scrollHeight||this.$body[0].scrollHeight,c=b-this.$scrollElement.height(),d=this.offsets,e=this.targets,f=this.activeTarget,g;if(a>=c)return f!=(g=e.last()[0])&&this.activate(g);for(g=d.length;g--;)f!=e[g]&&a>=d[g]&&(!d[g+1]||a<=d[g+1])&&this.activate(e[g])},activate:function(b){var c,d;this.activeTarget=b,a(this.selector).parent(".active").removeClass("active"),d=this.selector+'[data-target="'+b+'"],'+this.selector+'[href="'+b+'"]',c=a(d).parent("li").addClass("active"),c.parent(".dropdown-menu")&&(c=c.closest("li.dropdown").addClass("active")),c.trigger("activate")}},a.fn.scrollspy=function(c){return this.each(function(){var d=a(this),e=d.data("scrollspy"),f=typeof c=="object"&&c;e||d.data("scrollspy",e=new b(this,f)),typeof c=="string"&&e[c]()})},a.fn.scrollspy.Constructor=b,a.fn.scrollspy.defaults={offset:10},a(function(){a('[data-spy="scroll"]').each(function(){var b=a(this);b.scrollspy(b.data())})})}(window.jQuery),!function(a){var b=function(b){this.element=a(b)};b.prototype={constructor:b,show:function(){var b=this.element,c=b.closest("ul:not(.dropdown-menu)"),d=b.attr("data-target"),e,f,g;d||(d=b.attr("href"),d=d&&d.replace(/.*(?=#[^\s]*$)/,""));if(b.parent("li").hasClass("active"))return;e=c.find(".active a").last()[0],g=a.Event("show",{relatedTarget:e}),b.trigger(g);if(g.isDefaultPrevented())return;f=a(d),this.activate(b.parent("li"),c),this.activate(f,f.parent(),function(){b.trigger({type:"shown",relatedTarget:e})})},activate:function(b,c,d){function g(){e.removeClass("active").find("> .dropdown-menu > .active").removeClass("active"),b.addClass("active"),f?(b[0].offsetWidth,b.addClass("in")):b.removeClass("fade"),b.parent(".dropdown-menu")&&b.closest("li.dropdown").addClass("active"),d&&d()}var e=c.find("> .active"),f=d&&a.support.transition&&e.hasClass("fade");f?e.one(a.support.transition.end,g):g(),e.removeClass("in")}},a.fn.tab=function(c){return this.each(function(){var d=a(this),e=d.data("tab");e||d.data("tab",e=new b(this)),typeof c=="string"&&e[c]()})},a.fn.tab.Constructor=b,a(function(){a("body").on("click.tab.data-api",'[data-toggle="tab"], [data-toggle="pill"]',function(b){b.preventDefault(),a(this).tab("show")})})}(window.jQuery),!function(a){var b=function(b,c){this.$element=a(b),this.options=a.extend({},a.fn.typeahead.defaults,c),this.matcher=this.options.matcher||this.matcher,this.sorter=this.options.sorter||this.sorter,this.highlighter=this.options.highlighter||this.highlighter,this.updater=this.options.updater||this.updater,this.$menu=a(this.options.menu).appendTo("body"),this.source=this.options.source,this.shown=!1,this.listen()};b.prototype={constructor:b,select:function(){var a=this.$menu.find(".active").attr("data-value");return this.$element.val(this.updater(a)).change(),this.hide()},updater:function(a){return a},show:function(){var b=a.extend({},this.$element.offset(),{height:this.$element[0].offsetHeight});return this.$menu.css({top:b.top+b.height,left:b.left}),this.$menu.show(),this.shown=!0,this},hide:function(){return this.$menu.hide(),this.shown=!1,this},lookup:function(b){var c=this,d,e;return this.query=this.$element.val(),this.query?(d=a.grep(this.source,function(a){return c.matcher(a)}),d=this.sorter(d),d.length?this.render(d.slice(0,this.options.items)).show():this.shown?this.hide():this):this.shown?this.hide():this},matcher:function(a){return~a.toLowerCase().indexOf(this.query.toLowerCase())},sorter:function(a){var b=[],c=[],d=[],e;while(e=a.shift())e.toLowerCase().indexOf(this.query.toLowerCase())?~e.indexOf(this.query)?c.push(e):d.push(e):b.push(e);return b.concat(c,d)},highlighter:function(a){var b=this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g,"\\$&");return a.replace(new RegExp("("+b+")","ig"),function(a,b){return"<strong>"+b+"</strong>"})},render:function(b){var c=this;return b=a(b).map(function(b,d){return b=a(c.options.item).attr("data-value",d),b.find("a").html(c.highlighter(d)),b[0]}),b.first().addClass("active"),this.$menu.html(b),this},next:function(b){var c=this.$menu.find(".active").removeClass("active"),d=c.next();d.length||(d=a(this.$menu.find("li")[0])),d.addClass("active")},prev:function(a){var b=this.$menu.find(".active").removeClass("active"),c=b.prev();c.length||(c=this.$menu.find("li").last()),c.addClass("active")},listen:function(){this.$element.on("blur",a.proxy(this.blur,this)).on("keypress",a.proxy(this.keypress,this)).on("keyup",a.proxy(this.keyup,this)),(a.browser.webkit||a.browser.msie)&&this.$element.on("keydown",a.proxy(this.keypress,this)),this.$menu.on("click",a.proxy(this.click,this)).on("mouseenter","li",a.proxy(this.mouseenter,this))},keyup:function(a){switch(a.keyCode){case 40:case 38:break;case 9:case 13:if(!this.shown)return;this.select();break;case 27:if(!this.shown)return;this.hide();break;default:this.lookup()}a.stopPropagation(),a.preventDefault()},keypress:function(a){if(!this.shown)return;switch(a.keyCode){case 9:case 13:case 27:a.preventDefault();break;case 38:if(a.type!="keydown")break;a.preventDefault(),this.prev();break;case 40:if(a.type!="keydown")break;a.preventDefault(),this.next()}a.stopPropagation()},blur:function(a){var b=this;setTimeout(function(){b.hide()},150)},click:function(a){a.stopPropagation(),a.preventDefault(),this.select()},mouseenter:function(b){this.$menu.find(".active").removeClass("active"),a(b.currentTarget).addClass("active")}},a.fn.typeahead=function(c){return this.each(function(){var d=a(this),e=d.data("typeahead"),f=typeof c=="object"&&c;e||d.data("typeahead",e=new b(this,f)),typeof c=="string"&&e[c]()})},a.fn.typeahead.defaults={source:[],items:8,menu:'<ul class="typeahead dropdown-menu"></ul>',item:'<li><a href="#"></a></li>'},a.fn.typeahead.Constructor=b,a(function(){a("body").on("focus.typeahead.data-api",'[data-provide="typeahead"]',function(b){var c=a(this);if(c.data("typeahead"))return;b.preventDefault(),c.typeahead(c.data())})})}(window.jQuery);
+define("requirebootstrap", ["jquery"], (function (global) {
+    return function () {
+        return global.jquery;
+    }
+}(this)));
+
+define('nest/nestCollection',[
     "lodash"
 ], function (_){
 
@@ -15633,179 +15645,39 @@ define('nestCollection/nestCollection',[
 
 
 
-define('records/models/medical_model',[
-    "jquery",
-    "lodash",
-    "backbone"
-    ],
+define('nest/nestModel',[
+    "lodash"
+], function (_){
 
-    function ($, _, Backbone) {
+    // https://gist.github.com/1610397 nestCollection helper function by https://gist.github.com/geddesign
 
-        var MedicalModel = Backbone.Model.extend({
+    var nestModel = function(model, attributeName, nestedModel) {
+      
+        model.set(attributeName, nestedModel.toJSON(), {silent: true});
+            //create empty arrays if none
+            /*
+            nestedModel.bind('add', function (initiative) {
+              if (!model.get(attributeName)) {
+                model.attributes[attributeName] = [];
+              }
+              model.get(attributeName).push(initiative.attributes);
+            });
 
-            defaults: {
-                type: "", // allergy, sensitivity, condition, medication,
-                          // impairment, intoxication
-                description: "",
-                start: "",
-                stop: "",
-                note: false // is there a note available expanding on the
-                            // issue?
-            },
+            nestedModel.bind('remove', function (initiative) {
+              var updateObj = {};
+              updateObj[attributeName] = _.without(model.get(attributeName), initiative.attributes);
+              model.set(updateObj);
+            });
+            */
+            return nestedModel;
+      };
 
-            initialize: function () {}
+    return nestModel;
 
-        });
-    
-        return MedicalModel;
-    }
-);
-define('records/collections/medical_collection',[
-    "jquery",
-    "lodash",
-    "records/models/medical_model",
-    "backbone"
-    ], 
+});
 
-    function ($, _, Model, Backbone){
 
-        var MedicalCollection = Backbone.Collection.extend({
 
-            model: Model
-        });
-
-        return MedicalCollection;
-    }
-);
-define('records/models/ice_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var IceModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				givenName: "",
-				familyName: "",
-				relation: "",
-				telecomIdentifier: ""
-			},
-
-			initialize: function () {}
-
-		});
-	
-		return IceModel;
-	}
-);
-define('records/collections/ice_collection',[
-    "jquery",
-    "lodash",
-    "records/models/ice_model",
-    "backbone"
-    ], 
-
-    function ($, _, Model, Backbone){
-
-        var IceCollection = Backbone.Collection.extend({
-
-            model: Model
-        });
-
-        return IceCollection;
-    }
-);
-define('records/models/telecom_model',[
-    "jquery",
-    "lodash",
-    "backbone"
-    ],
-
-    function ($, _, Backbone) {
-
-        var TelecomModel = Backbone.Model.extend({
-
-            //simple attributes get a default value
-            defaults: {
-                description: "",// private phone, private mail, twitter,
-                                // facebook, linkedin, work phone, work mail,
-                                // website, language, preferred
-                identifier: ""
-            },
-
-            initialize: function () {}
-
-        });
-    
-        return TelecomModel;
-    }
-);
-define('records/collections/telecom_collection',[
-    "jquery",
-    "lodash",
-    "records/models/telecom_model",
-    "backbone"
-    ], 
-
-    function ($, _, Model, Backbone){
-
-        var TelecomCollection = Backbone.Collection.extend({
-
-            model: Model
-        });
-
-        return TelecomCollection;
-    }
-);
-define('records/models/address_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
-
-	function ($, _, Backbone) {
-
-		var AddressModel = Backbone.Model.extend({
-
-			//simple attributes get a default value
-			defaults: {
-				street: "",
-				number: "",
-				extension: "",
-				postalcode: "",
-				city: "",
-				provinceOrState: "",
-				country: ""
-			},
-
-			initialize: function () {}
-
-		});
-	
-		return AddressModel;
-	}
-);
-define('records/collections/address_collection',[
-    "jquery",
-    "lodash",
-    "records/models/address_model",
-    "backbone"
-    ], 
-
-    function ($, _, Model, Backbone){
-
-        var AddressCollection = Backbone.Collection.extend({
-
-            model: Model
-        });
-
-        return AddressCollection;
-    }
-);
 define('records/models/consult_model',[
 	"jquery",
 	"lodash",
@@ -15908,7 +15780,7 @@ define('records/models/treatment_model',[
     "jquery",
     "lodash",
     "backbone",
-    "nestCollection/nestCollection",
+    "nest/nestCollection",
     "records/collections/injection_collection"
     ],
 
@@ -16003,7 +15875,7 @@ define('records/models/photo_set_model',[
     "jquery",
     "lodash",
     "backbone",
-    "nestCollection/nestCollection",
+    "nest/nestCollection",
     "records/collections/photo_collection"
     ],
 
@@ -16270,50 +16142,105 @@ define('records/collections/log_collection',[
         return Collection;
     }
 );
+define('records/models/address_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var AddressModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				street: "",
+				number: "",
+				extension: "",
+				postalcode: "",
+				city: "",
+				provinceOrState: "",
+				country: ""
+			},
+
+			initialize: function () {
+
+			},
+
+			fetchAddress: function () {}
+
+		});
+	
+		return AddressModel;
+	}
+);
 define('records/models/record_model',[
     "jquery",
     "lodash",
     "backbone",
-    "nestCollection/nestCollection",
-    "records/collections/medical_collection",
-    "records/collections/ice_collection",
-    "records/collections/telecom_collection",
-    "records/collections/address_collection",
+    "nest/nestCollection",
+    "nest/nestModel",
+    //"records/collections/medical_collection",
+    //"records/collections/ice_collection",
+    //"records/collections/telecom_collection",
+    //"records/collections/address_collection",
     "records/collections/consult_collection",
     "records/collections/treatment_collection",
     "records/collections/photo_set_collection",
     "records/collections/note_collection",
     "records/collections/offer_collection",
     "records/collections/receipt_collection",
-    "records/collections/log_collection"
+    "records/collections/log_collection",
+    "records/models/address_model"
     ],
 
-    function ($, _, Backbone, nestCollection,
+    function ($, _, Backbone, nestCollection, nestModel,
             Medicals, Ices, Telecoms, Addresses, Consults, Treatments,
-            PhotoSets, Notes, Offers, Receipts, Logs) {
+            PhotoSets, Notes, Offers, Receipts, Logs, Address) {
 
         var RecordModel = Backbone.Model.extend({
 
             //simple attributes get a default value
             defaults: {
                 // personal
-                "client_number": "klant nummer",
-                "initials": "initialen",
-                "givenName": "voornaam",
-                "familyName": "achternaam",
-                "idNumber": "bsn",
-                "idDocumentScr": "/src/scans/paspoort_placeholder.png",
-                "passphotoSrc": "/src/photos/passphoto_placeholder.png",
-                "passphotoThumbnail": 
-                        "/src/photos/passphoto_thumbnail_placeholder.png",
-                "insuranceCompany": "maatschappij",
-                "insuranceNumber": "polisnummer",
-                "sex": "geslacht",
-                "dateOfBirth": "31-12-1999",
+                "givenName": "Remko",
+                "familyName": "Boschker",
+                "sex": "man",
+                "dateOfBirth": "1977-03-15T10:06:03.864Z",
+                "phonePreferred": "+31-6-12345678",
+                "emailPreferred": "remko@informatietuin.nl",
+                
+
+                /*
+                    "idNumber": "bsn",
+                    "idDocumentNr": "",
+                    "idDocumentScr": "src",
+                    "insuranceCompany": "maatschappij",
+                    "insuranceNumber": "polisnummer",
+
+                
+                    <li><a href="#">werk email</a></li>
+                    <li><a href="#">prive email</a></li>
+                    <li><a href="#">werk telefoon</a></li>
+                    <li><a href="#">prive telefoon</a></li>
+                    <li><a href="#">ice</a></li>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">website</a></li>
+                    <li><a href="#">adres</a></li>
+
+                    <li><a href="#">BSN</a></li>
+                    <li><a href="#">scan legitmatie</a></li>
+
+                    <li><a href="#">polisnummer</a></li>
+                    <li><a href="#">verzekeraar</a></li>
+                */    
+                          
 
                 // management
-                "created": "",
-                "updated": "",
+                "created": 0,
+                "updated": 0,
                 "viewed": 0
 
                 //service
@@ -16322,6 +16249,14 @@ define('records/models/record_model',[
             //nested collections need to be initialised
             initialize: function() {
 
+                /*
+                this.homeAddress = nestModel(
+                        this,
+                        'homeAddress',
+                        new Address(this.get('homeAddress'))
+                    );
+
+                
                 this.medicals = nestCollection(this, 'medicals',
                         new Medicals(this.get('medicals')));
                 this.medicals.add();
@@ -16337,7 +16272,6 @@ define('records/models/record_model',[
                 this.addresses = nestCollection(this, 'addresses',
                         new Addresses(this.get('addresses')));
                 this.addresses.add();
-
 
                 this.consults = nestCollection(this, 'consults',
                         new Consults(this.get('consults')));
@@ -16366,6 +16300,66 @@ define('records/models/record_model',[
                 this.logs = nestCollection(this, 'logs',
                         new Logs(this.get('logs')));
                 this.logs.add();
+                */
+            },
+
+            age: function () {
+
+                var dob = new Date(this.get("dateOfBirth"));
+                
+                var now = new Date();
+
+                var age = now.getFullYear() - dob.getFullYear();
+
+                if (now.getMonth() < dob.getMonth() + 1) {
+                    age -= 1;
+                } else if (now.getDate() < dob.getDate()) {
+                    age -= 1;
+                }
+
+                return age;
+            },
+
+            formDob: function () {
+                return this.formatDate(this.get("dateOfBirth"));
+            },
+
+            formPhonePreferred: function () {
+                return this.formatPhone(this.get("phonePreferred"));
+            },
+
+            formatDate: function (date) {
+
+                // 1977-03-15T10:06:03.864Z
+                // strip leading zeros
+                var re = /(\d{4})-(\d{2})-(\d{2})/;
+
+                var result = date.match(re);
+
+                if (result) {
+
+                    return result[3] + "-" + result[2] + "-" + result[1];
+
+                } else {
+
+                    console.log("no match date: ", date);
+                }
+            },
+
+            formatPhone: function (phoneNumber) {
+                
+                var re = /(\d{2})-(\d{1,3})-(\d{6,8})/;
+
+                var result = phoneNumber.match(re);
+
+                if (result) {
+
+                    return "+" + result[1] + " " + result[2] + " " + result[3];
+
+                } else {
+
+                    console.log("no match phonenumber: ", phoneNumber);
+                }
             }
         });
     
@@ -16410,7 +16404,7 @@ define('records/collections/record_collection',[
 
 define('text!modules/records/templates/records_search.html',[],function () { return '<h3> zoeken </h3>\n<input id="search" type="search" placeholder="filter op naam, telefoonnummer of geboortedatum" results="0" incremental="true" autofocus="">\n<div class="listitems" id="search_result"></div>';});
 
-define('text!modules/records/templates/record_mini.html',[],function () { return '<div class="span4">\n    <img class="passphoto" src="http://placehold.it/70x70">\n</div>\n<div class="span7">\n    <p><strong><%= givenName %></strong></p>\n    <p><strong><%= familyName %></strong><p>\n    <p>telefoen</p>\n    <p><%= dateOfBirth %></p>\n</div>\n';});
+define('text!modules/records/templates/record_mini.html',[],function () { return '<img class="passphoto span5" src="http://placehold.it/70x70">\n<div class="basicDetails span7">\n    <div class="row-fluid emphasised">\n            <p><%= givenName %></p>\n            <p><%= familyName %></p>\n    </div>\n    <div class="row-fluid subdued">\n        <p><%=this.model.formPhonePreferred()%></p>\n        <p>\n            <%=this.model.formDob()%>\n            &nbsp;(<%=this.model.age()%>)\n        </p>\n    </div>\n</div>\n';});
 
 define('records/views/record_mini_view',[
 	"jquery",
@@ -16421,10 +16415,11 @@ define('records/views/record_mini_view',[
 	],
 
 	function ($, _, Backbone, tmpl) {
+		
 		var RecordsMiniView = Backbone.View.extend({
 
-			tagName: "section",
-			className: "row-fluid item",
+			tagName: "div",
+			className: "row-fluid item mini",
 
 			initialize: function () {
 
@@ -16518,20 +16513,27 @@ define('records/views/records_search_view',[
 
 			filter: function () {
 
-				var filterStr = this.$("input#search").val();
-				var values;
+				var filterStr;
+				var re;
+
+				filterStr = this.$("input#search").val();
+				// take out any whitespace (, ), -, /
+				//filterStr = filterStr.replace(/[\s()-\/]/g, "");
+				// insert leading zero in date if none is specified
+				// for instance 111977 becomes 01011977 
+				//filterStr = filterStr.replace()
+				// add 19 if no full year is specified
+				//filterStr = filterStr
+				// make into an regular expression
+				//with global and ignore case flags
+				re = new RegExp(filterStr, "i");
 				
 				this.collection.each(function (record) {
 
-					values += " ";
-					values = record.get("givenName");
-					values += " ";
-					values += record.get("familyName");
-					values += " ";
-					values += record.get("dateOfBirth");
-					values += " ";
-
-					if (values.match(filterStr)) {
+					if (re.test(record.get("givenName"))|
+						re.test(record.get("familyName"))|
+						re.test(record.get("dateOfBirth"))|
+						re.test(record.get("phonePreferred"))) {
 
 						this.foundRecordViews.push(
 							new RecordMiniView({model: record}));
@@ -16744,13 +16746,14 @@ define('records/views/records_new_view',[
 			
 			newRecord: function () {
 
-				var datetime = new Date().toISOString();
+				var datetime = Date.now();
 
 				var newRecord = this.collection.create({	
 						created: datetime,
 						updated: datetime
 					},
 					{wait: true});
+				console.log(newRecord);
 			},
 
 			renderList: function () {
@@ -16844,15 +16847,15 @@ define('records/views/records_view',[
 		return RecordsView;
 	}
 );
-define('text!modules/records/templates/record.html',[],function () { return '<div class="span4 column" id="left_column"></div>\n<div class="span8 column">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active"><a href="#client_record_consults" data-toggle="tab">consults</a></li>\n                <li><a href="#client_record_treatments" data-toggle="tab">behandelingen</a></li>\n                <li><a href="#client_record_photos" data-toggle="tab">foto&#39;s</a></li>\n                <li><a href="#client_record_notes" data-toggle="tab">aantekeningen</a></li>\n                <li><a href="#client_record_offers" data-toggle="tab">offertes</a></li>\n                <li><a href="#client_record_receipts" data-toggle="tab">bonnen</a></li>        \n                <li><a href="#client_record_service" data-toggle="tab">service</a></li>\n                <li><a href="#client_record_log" data-toggle="tab">log</a></li>\n                <li><a href="#client_record_management" data-toggle="tab">beheer</a></li>\n            </ul>\n            <div class="tab-content">\n            </div>\n        </div>    \n    </div>\n';});
+define('text!modules/records/templates/record.html',[],function () { return '<div class="span4 column" id="left_column"></div>\n<div class="span8 column">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active">\n                    <a href="#consults" data-toggle="tab">\n                        consults\n                    </a>\n                </li>\n                <li>\n                    <a href="#offers" data-toggle="tab">\n                        offertes\n                    </a>\n                </li>\n                <li>\n                    <a href="#treatments" data-toggle="tab">\n                        behandelingen\n                    </a>\n                </li>\n                <li>\n                    <a href="#photos" data-toggle="tab">\n                        foto&#39;s\n                    </a>\n                </li>\n                <li>\n                    <a href="#medicalHistory" data-toggle="tab">\n                        medische geschiedenis\n                    </a>\n                </li>       \n                <li>\n                    <a href="#service" data-toggle="tab">\n                        service\n                    </a>\n                </li>\n                <li>\n                    <a href="#management" data-toggle="tab">\n                        beheer\n                    </a>\n                </li>\n            </ul>\n            <div class="tab-content">\n                <div class="tab-pane active" id="consults">\n                    <div class="row-fluid">\n                        <div class="span6">\n                            <h4>anamnese</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div >\n                        <div class="span6">\n                            <h4>onderzoek</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                    </div>\n                    <div class="row-fluid">\n                        <div class="span6">\n                            <h4>conclusie</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                        <div class="span6">\n                            <h4>beleid</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                    </div>\n                </div>\n                <div class="tab-pane" id="offers">\n                    <p>offertes</p>\n                </div>\n                <div class="tab-pane" id="treatments">\n                    <p>behandelingen</p>\n                </div>\n                <div class="tab-pane" id="photos">\n                    <p>fotos</p>\n                </div>\n                <div class="tab-pane" id="medicalHistory">\n                    <p>medische geschiedenis en waarschuwingen</p>\n                </div>\n                <div class="tab-pane" id="service">\n                    <p>service</p>\n                    <p>newsletter</p>\n                    <p>drinks</p>\n                    <p>promotions</p>\n                </div>\n                <div class="tab-pane" id="management">\n                    <p>beheer</p>\n                    <p>created, viewed, updated</p>\n                    <p>flags, payments due</p>\n                    <p>number of appointments missed, changed, no-shows</p>\n                    <p>exporteren</p>\n                    <p>toestemming om in te zien</p>\n                    <p>toestemming om te delen met een ander systeem</p>\n                    <p>log</p>\n                </div>\n            </div>\n        </div>    \n    </div>\n';});
 
-define('text!records/templates/personal.html',[],function () { return '<div id="client_record_person">\n        <h3><%= initials %> <%= familyName%> ( <%= givenName %> )</h3>\n        <div class="row-fluid">\n            <div class="span5">\n                <img class="passphoto" src="http://placehold.it/180x240">\n            </div>\n            <div class="span7">\n                <table class="table">\n                    <tbody>\n                        <tr id="sex">\n                            <th>geslacht</th>\n                            <td><%= sex %></td>\n                        </tr>\n                        <tr id="age">\n                            <th>leeftijd</th>\n                            <td>function age in model </td>\n                        </tr>\n                        <tr id="date_of_birth">\n                            <th>geboren</th>\n                            <td><%= dateOfBirth %></td>\n                        </tr>\n                        <tr id="id_number">\n                            <th>bsn</th>\n                            <td><%= idNumber %></td>\n                        </tr>\n                        <tr id="id_document">\n                            <th>legitimatie</th>\n                            <td>link</td>\n                        </tr>\n                        <tr id="insurance_company">\n                            <th>verzekeraar</th>\n                            <td><%= insuranceCompany %></td>\n                        </tr>\n                        <tr id="insurance_number">\n                            <th>polisnummer</th>\n                            <td><%= insuranceNumber %></td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>    ';});
+define('text!records/templates/basic_details.html',[],function () { return '<h3><%= givenName %>&nbsp;<%= familyName%></h3>\n<div class="row-fluid">\n    <img class="passphoto span4" src="http://placehold.it/180x240">\n    <div class="span8">\n        <table class="table">\n            <tbody>\n                <tr>\n                    <td>\n                        <%= sex %> &nbsp;\n                        <%=this.model.formDob()%>\n                        &nbsp;(<%=this.model.age()%>)\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%=this.model.formPhonePreferred()%>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%=emailPreferred%>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <i class="icon-heart"></i>\n                        <i class="icon-heart"></i>\n                        <i class="icon-heart"></i>\n                    </td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>  ';});
 
-define('records/views/personal_view',[
+define('records/views/basic_details_view',[
 	"jquery",
 	"lodash",
 	"backbone",
-	"text!records/templates/personal.html"
+	"text!records/templates/basic_details.html"
 	], 
 
 	function ($, _, Backbone, tmpl){
@@ -16879,18 +16882,22 @@ define('records/views/personal_view',[
 		return PersonalView;
 	}
 );
-define('text!records/templates/medicals.html',[],function () { return '<div id="client_record_medical">\n        <h3>medische gegevens</h3>        \n        <table class="table">\n            <thead>\n                <tr>\n                    <th>type</th>\n                    <th>beschrijving</th>\n                    <th>start</th>\n                    <th>stop</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr id="">\n                    <td>gevoeligheid</td>\n                    <td>lidocaine</td>\n                    <td>actief</td>\n                    <td>actief</td>\n                </tr>\n                <tr id="">\n                    <td>allergie</td>\n                    <td>antibiotica</td>\n                    <td>actief</td>\n                    <td>actief</td>\n                </tr>\n                <tr id="">\n                    <td>zwangerschap</td>\n                    <td></td>\n                    <td>11-11-1111</td>\n                    <td>11-18-1111</td> \n                </tr>\n                <tr id="">\n                    <td>intoxicatie</td>\n                    <td>alcohol</td>\n                    <td>actief</td>\n                    <td>actief</td>\n                </tr>\n                <tr id="">\n                    <td>cardiologie</td>\n                    <td>hart</td>\n                    <td>12-12-1212</td>\n                    <td>12-12-1212</td>\n                </tr>\n                <tr id="">\n                    <td>medicatie</td>\n                    <td>paracetamol 3x daags</td>\n                    <td>12121212fff</td>\n                    <td>1213kkk1212</td>\n                </tr>\n                <tr id="">\n                    <td>beperking</td>\n                    <td>gehoor -70dB </td>\n                    <td>geboorte</td>\n                    <td>actief</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
+define('text!records/templates/medical_warnings.html',[],function () { return '<h4>medische waarschuwingen</h4>        \n<table class="table">\n    <tbody>\n        <tr id="">\n            <td>gevoeligheid</td>\n            <td>lidocaine</td>\n            <td>22-22-2222</td>\n            <td>actief</td>\n        </tr>\n        <tr id="">\n            <td>allergie</td>\n            <td>antibiotica</td>\n            <td>11-11-1111</td>\n            <td>11-11-1111</td>\n        </tr>\n    </tbody>\n</table>\n   ';});
 
-define('records/views/medicals_view',[
+define('records/views/medical_warnings_view',[
 	"jquery",
 	"lodash",
 	"backbone",
-	"text!records/templates/medicals.html"
+	"text!records/templates/medical_warnings.html"
 	], 
 
 	function ($, _, Backbone, tmpl){
 
-		var MedicalsView = Backbone.View.extend({
+		var MedicalWarningsView = Backbone.View.extend({
+
+			tagName: "section",
+			className: "warning",
+			id: "medicals",
 
 			initialize: function () {
 
@@ -16906,93 +16913,151 @@ define('records/views/medicals_view',[
 			}
 		});
 
-		return MedicalsView;
+		return MedicalWarningsView;
 	}
 );
-define('text!records/templates/ices.html',[],function () { return '<div id="ices">\n        <h3>in case of emergency</h3>\n        <table class="table">\n            <thead>\n                <tr>\n                    <th>voornaam</th>\n                    <th>achternaam</th>\n                    <th>relatie</th>\n                    <th>telecom</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr id="ice_1">\n                    <td>voornaam</td>\n                    <td>achternaam</td>                    \n                    <td>echtgenoot</td>          \n                    <td>+3161234566</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
+define('records/config',[],
+    function () {
 
-define('records/views/ices_view',[
+        var config = {
+            defaults: {
+                givenName: "voornaam",
+                familyName: "achternaam",
+                sex: "geslacht",
+                dateOfBirth: "geboortedatum",
+                phonePreferred: "voorkeurs telefoonnummer",
+                emailPreferred: "voorkeurs emailadres"
+            },
+            nonDefaults: {
+                workEmail: "werk email",
+                privateEmail: "prive email",
+                workPhone: "werk telefoon",
+                privatePhone: "prive telefoon",
+                ice: "ice",
+                facebook: "Facebook",
+                twitter: "Twitter",
+                linkedin: "LinkedIn",
+                website: "website",
+                homeAddress: "thuis adres",
+                workAddress: "werk adres",
+                deliveryAddress: "aflever adres",
+                billingAddress: "factuur adres",
+                idNumber: "BSN",
+                idDocumentNr: "legitimatie nr",
+                idDocumentScr: "scan legitmatie",
+                insuranceCompany: "verzekeraar",
+                insuranceNumber: "polisnummer"
+            }
+        };
+
+        return config;
+    }
+);
+define('text!records/templates/other_details_item.html',[],function () { return '<td><%=label%></td>\n<td><%=value%></td>';});
+
+define('records/views/other_details_item_view',[
+    "jquery",
+    "lodash",
+    "backbone",
+    "text!records/templates/other_details_item.html"
+    ], 
+
+    function ($, _, Backbone, tmpl) {
+
+        var OtherDetailsItemView = Backbone.View.extend({
+
+            tagName: "tr",
+            className: "",
+            id: this.key,
+
+            initialize: function () {
+
+                this.template = _.template(tmpl);
+            },
+
+            render: function () {
+                /*
+                this.$el.html(this.template({
+                    label: this.label,
+                    value: this.value
+                }));*/
+            }
+
+
+        });
+
+        return OtherDetailsItemView;
+    }
+);
+define('text!records/templates/other_details.html',[],function () { return '<h4>overige persoonsgegevens</h4>\n<table class="table">\n    <tbody></tbody>\n</table>\n<div class="btn-group dropup pull-right" id="add"> \n    <a  class="btn dropdown-toggle" \n        data-toggle="dropdown"\n        data-target="#add">\n        <i class="icon-plus"></i>\n    </a>\n    <ul class="dropdown-menu" id="addMenu">\n        <li><h4>toevoegen</h4></li>\n    </ul>\n</div>\n<div class="btn-group dropup pull-right" id="remove">    \n    <a  class="btn dropdown-toggle"\n        data-toggle="dropdown" \n        data-target="#remove">\n        <i class="icon-minus"></i>\n    </a>\n    <ul class="dropdown-menu" id="removeMenu">\n        <li><h4>verwijderen</h4></li>\n</div>\n\n';});
+
+define('text!records/templates/details_menu_item.html',[],function () { return '<li id=<%=key%>><a href="#menu-item"><%=label%></a></li>';});
+
+define('records/views/other_details_view',[
 	"jquery",
 	"lodash",
 	"backbone",
-	"text!records/templates/ices.html"
+	"records/config",
+	"records/views/other_details_item_view",
+	"text!records/templates/other_details.html",
+	"text!records/templates/details_menu_item.html"
 	], 
 
-	function ($, _, Backbone, tmpl){
-
-		var IcesView = Backbone.View.extend({
-
-			initialize: function () {
-
-				this.template = _.template(tmpl);
-				this.model.on('change', this.render, this);
-			},
-
-			render: function () {
-
-				this.$el.html(this.template(this.model.toJSON()));
-
-				return this;
-			}
-		});
-
-		return IcesView;
-	}
-);
-define('text!records/templates/telecoms.html',[],function () { return '<div id="client_record_telecommunication">\n        <h3>telecommunicatie</h3>\n        <table class="table">\n            <tbody>\n                <tr id="mob_phone">\n                    <th>mobiel</th>\n                    <td>0612345678</td>\n                </tr>\n                <tr id="private_email">\n                    <th>prive email</th>\n                    <td>voornaam.achternaam@provider.com</td>\n                  \n                </tr>\n                <tr id="www_twitter">\n                    <th>twitter</th>\n                    <td>url</td>\n                  \n                </tr>\n                <tr id="telecom_preference_language">\n                    <th>language</th>\n                    <td>engels</td>\n                </tr>\n                <tr id="telecom_preference_mode">\n                    <th>preferred</th>\n                    <td>mobiele telefoon</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
-
-define('records/views/telecoms_view',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"text!records/templates/telecoms.html"
-	], 
-
-	function ($, _, Backbone, tmpl){
-
-		var TelecomsView = Backbone.View.extend({
-
-			initialize: function () {
-
-				this.template = _.template(tmpl);
-				this.model.on('change', this.render, this);
-			},
-
-			render: function () {
-
-				this.$el.html(this.template(this.model.toJSON()));
-
-				return this;
-			}
-		});
-
-		return TelecomsView;
-	}
-);
-define('text!records/templates/addresses.html',[],function () { return '<div id="client_record_address">\n        <h3>adressen</h3>\n        <table class="table">\n            <tbody>\n                <tr id="address">\n                    <th rowspan="3">thuis</th>\n                    <td>en als ik een hele lange straatnaam nummer toevoeging</td>\n                </tr>\n                <tr id="address">\n                    <td>1111 AA stadsnaam</td>\n                </tr>\n                <tr id="address">\n                    <td>provincie landsnaam</td>\n                </tr>\n                <tr id="address">\n                    <th rowspan="3">werk</th>\n                    <td>straatnaam nummer toevoeging</td>\n                </tr>\n                <tr id="address">\n                    <td>1111 AA stadsnaam</td>\n                </tr>\n                <tr id="address">\n                    <td>provincie landsnaam</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>';});
-
-define('records/views/addresses_view',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"text!records/templates/addresses.html"
-	], 
-
-	function ($, _, Backbone, tmpl){
+	function ($, _, Backbone, config, ItemView, tmpl, menuTmpl) {
 
 		var AddressesView = Backbone.View.extend({
+
+			tagName: "section",
+			className: "",
+			id: "otherDetails",
 
 			initialize: function () {
 				
 				this.template = _.template(tmpl);
+				this.menuTmpl = _.template(menuTmpl);
+
 				this.model.on('change', this.render, this);
 			},
 
 			render: function () {
 
-				this.$el.html(this.template(this.model.toJSON()));
+				var json = this.model.toJSON();
+				var item = {};
+				var attributes = _.keys(json);
+				var itemView;
 
-				return this;
+				this.$el.html();//this.template());
+				/*
+				_.each(config.nonDefaults, function (label, key) {
+
+					if (_.include(attributes, key)) {
+						
+						item = {
+							label: label,
+							key: key,
+							value: json[key]
+						};
+						
+						//this.$("#removeMenu").append(this.menuTmpl(item));
+
+						itemView = new ItemView(item);
+						itemView.render();
+						//this.$("tbody").append(itemView.el);
+
+					} else {
+
+						//this.$("#addMenu").append(this.menuTmpl(item));
+					}
+
+				}, this);*/
+			},
+
+			addItem: function () {
+
+			},
+
+			removeItem: function () {
+
 			}
 		});
 
@@ -17005,15 +17070,13 @@ define('records/views/record_view',[
 	"backbone",
 
 	"text!modules/records/templates/record.html",
-	"records/views/personal_view",
-	"records/views/medicals_view",
-	"records/views/ices_view",
-	"records/views/telecoms_view",
-	"records/views/addresses_view"
+	"records/views/basic_details_view",
+	"records/views/medical_warnings_view",
+	"records/views/other_details_view"
 	], 
 
-	function ($, _, Backbone, tmpl, PersonalView, MedicalsView, IcesView,
-			TelecomsView, AddressesView){
+	function ($, _, Backbone, tmpl, BasicDetailsView, MedicalWarningsView,
+					OtherDetailsView){
 
 		var RecordView = Backbone.View.extend({
 			
@@ -17029,11 +17092,9 @@ define('records/views/record_view',[
 				this.model.trigger("view", this.model.id);
 
 				this.views = [];
-				this.views.push(new PersonalView({model: this.model}));
-				this.views.push(new MedicalsView({model: this.model}));
-				this.views.push(new IcesView({model: this.model}));
-				this.views.push(new TelecomsView({model: this.model}));
-				this.views.push(new AddressesView({model: this.model}));
+				this.views.push(new BasicDetailsView({model: this.model}));
+				this.views.push(new MedicalWarningsView({model: this.model}));
+				this.views.push(new OtherDetailsView({model: this.model}));
 			},
 
 			render: function () {
@@ -17050,6 +17111,9 @@ define('records/views/record_view',[
 					}, 
 					this
 				);
+
+				this.model.age();
+
 				return this;
 			}
 		});
@@ -17114,6 +17178,9 @@ define('records/record_router',[
 
                         if (record) {
                             
+                            $("#navbar .active").removeClass("active");
+                            $("a[href='/#records']").parent().addClass("active");
+
                             view = new RecordView({model: record});
                             this.showView(view);
                         
@@ -17305,13 +17372,14 @@ define('router',[
 require([
   // Application.
   "remedy",
+  "requirebootstrap",
 
   // Main Router.
   "router",
   "records/record_router"
 ],
 
-function(remedy, Router, RecordRouter) {
+function(remedy, Bootstrap, Router, RecordRouter) {
 
   // Define your master router on the application namespace and trigger all
   // navigation from this instance.
@@ -17367,12 +17435,13 @@ require.config({
     lodash: "../assets/js/libs/lodash",
     backbone: "../assets/js/libs/backbone",
     text: "../assets/js/libs/text",
+    requirebootstrap: "../assets/js/libs/bootstrap.min",
 
     //modules
     records: "modules/records",
     stores: "modules/stores",
     ledgers: "modules/ledgers",
-    nestCollection: "modules/nestCollection"
+    nest: "modules/nest"
 
   },
 
@@ -17381,6 +17450,11 @@ require.config({
     backbone: {
       deps: ["lodash", "jquery"],
       exports: "Backbone"
+    },
+
+    requirebootstrap: {
+      deps: ["jquery"],
+      exports: "jquery"
     },
 
     // Backbone.LayoutManager depends on Backbone.

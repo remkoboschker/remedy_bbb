@@ -24,6 +24,7 @@ define([
 			},
 			
 			events: {
+				
 				"click #new_record": "newRecord"
 			},
 			
@@ -38,13 +39,14 @@ define([
 			
 			newRecord: function () {
 
-				var datetime = new Date().toISOString();
+				var datetime = Date.now();
 
 				var newRecord = this.collection.create({	
 						created: datetime,
 						updated: datetime
 					},
 					{wait: true});
+				console.log(newRecord);
 			},
 
 			renderList: function () {

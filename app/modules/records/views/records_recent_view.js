@@ -25,6 +25,7 @@ define([
 			},
 			
 			events: {
+				
 				"change select": "renderList"
 			},
 			

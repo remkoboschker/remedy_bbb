@@ -9,6 +9,10 @@ define([
 
 		var TelecomsView = Backbone.View.extend({
 
+			tagName: "section",
+			className: "",
+			id: "telecoms",
+
 			initialize: function () {
 
 				this.template = _.template(tmpl);

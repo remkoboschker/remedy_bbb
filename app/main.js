@@ -1,13 +1,14 @@
 require([
   // Application.
   "remedy",
+  "requirebootstrap",
 
   // Main Router.
   "router",
   "records/record_router"
 ],
 
-function(remedy, Router, RecordRouter) {
+function(remedy, Bootstrap, Router, RecordRouter) {
 
   // Define your master router on the application namespace and trigger all
   // navigation from this instance.

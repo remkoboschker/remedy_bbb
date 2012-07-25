@@ -1,0 +1,66 @@
+<h3><%= givenName %>&nbsp;<%= familyName %></h3>
+<div class="row-fluid">
+    <img class="passphoto span6" src="http://placehold.it/180x240">
+    <div class="span6">
+        <table class="table">
+            <tbody>
+                <tr class="inputContainer">
+                    <td>
+                        <%= givenName %>
+                    </td>
+                    <td style="display: none;">
+                        <input type="text" value=<%= givenName %>></input>
+                    </td>
+                </tr>
+                <tr class="inputContainer">
+                    <td>
+                       <%= familyName %>
+                    </td>
+                    <td style="display: none;">
+                        <input type="text" value=<%= familyName %>></input>
+                    </td>
+                </tr>
+                <tr class="inputContainer">
+                    <td>
+                        <%= dob %>
+                        &nbsp;(<%= age %>)
+                    </td>
+                    <td style="display: none;">
+                        <input type="text" value=<%= dob %>></input>
+                    </td>
+                </tr>
+                <tr class="inputContainer">
+                    <td>
+                        <%= phone %>
+                    </td>
+                    <td style="display: none;">
+                        <input type="text" value=<%= phone %>></input>
+                    </td>
+                </tr>
+                <tr class="inputContainer">
+                    <td>
+                        <%= mail %>
+                    </td>
+                    <td style="display: none;">
+                        <input type="text" value=<%= mail %>></input>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="icon-star"></i>
+                        <i class="icon-star"></i>
+                        <i class="icon-star"></i>
+                        <i class="icon-star"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="icon-heart"></i>
+                        <i class="icon-heart"></i>
+                        <i class="icon-heart"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>  

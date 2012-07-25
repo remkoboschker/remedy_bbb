@@ -14,12 +14,13 @@ require.config({
     lodash: "../assets/js/libs/lodash",
     backbone: "../assets/js/libs/backbone",
     text: "../assets/js/libs/text",
+    requirebootstrap: "../assets/js/libs/bootstrap.min",
 
     //modules
     records: "modules/records",
     stores: "modules/stores",
     ledgers: "modules/ledgers",
-    nestCollection: "modules/nestCollection"
+    nest: "modules/nest"
 
   },
 
@@ -28,6 +29,11 @@ require.config({
     backbone: {
       deps: ["lodash", "jquery"],
       exports: "Backbone"
+    },
+
+    requirebootstrap: {
+      deps: ["jquery"],
+      exports: "jquery"
     },
 
     // Backbone.LayoutManager depends on Backbone.

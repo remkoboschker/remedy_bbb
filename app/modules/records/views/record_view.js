@@ -4,15 +4,13 @@ define([
 	"backbone",
 
 	"text!modules/records/templates/record.html",
-	"records/views/personal_view",
-	"records/views/medicals_view",
-	"records/views/ices_view",
-	"records/views/telecoms_view",
-	"records/views/addresses_view"
+	"records/views/basic_details_view",
+	"records/views/medical_warnings_view",
+	"records/views/other_details_view"
 	], 
 
-	function ($, _, Backbone, tmpl, PersonalView, MedicalsView, IcesView,
-			TelecomsView, AddressesView){
+	function ($, _, Backbone, tmpl, BasicDetailsView, MedicalWarningsView,
+					OtherDetailsView){
 
 		var RecordView = Backbone.View.extend({
 			
@@ -24,15 +22,13 @@ define([
 				
 				this.template = _.template(tmpl);
 
-				this.model.on("change", this.render());
+				//his.model.on("change", this.render, this);
 				this.model.trigger("view", this.model.id);
 
 				this.views = [];
-				this.views.push(new PersonalView({model: this.model}));
-				this.views.push(new MedicalsView({model: this.model}));
-				this.views.push(new IcesView({model: this.model}));
-				this.views.push(new TelecomsView({model: this.model}));
-				this.views.push(new AddressesView({model: this.model}));
+				this.views.push(new BasicDetailsView({model: this.model}));
+				this.views.push(new MedicalWarningsView({model: this.model}));
+				this.views.push(new OtherDetailsView({model: this.model}));
 			},
 
 			render: function () {
@@ -49,6 +45,9 @@ define([
 					}, 
 					this
 				);
+
+				this.model.age();
+
 				return this;
 			}
 		});

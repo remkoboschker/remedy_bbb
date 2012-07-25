@@ -7,16 +7,20 @@ define([
 	"records/views/appointments_mini_view"
 	],
 	function ($, _, Backbone, tmpl, AppointmentsMiniView) {
+		
 		var AppointmentsView = Backbone.View.extend({
 			
 			tagName: "section",
 			className: "span3 column",
 
-			initialize: function () {		
+			initialize: function () {
+
 				this.template = _.template(tmpl);
 				this.collection.on("change", this.render, this);
 			},
-			render: function () {				
+
+			render: function () {
+
 				this.$el.html(this.template);
 				return this;
 			}

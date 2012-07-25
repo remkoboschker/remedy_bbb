@@ -44,6 +44,9 @@ define([
 
                         if (record) {
                             
+                            $("#navbar .active").removeClass("active");
+                            $("a[href='/#records']").parent().addClass("active");
+
                             view = new RecordView({model: record});
                             this.showView(view);
                         

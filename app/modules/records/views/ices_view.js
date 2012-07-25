@@ -9,9 +9,14 @@ define([
 
 		var IcesView = Backbone.View.extend({
 
+			tagName: "section",
+			className: "",
+			id: "ices",
+
 			initialize: function () {
 
 				this.template = _.template(tmpl);
+				
 				this.model.on('change', this.render, this);
 			},
 

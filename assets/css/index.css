@@ -2,9 +2,15 @@
 @import "bootstrap.css";
 @import "bootstrap-responsive.css";*/
 
+footer {
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
 .nav-footer > li {
   float: left;
-  padding-left: 8px;
+  padding-left: 10px;
+  font-size: 13px;
 }
 
 td.edit {
@@ -44,11 +50,7 @@ input {
   /* IE6-8 */ 
 }
 
-.listitems p {
-  line-height: 12px;
-  margin: 0px 0px 4px 0px;
-  text-align: right;
-}
+
 
 .smallfont {
   font-size: 85%;
@@ -119,6 +121,7 @@ h3 {
 h4 {
   font-size: 15px;
   color: grey;
+  margin-bottom: 5px;
 }
 
 .accordion-body {
@@ -150,16 +153,14 @@ h4 {
   left: 0px;
   height: 100%;
   z-index: 1000;
-  display: none;
+  display: block;
   float: left;
-  width: 210px;
-  padding: 15px;
+  width: 18px;
+  padding: 20px;
   list-style: none;
   background-color: #ffffff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  *border-right-width: 2px;
-  *border-bottom-width: 2px;
+  border: 2px solid whitesmoke;
+  
   -webkit-border-radius: 5px;
      -moz-border-radius: 5px;
           border-radius: 5px;
@@ -169,10 +170,15 @@ h4 {
   -webkit-background-clip: padding-box;
      -moz-background-clip: padding;
           background-clip: padding-box;
+          div
+  transition:width 2s;
+    -moz-transition:width 2s; /* Firefox 4 */
+    -webkit-transition:width 2s; /* Safari and Chrome */
+    -o-transition:width 2s; /* Opera */
 }
 
-#sidebar-container:hover #sidebar {
-  display: block;
+#sidebar:hover {
+  width: 300px;
 }
 
 .sidebar-pane-content {
@@ -197,14 +203,118 @@ h4 {
   display: block;
 }
 
-.column {
+.nav-tabs > li > a {
+  font-size: 16px;
+}
+
+section {
+  padding: 14px 20px 14px 20px;
   border: solid 2px whitesmoke;
    -webkit-border-radius: 8px;
      -moz-border-radius: 8px;
           border-radius: 8px;
-  padding: 1.5%;
 }
 
-.nav-tabs > li > a {
-  font-size: 16px;
+.column > section {
+  margin-top: 20px;
+}
+
+.column > section:first-child {
+  margin-top: 0px;
+}
+
+
+
+.basicDetails .emphasised {
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 22px;
+  margin-bottom: 4px;
+}
+
+.basicDetails .subdued {
+  color: grey;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 22px;
+}
+
+/*reset p bottom-margin from bootstrap*/
+.basicDetails p {
+  margin-bottom: 0px;
+}
+
+.basicDetails {
+  padding: 8px;
+}
+
+.tab-content {
+  /*
+  border-left: solid 2px whitesmoke;
+  border-right: solid 2px whitesmoke;
+  border-bottom: solid 2px whitesmoke;
+  */
+  border: solid 2px whitesmoke;
+
+  padding: 14px 20px 14px 20px;
+
+  /*-webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;*/
+
+  
+  -webkit-border-top-left-radius: 0px;
+     -moz-border-top-left-radius: 0px;
+          border-top-left-radius: 0px;
+
+  -webkit-border-top-right-radius: 0px;
+     -moz-border-top-right-radius: 0px;
+          border-top-right-radius: 0px;
+
+  -webkit-border-bottom-left-radius: 8px;
+     -moz-border-bottom-left-radius: 8px;
+          border-bottom-left-radius: 8px;
+
+  -webkit-border-bottom-right-radius: 8px;
+     -moz-border-bottom-right-radius: 8px;
+          border-bottom-right-radius: 8px;
+}
+
+.nav {
+  margin-bottom: 0px;
+}
+
+textarea {
+  width: 97%;
+  resize: none;
+  border: none;
+  line-height: 24px;
+  /*font-size: 15px;*/
+  margin-bottom: 14px;
+  overflow: auto;
+
+  background-image: -webkit-linear-gradient(left, white 0px, transparent 0px), -webkit-linear-gradient(right, white 0px, transparent 0px), -webkit-linear-gradient(white 22px, whitesmoke 23px, whitesmoke 24px, white 24px);
+  background-image: -moz-linear-gradient(left, white 0px, transparent 0px), -moz-linear-gradient(right, white 0px, transparent 0px), -moz-linear-gradient(white 22px, whitesmoke 23px, whitesmoke 24px, white 24px);
+  background-image: -ms-linear-gradient(left, white 0px, transparent 0px), -ms-linear-gradient(right, white 0px, transparent 0px), -ms-linear-gradient(white 22px, whitesmoke 23px, whitesmoke 24px, white 24px);
+  background-image: -o-linear-gradient(left, white 0px, transparent 0px), -o-linear-gradient(right, white 0px, transparent 0px), -o-linear-gradient(white 22px, whitesmoke 23px, whitesmoke 24px, white 24px);background-image: -linear-gradient(left, white 0px, transparent 0px), -linear-gradient(right, white 0px, transparent 0px), -linear-gradient(white 22px, whitesmoke 23px, whitesmoke 24px, white 24px);
+
+  background-size: 100% 100%, 100% 100%, 100% 24px;
+}
+
+.warning {
+  border-color: red;
+}
+
+body {
+  padding-top: 52px;
+  padding-bottom: 24px;
+}
+
+li h4 {
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+  z-index: 1010;
 }

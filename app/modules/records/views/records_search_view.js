@@ -15,6 +15,7 @@ define([
 			id: "search_records",
 
 			events: {
+				
 				"keyup input#search": "renderList"
 			},
 
@@ -64,20 +65,27 @@ define([
 
 			filter: function () {
 
-				var filterStr = this.$("input#search").val();
-				var values;
+				var filterStr;
+				var re;
+
+				filterStr = this.$("input#search").val();
+				// take out any whitespace (, ), -, /
+				//filterStr = filterStr.replace(/[\s()-\/]/g, "");
+				// insert leading zero in date if none is specified
+				// for instance 111977 becomes 01011977 
+				//filterStr = filterStr.replace()
+				// add 19 if no full year is specified
+				//filterStr = filterStr
+				// make into an regular expression
+				//with global and ignore case flags
+				re = new RegExp(filterStr, "i");
 				
 				this.collection.each(function (record) {
 
-					values += " ";
-					values = record.get("givenName");
-					values += " ";
-					values += record.get("familyName");
-					values += " ";
-					values += record.get("dateOfBirth");
-					values += " ";
-
-					if (values.match(filterStr)) {
+					if (re.test(record.get("givenName"))|
+						re.test(record.get("familyName"))|
+						re.test(record.get("dateOfBirth"))|
+						re.test(record.get("phonePreferred"))) {
 
 						this.foundRecordViews.push(
 							new RecordMiniView({model: record}));

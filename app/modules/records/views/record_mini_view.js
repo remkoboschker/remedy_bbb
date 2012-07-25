@@ -7,10 +7,11 @@ define([
 	],
 
 	function ($, _, Backbone, tmpl) {
+		
 		var RecordsMiniView = Backbone.View.extend({
 
-			tagName: "section",
-			className: "row-fluid item",
+			tagName: "div",
+			className: "row-fluid item mini",
 
 			initialize: function () {
 

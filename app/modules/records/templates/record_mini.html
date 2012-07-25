@@ -1,9 +1,14 @@
-<div class="span4">
-    <img class="passphoto" src="http://placehold.it/70x70">
-</div>
-<div class="span7">
-    <p><strong><%= givenName %></strong></p>
-    <p><strong><%= familyName %></strong><p>
-    <p>telefoen</p>
-    <p><%= dateOfBirth %></p>
+<img class="passphoto span5" src="http://placehold.it/70x70">
+<div class="basicDetails span7">
+    <div class="row-fluid emphasised">
+            <p><%= givenName %></p>
+            <p><%= familyName %></p>
+    </div>
+    <div class="row-fluid subdued">
+        <p><%=this.model.formPhonePreferred()%></p>
+        <p>
+            <%=this.model.formDob()%>
+            &nbsp;(<%=this.model.age()%>)
+        </p>
+    </div>
 </div>

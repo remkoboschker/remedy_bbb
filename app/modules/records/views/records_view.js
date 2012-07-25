@@ -28,7 +28,9 @@ define([
 				this.views.push(new RecordsNewView(
 					{collection: this.collection}));
 			},
+
 			render: function () {
+				
 				_.each(
 					this.views,
 					function (view) {this.$el.append(view.render().el);}, 

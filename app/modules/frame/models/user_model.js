@@ -1,25 +1,25 @@
 define([
-	"jquery",
-	"lodash",
-	"backbone"
-	],
+    "jquery",
+    "lodash",
+    "backbone"
+    ],
 
-	function ($, _, Backbone) {
+    function ($, _, Backbone) {
 
-		var UserModel = Backbone.Model.extend({
+        var UserModel = Backbone.Model.extend({
 
-			defaults: {
-				"company": "",
-				"name": "",
-				"role": "",
-				"publicKey": "",
-				"blocked": false
-			},
+            defaults: {
+                username: "username",
+                blocked: false,
+                created: 0,
+                publicKey: "",
+                ca: ""
+            },
 
-			initialize: function () {}
+            initialize: function () {}
 
-		});
-	
-		return UserModel;
-	}
+        });
+    
+        return UserModel;
+    }
 );
