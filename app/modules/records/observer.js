@@ -6,9 +6,7 @@ define([
 
 	function ($, _, Backbone) {
 
-		var Records = function (remedy) {
-
-		};
+		var Records = Backbone.Events.extend(); 
 
 		return Records;
 	}

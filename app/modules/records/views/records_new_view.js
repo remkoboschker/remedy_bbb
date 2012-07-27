@@ -6,9 +6,10 @@ define([
 	"text!modules/records/templates/records_new.html",
 	"records/views/record_mini_view"
 	],
+
 	function ($, _, Backbone, tmpl, RecordMiniView) {
 		
-		var RecordsSearchView = Backbone.View.extend({
+		var RecordsNewView = Backbone.View.extend({
 			
 			tagName: "section",
 			className: "span3 column",
@@ -18,7 +19,7 @@ define([
 
 				this.template = _.template(tmpl);
 
-				this.collection.on("add", this.renderList, this);
+				this.collection.on("change add", this.renderList, this);
 
 				this.newRecordViews = [];
 			},
@@ -31,7 +32,6 @@ define([
 			render: function () {
 
 				this.$el.html(this.template);
-
 				this.renderList();
 
 				return this;
@@ -39,14 +39,10 @@ define([
 			
 			newRecord: function () {
 
-				var datetime = Date.now();
-
 				var newRecord = this.collection.create({	
-						created: datetime,
-						updated: datetime
+						created: Date.now()
 					},
 					{wait: true});
-				console.log(newRecord);
 			},
 
 			renderList: function () {
@@ -77,15 +73,9 @@ define([
 
 			filter: function () {
 
-				var created;
-				var updated;
-				
 				this.collection.each(function (record) {
 
-					created = record.get("created");
-					updated = record.get("updated");
-
-					if (created === updated) {
+					if (record.get("updated") === 0) {
 
 						this.newRecordViews.push(
 							new RecordMiniView({model: record}));
@@ -95,6 +85,6 @@ define([
 			}
 		});
 
-		return RecordsSearchView;
+		return RecordsNewView;
 	}
 );

@@ -2,8 +2,8 @@ define([
     "jquery",
     "lodash",
     "backbone",
-    "nest/nestCollection",
-    "nest/nestModel",
+    "helpers/nestCollection",
+    "helpers/nestModel",
     "records/config",
     "records/collections/consult_collection",
     "records/collections/treatment_collection",
@@ -34,17 +34,12 @@ define([
             //nested collections need to be initialised
             initialize: function() {
 
-                console.log(config);
-
                 _.each(config.required, function (value, key) {
 
-                    console.log(key);
-                    console.log(value);
-
-
                     this.set(key, value, {silent: true});
+                    
                 }, this);
-                
+                /*
                 this.homeAddress = nestModel(
                         this,
                         'homeAddress',
@@ -56,8 +51,8 @@ define([
                         'ice',
                         new IceModel(this.get('ice'))
                     );
-
-                this.on("change", this.logEvent, this);
+*/
+                this.on("sync", this.setUpdated, this);
 
                 /*
                 this.medicals = nestCollection(this, 'medicals',
@@ -106,6 +101,11 @@ define([
                 */
             },
 
+            setUpdated: function () {
+
+                this.set("updated", Date.now(), {silent: true});
+            },
+
             age: function () {
 
                 var dob = new Date(this.get("dateOfBirth"));
@@ -145,7 +145,7 @@ define([
 
                 } else {
 
-                    console.log("no match date: ", date);
+                    return "wrong format"
                 }
             },
 
@@ -161,13 +161,8 @@ define([
 
                 } else {
 
-                    console.log("no match phonenumber: ", phoneNumber);
+                    return "wrong format"
                 }
-            },
-
-            logEvent: function () {
-
-                console.log("change");
             }
         });
     

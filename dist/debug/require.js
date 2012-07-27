@@ -315,315 +315,29 @@ var requirejs, require, define;
 
 this['JST'] = this['JST'] || {};
 
+this['JST']['app/templates/helpdesk.html'] = function(data) { return function (obj,_) {
+var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('<h3>helpdesk</h3>');}return __p.join('');
+}(data, _)};
 
+this['JST']['app/templates/home.html'] = function(data) { return function (obj,_) {
+var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('<h3>home</h3>\n<ul>\n    <li><a href="#records">dossiers</a></li>\n    <li><a href="#register">kassa</a></li>\n    <li><a href="#store">magazijn</a></li>\n<ul>');}return __p.join('');
+}(data, _)};
 
-/**
- * @license RequireJS text 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
- * Available via the MIT or new BSD license.
- * see: http://github.com/requirejs/text for details
- */
-/*jslint regexp: true */
-/*global require: false, XMLHttpRequest: false, ActiveXObject: false,
-  define: false, window: false, process: false, Packages: false,
-  java: false, location: false */
+this['JST']['app/templates/ip.html'] = function(data) { return function (obj,_) {
+var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('<h3>intellectueel eigendom</h3>');}return __p.join('');
+}(data, _)};
 
-define('text',['module'], function (module) {
-    
+this['JST']['app/templates/nav.html'] = function(data) { return function (obj,_) {
+var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('\n<div id="navbar" class="navbar navbar-fixed-top">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav">\n                <li class="active"><a href="/#">home</a></li>\n                <li><a href="/#records">dossiers</a></li>\n                <li><a href="/#register">kassa</a></li>\n                <li><a href="/#store">magazijn</a></li>\n            </ul>\n            <ul class="nav pull-right">\n                <li><a href="/#helpdesk">helpdesk</a></li>\n                <li><a href="" class="navbar-text">test gebruiker</a></li>\n            </ul>\n\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="content" class="container-fluid">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n            <ul class="nav nav-footer pull-right">\n                <li><a href="/#regelingen/voorwaarden">voorwaarden</a></li>\n                <li><a href="/#regelingen/privacy">privacy</a></li>\n                <li><a href="/#regelingen/ip">intellectueel eigendom</a></li>\n                <li><a href="https://remedy.informatietuin.nl" data-bypass>Remedy</a></li>\n            </ul>\n        </footer>\n    </div>   \n</div>');}return __p.join('');
+}(data, _)};
 
-    var progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'],
-        xmlRegExp = /^\s*<\?xml(\s)+version=[\'\"](\d)*.(\d)*[\'\"](\s)*\?>/im,
-        bodyRegExp = /<body[^>]*>\s*([\s\S]+)\s*<\/body>/im,
-        hasLocation = typeof location !== 'undefined' && location.href,
-        defaultProtocol = hasLocation && location.protocol && location.protocol.replace(/\:/, ''),
-        defaultHostName = hasLocation && location.hostname,
-        defaultPort = hasLocation && (location.port || undefined),
-        buildMap = [],
-        masterConfig = (module.config && module.config()) || {},
-        text, fs;
+this['JST']['app/templates/privacy.html'] = function(data) { return function (obj,_) {
+var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('<h3>privacy</h3>');}return __p.join('');
+}(data, _)};
 
-    text = {
-        version: '2.0.1',
-
-        strip: function (content) {
-            //Strips <?xml ...?> declarations so that external SVG and XML
-            //documents can be added to a document without worry. Also, if the string
-            //is an HTML document, only the part inside the body tag is returned.
-            if (content) {
-                content = content.replace(xmlRegExp, "");
-                var matches = content.match(bodyRegExp);
-                if (matches) {
-                    content = matches[1];
-                }
-            } else {
-                content = "";
-            }
-            return content;
-        },
-
-        jsEscape: function (content) {
-            return content.replace(/(['\\])/g, '\\$1')
-                .replace(/[\f]/g, "\\f")
-                .replace(/[\b]/g, "\\b")
-                .replace(/[\n]/g, "\\n")
-                .replace(/[\t]/g, "\\t")
-                .replace(/[\r]/g, "\\r")
-                .replace(/[\u2028]/g, "\\u2028")
-                .replace(/[\u2029]/g, "\\u2029");
-        },
-
-        createXhr: masterConfig.createXhr || function () {
-            //Would love to dump the ActiveX crap in here. Need IE 6 to die first.
-            var xhr, i, progId;
-            if (typeof XMLHttpRequest !== "undefined") {
-                return new XMLHttpRequest();
-            } else if (typeof ActiveXObject !== "undefined") {
-                for (i = 0; i < 3; i += 1) {
-                    progId = progIds[i];
-                    try {
-                        xhr = new ActiveXObject(progId);
-                    } catch (e) {}
-
-                    if (xhr) {
-                        progIds = [progId];  // so faster next time
-                        break;
-                    }
-                }
-            }
-
-            return xhr;
-        },
-
-        /**
-         * Parses a resource name into its component parts. Resource names
-         * look like: module/name.ext!strip, where the !strip part is
-         * optional.
-         * @param {String} name the resource name
-         * @returns {Object} with properties "moduleName", "ext" and "strip"
-         * where strip is a boolean.
-         */
-        parseName: function (name) {
-            var strip = false, index = name.indexOf("."),
-                modName = name.substring(0, index),
-                ext = name.substring(index + 1, name.length);
-
-            index = ext.indexOf("!");
-            if (index !== -1) {
-                //Pull off the strip arg.
-                strip = ext.substring(index + 1, ext.length);
-                strip = strip === "strip";
-                ext = ext.substring(0, index);
-            }
-
-            return {
-                moduleName: modName,
-                ext: ext,
-                strip: strip
-            };
-        },
-
-        xdRegExp: /^((\w+)\:)?\/\/([^\/\\]+)/,
-
-        /**
-         * Is an URL on another domain. Only works for browser use, returns
-         * false in non-browser environments. Only used to know if an
-         * optimized .js version of a text resource should be loaded
-         * instead.
-         * @param {String} url
-         * @returns Boolean
-         */
-        useXhr: function (url, protocol, hostname, port) {
-            var match = text.xdRegExp.exec(url),
-                uProtocol, uHostName, uPort;
-            if (!match) {
-                return true;
-            }
-            uProtocol = match[2];
-            uHostName = match[3];
-
-            uHostName = uHostName.split(':');
-            uPort = uHostName[1];
-            uHostName = uHostName[0];
-
-            return (!uProtocol || uProtocol === protocol) &&
-                   (!uHostName || uHostName.toLowerCase() === hostname.toLowerCase()) &&
-                   ((!uPort && !uHostName) || uPort === port);
-        },
-
-        finishLoad: function (name, strip, content, onLoad) {
-            content = strip ? text.strip(content) : content;
-            if (masterConfig.isBuild) {
-                buildMap[name] = content;
-            }
-            onLoad(content);
-        },
-
-        load: function (name, req, onLoad, config) {
-            //Name has format: some.module.filext!strip
-            //The strip part is optional.
-            //if strip is present, then that means only get the string contents
-            //inside a body tag in an HTML string. For XML/SVG content it means
-            //removing the <?xml ...?> declarations so the content can be inserted
-            //into the current doc without problems.
-
-            // Do not bother with the work if a build and text will
-            // not be inlined.
-            if (config.isBuild && !config.inlineText) {
-                onLoad();
-                return;
-            }
-
-            masterConfig.isBuild = config.isBuild;
-
-            var parsed = text.parseName(name),
-                nonStripName = parsed.moduleName + '.' + parsed.ext,
-                url = req.toUrl(nonStripName),
-                useXhr = (masterConfig.useXhr) ||
-                         text.useXhr;
-
-            //Load the text. Use XHR if possible and in a browser.
-            if (!hasLocation || useXhr(url, defaultProtocol, defaultHostName, defaultPort)) {
-                text.get(url, function (content) {
-                    text.finishLoad(name, parsed.strip, content, onLoad);
-                }, function (err) {
-                    if (onLoad.error) {
-                        onLoad.error(err);
-                    }
-                });
-            } else {
-                //Need to fetch the resource across domains. Assume
-                //the resource has been optimized into a JS module. Fetch
-                //by the module name + extension, but do not include the
-                //!strip part to avoid file system issues.
-                req([nonStripName], function (content) {
-                    text.finishLoad(parsed.moduleName + '.' + parsed.ext,
-                                    parsed.strip, content, onLoad);
-                });
-            }
-        },
-
-        write: function (pluginName, moduleName, write, config) {
-            if (buildMap.hasOwnProperty(moduleName)) {
-                var content = text.jsEscape(buildMap[moduleName]);
-                write.asModule(pluginName + "!" + moduleName,
-                               "define(function () { return '" +
-                                   content +
-                               "';});\n");
-            }
-        },
-
-        writeFile: function (pluginName, moduleName, req, write, config) {
-            var parsed = text.parseName(moduleName),
-                nonStripName = parsed.moduleName + '.' + parsed.ext,
-                //Use a '.js' file name so that it indicates it is a
-                //script that can be loaded across domains.
-                fileName = req.toUrl(parsed.moduleName + '.' +
-                                     parsed.ext) + '.js';
-
-            //Leverage own load() method to load plugin value, but only
-            //write out values that do not have the strip argument,
-            //to avoid any potential issues with ! in file names.
-            text.load(nonStripName, req, function (value) {
-                //Use own write() method to construct full module value.
-                //But need to create shell that translates writeFile's
-                //write() to the right interface.
-                var textWrite = function (contents) {
-                    return write(fileName, contents);
-                };
-                textWrite.asModule = function (moduleName, contents) {
-                    return write.asModule(moduleName, fileName, contents);
-                };
-
-                text.write(pluginName, nonStripName, textWrite, config);
-            }, config);
-        }
-    };
-
-    if (typeof process !== "undefined" &&
-             process.versions &&
-             !!process.versions.node) {
-        //Using special require.nodeRequire, something added by r.js.
-        fs = require.nodeRequire('fs');
-
-        text.get = function (url, callback) {
-            var file = fs.readFileSync(url, 'utf8');
-            //Remove BOM (Byte Mark Order) from utf8 files if it is there.
-            if (file.indexOf('\uFEFF') === 0) {
-                file = file.substring(1);
-            }
-            callback(file);
-        };
-    } else if (text.createXhr()) {
-        text.get = function (url, callback, errback) {
-            var xhr = text.createXhr();
-            xhr.open('GET', url, true);
-
-            //Allow overrides specified in config
-            if (masterConfig.onXhr) {
-                masterConfig.onXhr(xhr, url);
-            }
-
-            xhr.onreadystatechange = function (evt) {
-                var status, err;
-                //Do not explicitly handle errors, those should be
-                //visible via console output in the browser.
-                if (xhr.readyState === 4) {
-                    status = xhr.status;
-                    if (status > 399 && status < 600) {
-                        //An http 4xx or 5xx error. Signal an error.
-                        err = new Error(url + ' HTTP status: ' + status);
-                        err.xhr = xhr;
-                        errback(err);
-                    } else {
-                        callback(xhr.responseText);
-                    }
-                }
-            };
-            xhr.send(null);
-        };
-    } else if (typeof Packages !== 'undefined') {
-        //Why Java, why is this so awkward?
-        text.get = function (url, callback) {
-            var encoding = "utf-8",
-                file = new java.io.File(url),
-                lineSeparator = java.lang.System.getProperty("line.separator"),
-                input = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file), encoding)),
-                stringBuffer, line,
-                content = '';
-            try {
-                stringBuffer = new java.lang.StringBuffer();
-                line = input.readLine();
-
-                // Byte Order Mark (BOM) - The Unicode Standard, version 3.0, page 324
-                // http://www.unicode.org/faq/utf_bom.html
-
-                // Note that when we use utf-8, the BOM should appear as "EF BB BF", but it doesn't due to this bug in the JDK:
-                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4508058
-                if (line && line.length() && line.charAt(0) === 0xfeff) {
-                    // Eat the BOM, since we've already found the encoding on this file,
-                    // and we plan to concatenating this buffer with others; the BOM should
-                    // only appear at the top of a file.
-                    line = line.substring(1);
-                }
-
-                stringBuffer.append(line);
-
-                while ((line = input.readLine()) !== null) {
-                    stringBuffer.append(lineSeparator);
-                    stringBuffer.append(line);
-                }
-                //Make sure we return a JavaScript string and not a Java string.
-                content = String(stringBuffer.toString()); //String
-            } finally {
-                input.close();
-            }
-            callback(content);
-        };
-    }
-
-    return text;
-});
-
-define('text!main.html',[],function () { return '\n<div id="navbar" class="navbar navbar-fixed-top">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav">\n                <li class="active"><a href="/#">home</a></li>\n                <li><a href="/#records">dossiers</a></li>\n                <li><a href="/#stores">magazijn</a></li>\n                <li><a href="/#ledgers">boekhouding</a></li>\n                <li><a href="/#reports">rapportages</a></li>\n            </ul>\n            <ul class="nav pull-right">\n                <li><a href="/#helpdesk">helpdesk</a></li>\n                <li><a href="" class="navbar-text">test gebruiker</a></li>\n            </ul>\n\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="content" class="container-fluid">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n            <ul class="nav nav-footer pull-right">\n                <li><a href="/#regelingen/voorwaarden">voorwaarden</a></li>\n                <li><a href="/#regelingen/privacy">privacy</a></li>\n                <li><a href="/#regelingen/ip">intellectueel eigendom</a></li>\n                <li><a href="https://remedy.informatietuin.nl">Remedy</a></li>\n                <li><a href="/#contact">contact</a></li>\n            </ul>\n        </footer>\n    </div>   \n</div>';});
+this['JST']['app/templates/terms.html'] = function(data) { return function (obj,_) {
+var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('<h3>algemene voorwaarden</h3>');}return __p.join('');
+}(data, _)};
 
 /*!
  * jQuery JavaScript Library v1.7.2
@@ -15539,7 +15253,7 @@ define("plugins/backbone.validations", function(){});
 }));
 define('remedy',[
   //template
-  "text!main.html",
+  //"text!main.html",
 
   // Libraries.
   "jquery",
@@ -15553,7 +15267,7 @@ define('remedy',[
   "plugins/backbone.subroute"
 ],
 
-function(navTemplate, $, _, Backbone) {
+function($, _, Backbone) {
 
   // Provide a global location to place configuration settings and module
   // creation.
@@ -15563,18 +15277,6 @@ function(navTemplate, $, _, Backbone) {
     modules: [],
     currentUser: "Remko"
   };
-
-  remedy.navView = Backbone.View.extend({
-    el: '#main',
-    render: function () {
-      var template;
-      
-      template = _.template(navTemplate);
-      this.$el.html(template);
-
-      return this;
-    }
-  });
 
   // remove all references to a view
   Backbone.View.prototype.close = function(){
@@ -15610,7 +15312,611 @@ define("requirebootstrap", ["jquery"], (function (global) {
     }
 }(this)));
 
-define('nest/nestCollection',[
+/**
+ * @license RequireJS text 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
+ * Available via the MIT or new BSD license.
+ * see: http://github.com/requirejs/text for details
+ */
+/*jslint regexp: true */
+/*global require: false, XMLHttpRequest: false, ActiveXObject: false,
+  define: false, window: false, process: false, Packages: false,
+  java: false, location: false */
+
+define('text',['module'], function (module) {
+    
+
+    var progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'],
+        xmlRegExp = /^\s*<\?xml(\s)+version=[\'\"](\d)*.(\d)*[\'\"](\s)*\?>/im,
+        bodyRegExp = /<body[^>]*>\s*([\s\S]+)\s*<\/body>/im,
+        hasLocation = typeof location !== 'undefined' && location.href,
+        defaultProtocol = hasLocation && location.protocol && location.protocol.replace(/\:/, ''),
+        defaultHostName = hasLocation && location.hostname,
+        defaultPort = hasLocation && (location.port || undefined),
+        buildMap = [],
+        masterConfig = (module.config && module.config()) || {},
+        text, fs;
+
+    text = {
+        version: '2.0.1',
+
+        strip: function (content) {
+            //Strips <?xml ...?> declarations so that external SVG and XML
+            //documents can be added to a document without worry. Also, if the string
+            //is an HTML document, only the part inside the body tag is returned.
+            if (content) {
+                content = content.replace(xmlRegExp, "");
+                var matches = content.match(bodyRegExp);
+                if (matches) {
+                    content = matches[1];
+                }
+            } else {
+                content = "";
+            }
+            return content;
+        },
+
+        jsEscape: function (content) {
+            return content.replace(/(['\\])/g, '\\$1')
+                .replace(/[\f]/g, "\\f")
+                .replace(/[\b]/g, "\\b")
+                .replace(/[\n]/g, "\\n")
+                .replace(/[\t]/g, "\\t")
+                .replace(/[\r]/g, "\\r")
+                .replace(/[\u2028]/g, "\\u2028")
+                .replace(/[\u2029]/g, "\\u2029");
+        },
+
+        createXhr: masterConfig.createXhr || function () {
+            //Would love to dump the ActiveX crap in here. Need IE 6 to die first.
+            var xhr, i, progId;
+            if (typeof XMLHttpRequest !== "undefined") {
+                return new XMLHttpRequest();
+            } else if (typeof ActiveXObject !== "undefined") {
+                for (i = 0; i < 3; i += 1) {
+                    progId = progIds[i];
+                    try {
+                        xhr = new ActiveXObject(progId);
+                    } catch (e) {}
+
+                    if (xhr) {
+                        progIds = [progId];  // so faster next time
+                        break;
+                    }
+                }
+            }
+
+            return xhr;
+        },
+
+        /**
+         * Parses a resource name into its component parts. Resource names
+         * look like: module/name.ext!strip, where the !strip part is
+         * optional.
+         * @param {String} name the resource name
+         * @returns {Object} with properties "moduleName", "ext" and "strip"
+         * where strip is a boolean.
+         */
+        parseName: function (name) {
+            var strip = false, index = name.indexOf("."),
+                modName = name.substring(0, index),
+                ext = name.substring(index + 1, name.length);
+
+            index = ext.indexOf("!");
+            if (index !== -1) {
+                //Pull off the strip arg.
+                strip = ext.substring(index + 1, ext.length);
+                strip = strip === "strip";
+                ext = ext.substring(0, index);
+            }
+
+            return {
+                moduleName: modName,
+                ext: ext,
+                strip: strip
+            };
+        },
+
+        xdRegExp: /^((\w+)\:)?\/\/([^\/\\]+)/,
+
+        /**
+         * Is an URL on another domain. Only works for browser use, returns
+         * false in non-browser environments. Only used to know if an
+         * optimized .js version of a text resource should be loaded
+         * instead.
+         * @param {String} url
+         * @returns Boolean
+         */
+        useXhr: function (url, protocol, hostname, port) {
+            var match = text.xdRegExp.exec(url),
+                uProtocol, uHostName, uPort;
+            if (!match) {
+                return true;
+            }
+            uProtocol = match[2];
+            uHostName = match[3];
+
+            uHostName = uHostName.split(':');
+            uPort = uHostName[1];
+            uHostName = uHostName[0];
+
+            return (!uProtocol || uProtocol === protocol) &&
+                   (!uHostName || uHostName.toLowerCase() === hostname.toLowerCase()) &&
+                   ((!uPort && !uHostName) || uPort === port);
+        },
+
+        finishLoad: function (name, strip, content, onLoad) {
+            content = strip ? text.strip(content) : content;
+            if (masterConfig.isBuild) {
+                buildMap[name] = content;
+            }
+            onLoad(content);
+        },
+
+        load: function (name, req, onLoad, config) {
+            //Name has format: some.module.filext!strip
+            //The strip part is optional.
+            //if strip is present, then that means only get the string contents
+            //inside a body tag in an HTML string. For XML/SVG content it means
+            //removing the <?xml ...?> declarations so the content can be inserted
+            //into the current doc without problems.
+
+            // Do not bother with the work if a build and text will
+            // not be inlined.
+            if (config.isBuild && !config.inlineText) {
+                onLoad();
+                return;
+            }
+
+            masterConfig.isBuild = config.isBuild;
+
+            var parsed = text.parseName(name),
+                nonStripName = parsed.moduleName + '.' + parsed.ext,
+                url = req.toUrl(nonStripName),
+                useXhr = (masterConfig.useXhr) ||
+                         text.useXhr;
+
+            //Load the text. Use XHR if possible and in a browser.
+            if (!hasLocation || useXhr(url, defaultProtocol, defaultHostName, defaultPort)) {
+                text.get(url, function (content) {
+                    text.finishLoad(name, parsed.strip, content, onLoad);
+                }, function (err) {
+                    if (onLoad.error) {
+                        onLoad.error(err);
+                    }
+                });
+            } else {
+                //Need to fetch the resource across domains. Assume
+                //the resource has been optimized into a JS module. Fetch
+                //by the module name + extension, but do not include the
+                //!strip part to avoid file system issues.
+                req([nonStripName], function (content) {
+                    text.finishLoad(parsed.moduleName + '.' + parsed.ext,
+                                    parsed.strip, content, onLoad);
+                });
+            }
+        },
+
+        write: function (pluginName, moduleName, write, config) {
+            if (buildMap.hasOwnProperty(moduleName)) {
+                var content = text.jsEscape(buildMap[moduleName]);
+                write.asModule(pluginName + "!" + moduleName,
+                               "define(function () { return '" +
+                                   content +
+                               "';});\n");
+            }
+        },
+
+        writeFile: function (pluginName, moduleName, req, write, config) {
+            var parsed = text.parseName(moduleName),
+                nonStripName = parsed.moduleName + '.' + parsed.ext,
+                //Use a '.js' file name so that it indicates it is a
+                //script that can be loaded across domains.
+                fileName = req.toUrl(parsed.moduleName + '.' +
+                                     parsed.ext) + '.js';
+
+            //Leverage own load() method to load plugin value, but only
+            //write out values that do not have the strip argument,
+            //to avoid any potential issues with ! in file names.
+            text.load(nonStripName, req, function (value) {
+                //Use own write() method to construct full module value.
+                //But need to create shell that translates writeFile's
+                //write() to the right interface.
+                var textWrite = function (contents) {
+                    return write(fileName, contents);
+                };
+                textWrite.asModule = function (moduleName, contents) {
+                    return write.asModule(moduleName, fileName, contents);
+                };
+
+                text.write(pluginName, nonStripName, textWrite, config);
+            }, config);
+        }
+    };
+
+    if (typeof process !== "undefined" &&
+             process.versions &&
+             !!process.versions.node) {
+        //Using special require.nodeRequire, something added by r.js.
+        fs = require.nodeRequire('fs');
+
+        text.get = function (url, callback) {
+            var file = fs.readFileSync(url, 'utf8');
+            //Remove BOM (Byte Mark Order) from utf8 files if it is there.
+            if (file.indexOf('\uFEFF') === 0) {
+                file = file.substring(1);
+            }
+            callback(file);
+        };
+    } else if (text.createXhr()) {
+        text.get = function (url, callback, errback) {
+            var xhr = text.createXhr();
+            xhr.open('GET', url, true);
+
+            //Allow overrides specified in config
+            if (masterConfig.onXhr) {
+                masterConfig.onXhr(xhr, url);
+            }
+
+            xhr.onreadystatechange = function (evt) {
+                var status, err;
+                //Do not explicitly handle errors, those should be
+                //visible via console output in the browser.
+                if (xhr.readyState === 4) {
+                    status = xhr.status;
+                    if (status > 399 && status < 600) {
+                        //An http 4xx or 5xx error. Signal an error.
+                        err = new Error(url + ' HTTP status: ' + status);
+                        err.xhr = xhr;
+                        errback(err);
+                    } else {
+                        callback(xhr.responseText);
+                    }
+                }
+            };
+            xhr.send(null);
+        };
+    } else if (typeof Packages !== 'undefined') {
+        //Why Java, why is this so awkward?
+        text.get = function (url, callback) {
+            var encoding = "utf-8",
+                file = new java.io.File(url),
+                lineSeparator = java.lang.System.getProperty("line.separator"),
+                input = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file), encoding)),
+                stringBuffer, line,
+                content = '';
+            try {
+                stringBuffer = new java.lang.StringBuffer();
+                line = input.readLine();
+
+                // Byte Order Mark (BOM) - The Unicode Standard, version 3.0, page 324
+                // http://www.unicode.org/faq/utf_bom.html
+
+                // Note that when we use utf-8, the BOM should appear as "EF BB BF", but it doesn't due to this bug in the JDK:
+                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4508058
+                if (line && line.length() && line.charAt(0) === 0xfeff) {
+                    // Eat the BOM, since we've already found the encoding on this file,
+                    // and we plan to concatenating this buffer with others; the BOM should
+                    // only appear at the top of a file.
+                    line = line.substring(1);
+                }
+
+                stringBuffer.append(line);
+
+                while ((line = input.readLine()) !== null) {
+                    stringBuffer.append(lineSeparator);
+                    stringBuffer.append(line);
+                }
+                //Make sure we return a JavaScript string and not a Java string.
+                content = String(stringBuffer.toString()); //String
+            } finally {
+                input.close();
+            }
+            callback(content);
+        };
+    }
+
+    return text;
+});
+
+define('text!templates/nav.html',[],function () { return '\n<div id="navbar" class="navbar navbar-fixed-top">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav">\n                <li class="active"><a href="/#">home</a></li>\n                <li><a href="/#records">dossiers</a></li>\n                <li><a href="/#register">kassa</a></li>\n                <li><a href="/#store">magazijn</a></li>\n            </ul>\n            <ul class="nav pull-right">\n                <li><a href="/#helpdesk">helpdesk</a></li>\n                <li><a href="" class="navbar-text">test gebruiker</a></li>\n            </ul>\n\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="content" class="container-fluid">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n            <ul class="nav nav-footer pull-right">\n                <li><a href="/#regelingen/voorwaarden">voorwaarden</a></li>\n                <li><a href="/#regelingen/privacy">privacy</a></li>\n                <li><a href="/#regelingen/ip">intellectueel eigendom</a></li>\n                <li><a href="https://remedy.informatietuin.nl" data-bypass>Remedy</a></li>\n            </ul>\n        </footer>\n    </div>   \n</div>';});
+
+define('views/nav_view',[
+    "jquery",
+    "lodash",
+    "backbone",
+
+    "text!templates/nav.html"
+    ], 
+
+    function ($, _, Backbone, tmpl){
+
+        var NavView = Backbone.View.extend({
+            
+            id: "",
+            className: "",
+            tagName: "div",
+            
+            initialize: function () {
+                
+                this.template = _.template(tmpl);
+
+                this.views = [];
+            },
+
+            render: function () {
+
+                this.$el.html(this.template);
+
+                return this;
+            }
+        });
+
+        return NavView;
+    }
+);
+define('text!templates/home.html',[],function () { return '<h3>home</h3>\n<ul>\n    <li><a href="#records">dossiers</a></li>\n    <li><a href="#register">kassa</a></li>\n    <li><a href="#store">magazijn</a></li>\n<ul>';});
+
+define('views/home_view',[
+    "jquery",
+    "lodash",
+    "backbone",
+
+    "text!templates/home.html"
+    ], 
+
+    function ($, _, Backbone, tmpl){
+
+        var HomeView = Backbone.View.extend({
+            
+            id: "home",
+            className: "row-fluid",
+            tagName: "div",
+            
+            initialize: function () {
+                
+                this.template = _.template(tmpl);
+
+                this.views = [];
+            },
+
+            render: function () {
+
+                this.$el.html(this.template);
+
+                return this;
+            }
+        });
+
+        return HomeView;
+    }
+);
+define('text!templates/ip.html',[],function () { return '<h3>intellectueel eigendom</h3>';});
+
+define('views/policy_ip_view',[
+    "jquery",
+    "lodash",
+    "backbone",
+
+    "text!templates/ip.html"
+    ], 
+
+    function ($, _, Backbone, tmpl){
+
+        var IpView = Backbone.View.extend({
+            
+            id: "register",
+            className: "row-fluid",
+            tagName: "div",
+            
+            initialize: function () {
+                
+                this.template = _.template(tmpl);
+
+                this.views = [];
+            },
+
+            render: function () {
+
+                this.$el.html(this.template);
+
+                return this;
+            }
+        });
+
+        return IpView;
+    }
+);
+define('text!templates/privacy.html',[],function () { return '<h3>privacy</h3>';});
+
+define('views/policy_privacy_view',[
+    "jquery",
+    "lodash",
+    "backbone",
+
+    "text!templates/privacy.html"
+    ], 
+
+    function ($, _, Backbone, tmpl){
+
+        var PrivacyView = Backbone.View.extend({
+            
+            id: "register",
+            className: "row-fluid",
+            tagName: "div",
+            
+            initialize: function () {
+                
+                this.template = _.template(tmpl);
+
+                this.views = [];
+            },
+
+            render: function () {
+
+                this.$el.html(this.template);
+
+                return this;
+            }
+        });
+
+        return PrivacyView;
+    }
+);
+define('text!templates/terms.html',[],function () { return '<h3>algemene voorwaarden</h3>';});
+
+define('views/policy_terms_view',[
+    "jquery",
+    "lodash",
+    "backbone",
+
+    "text!templates/terms.html"
+    ], 
+
+    function ($, _, Backbone, tmpl){
+
+        var TermsView = Backbone.View.extend({
+            
+            id: "register",
+            className: "row-fluid",
+            tagName: "div",
+            
+            initialize: function () {
+                
+                this.template = _.template(tmpl);
+
+                this.views = [];
+            },
+
+            render: function () {
+
+                this.$el.html(this.template);
+
+                return this;
+            }
+        });
+
+        return TermsView;
+    }
+);
+define('text!templates/helpdesk.html',[],function () { return '<h3>helpdesk</h3>';});
+
+define('views/helpdesk_view',[
+    "jquery",
+    "lodash",
+    "backbone",
+
+    "text!templates/helpdesk.html"
+    ], 
+
+    function ($, _, Backbone, tmpl){
+
+        var IpView = Backbone.View.extend({
+            
+            id: "register",
+            className: "row-fluid",
+            tagName: "div",
+            
+            initialize: function () {
+                
+                this.template = _.template(tmpl);
+
+                this.views = [];
+            },
+
+            render: function () {
+
+                this.$el.html(this.template);
+
+                return this;
+            }
+        });
+
+        return IpView;
+    }
+);
+define('router',[
+  "remedy",
+  "views/nav_view",
+  "views/home_view",
+  "views/policy_ip_view",
+  "views/policy_privacy_view",
+  "views/policy_terms_view",
+  "views/helpdesk_view"
+],
+
+  function(remedy, NavView, HomeView, IpView, PrivacyView, 
+                                    TermsView, HelpdeskView) {
+
+    var Router = Backbone.Router.extend({
+
+        routes: {
+
+        // records subrouter
+        // register subrouter
+        // store subrouter
+
+            "": "home",
+            "regelingen/voorwaarden": "voorwaarden",
+            "regelingen/ip": "ip",
+            "regelingen/privacy": "privacy",
+            "helpdesk": "helpdesk"
+        },
+
+        initialize: function() {
+
+            new NavView({el: "#main"}).render();
+        },
+
+        home: function () {
+
+            this.showView(new HomeView());
+        },
+
+        voorwaarden: function () {
+
+            this.showView(new TermsView());
+        },
+
+        ip: function () {
+
+            this.showView(new IpView());
+        },
+
+        privacy: function () {
+
+            this.showView(new PrivacyView());
+        },
+
+        helpdesk: function () {
+
+            this.showView(new HelpdeskView());
+        },
+
+        showView: function (view) {
+
+            try {
+
+                if (this.currentView) {
+                    // close removes all events and dom elements
+                    this.currentView.close();
+                }
+
+                this.currentView = view;
+                this.currentView.render();
+                $("#content").html(this.currentView.el);
+
+            } catch (e) {
+
+                console.log(e);
+            }
+        }   
+    });
+
+    return Router;
+  }
+);
+
+define('helpers/nestCollection',[
     "lodash"
 ], function (_){
 
@@ -15645,13 +15951,13 @@ define('nest/nestCollection',[
 
 
 
-define('nest/nestModel',[
+define('helpers/nestModel',[
     "lodash"
 ], function (_){
 
     // https://gist.github.com/1610397 nestCollection helper function by https://gist.github.com/geddesign
 
-    var nestModel = function(model, attributeName, nestedModel) {
+    var nestModel = function (model, attributeName, nestedModel) {
       
         model.set(attributeName, nestedModel.toJSON(), {silent: true});
             //create empty arrays if none
@@ -15678,6 +15984,71 @@ define('nest/nestModel',[
 
 
 
+define('records/config',[],
+    function () {
+
+        var config = {
+            required: {
+                givenName: "voornaam",
+                familyName: "achternaam",
+                dateOfBirth: "1901-01-01",
+                phonePreferred: "00-00-000000",
+                emailPreferred: "mail@provider.com",
+                ice: "ice",
+                homeAddress: "thuis adres"
+            },
+            nonRequired: {
+                sex: "geslacht",
+                workEmail: "werk email",
+                privateEmail: "prive email",
+                workPhone: "werk telefoon",
+                privatePhone: "prive telefoon",
+                facebook: "Facebook",
+                twitter: "Twitter",
+                linkedin: "LinkedIn",
+                website: "website",    
+                workAddress: "werk adres",
+                deliveryAddress: "aflever adres",
+                billingAddress: "factuur adres",
+                idNumber: "BSN",
+                idDocumentNr: "legitimatie nr",
+                idDocumentScr: "scan legitmatie",
+                insuranceCompany: "verzekeraar",
+                insuranceNumber: "polisnummer"
+            },
+            basicPersInf: {
+                givenName: "voornaam",
+                familyName: "achternaam",
+                dateOfBirth: "1901-01-01",
+                phonePreferred: "0000000000",
+                emailPreferred: "mail@provider.com"
+            },
+            otherPersInf: {
+                ice: "ice",
+                homeAddress: "thuis adres",
+                sex: "geslacht",
+                workEmail: "werk email",
+                privateEmail: "prive email",
+                workPhone: "werk telefoon",
+                privatePhone: "prive telefoon",
+                facebook: "Facebook",
+                twitter: "Twitter",
+                linkedin: "LinkedIn",
+                website: "website",    
+                workAddress: "werk adres",
+                deliveryAddress: "aflever adres",
+                billingAddress: "factuur adres",
+                idNumber: "BSN",
+                idDocumentNr: "legitimatie nr",
+                idDocumentScr: "scan legitmatie",
+                insuranceCompany: "verzekeraar",
+                insuranceNumber: "polisnummer"
+            }
+        };
+
+        return config;
+    }
+);
 define('records/models/consult_model',[
 	"jquery",
 	"lodash",
@@ -15780,7 +16151,7 @@ define('records/models/treatment_model',[
     "jquery",
     "lodash",
     "backbone",
-    "nest/nestCollection",
+    "helpers/nestCollection",
     "records/collections/injection_collection"
     ],
 
@@ -15875,7 +16246,7 @@ define('records/models/photo_set_model',[
     "jquery",
     "lodash",
     "backbone",
-    "nest/nestCollection",
+    "helpers/nestCollection",
     "records/collections/photo_collection"
     ],
 
@@ -16174,16 +16545,38 @@ define('records/models/address_model',[
 		return AddressModel;
 	}
 );
+define('records/models/ice_model',[
+	"jquery",
+	"lodash",
+	"backbone"
+	],
+
+	function ($, _, Backbone) {
+
+		var IceModel = Backbone.Model.extend({
+
+			//simple attributes get a default value
+			defaults: {
+				givenName: "",
+				familyName: "",
+				relation: "",
+				telecomIdentifier: ""
+			},
+
+			initialize: function () {}
+
+		});
+	
+		return IceModel;
+	}
+);
 define('records/models/record_model',[
     "jquery",
     "lodash",
     "backbone",
-    "nest/nestCollection",
-    "nest/nestModel",
-    //"records/collections/medical_collection",
-    //"records/collections/ice_collection",
-    //"records/collections/telecom_collection",
-    //"records/collections/address_collection",
+    "helpers/nestCollection",
+    "helpers/nestModel",
+    "records/config",
     "records/collections/consult_collection",
     "records/collections/treatment_collection",
     "records/collections/photo_set_collection",
@@ -16191,72 +16584,54 @@ define('records/models/record_model',[
     "records/collections/offer_collection",
     "records/collections/receipt_collection",
     "records/collections/log_collection",
-    "records/models/address_model"
+    "records/models/address_model",
+    "records/models/ice_model"
     ],
 
-    function ($, _, Backbone, nestCollection, nestModel,
-            Medicals, Ices, Telecoms, Addresses, Consults, Treatments,
-            PhotoSets, Notes, Offers, Receipts, Logs, Address) {
+    function ($, _, Backbone, nestCollection, nestModel, config,
+                    Consults, Treatments, PhotoSets, Notes, Offers, Receipts,
+                    Logs, AddressModel, IceModel) {
 
         var RecordModel = Backbone.Model.extend({
 
             //simple attributes get a default value
             defaults: {
-                // personal
-                "givenName": "Remko",
-                "familyName": "Boschker",
-                "sex": "man",
-                "dateOfBirth": "1977-03-15T10:06:03.864Z",
-                "phonePreferred": "+31-6-12345678",
-                "emailPreferred": "remko@informatietuin.nl",
-                
 
-                /*
-                    "idNumber": "bsn",
-                    "idDocumentNr": "",
-                    "idDocumentScr": "src",
-                    "insuranceCompany": "maatschappij",
-                    "insuranceNumber": "polisnummer",
-
-                
-                    <li><a href="#">werk email</a></li>
-                    <li><a href="#">prive email</a></li>
-                    <li><a href="#">werk telefoon</a></li>
-                    <li><a href="#">prive telefoon</a></li>
-                    <li><a href="#">ice</a></li>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                    <li><a href="#">website</a></li>
-                    <li><a href="#">adres</a></li>
-
-                    <li><a href="#">BSN</a></li>
-                    <li><a href="#">scan legitmatie</a></li>
-
-                    <li><a href="#">polisnummer</a></li>
-                    <li><a href="#">verzekeraar</a></li>
-                */    
-                          
-
-                // management
                 "created": 0,
                 "updated": 0,
                 "viewed": 0
 
-                //service
             },
 
             //nested collections need to be initialised
             initialize: function() {
 
-                /*
+                console.log(config);
+
+                _.each(config.required, function (value, key) {
+
+                    console.log(key);
+                    console.log(value);
+
+
+                    this.set(key, value, {silent: true});
+                }, this);
+                
                 this.homeAddress = nestModel(
                         this,
                         'homeAddress',
-                        new Address(this.get('homeAddress'))
+                        new AddressModel(this.get('homeAddress'))
                     );
 
-                
+                this.ice = nestModel(
+                        this,
+                        'ice',
+                        new IceModel(this.get('ice'))
+                    );
+
+                this.on("change", this.setUpdated, this);
+
+                /*
                 this.medicals = nestCollection(this, 'medicals',
                         new Medicals(this.get('medicals')));
                 this.medicals.add();
@@ -16301,6 +16676,11 @@ define('records/models/record_model',[
                         new Logs(this.get('logs')));
                 this.logs.add();
                 */
+            },
+
+            setUpdated: function () {
+
+                this.set("updated", Date.now(), {silent: true});
             },
 
             age: function () {
@@ -16360,6 +16740,11 @@ define('records/models/record_model',[
 
                     console.log("no match phonenumber: ", phoneNumber);
                 }
+            },
+
+            logEvent: function () {
+
+                console.log("change");
             }
         });
     
@@ -16464,6 +16849,7 @@ define('records/views/records_search_view',[
 			id: "search_records",
 
 			events: {
+				
 				"keyup input#search": "renderList"
 			},
 
@@ -16576,6 +16962,7 @@ define('records/views/records_recent_view',[
 			},
 			
 			events: {
+				
 				"change select": "renderList"
 			},
 			
@@ -16639,11 +17026,7 @@ define('records/views/records_recent_view',[
 					throw new Error("invalid select value");
 				}
 
-				console.log(recent);
-				
 				this.collection.each(function (record) {
-
-					console.log(record.get("viewed"));
 
 					if (recent < record.get("viewed")) {
 
@@ -16670,6 +17053,7 @@ define('records/views/appointments_mini_view',[
 	"text!modules/records/templates/appointments_mini.html"
 	],
 	function ($, _, Backbone, tmpl) {
+		
 		var AppointmentsMiniView = Backbone.View.extend({
 
 		});
@@ -16686,16 +17070,20 @@ define('records/views/appointments_view',[
 	"records/views/appointments_mini_view"
 	],
 	function ($, _, Backbone, tmpl, AppointmentsMiniView) {
+		
 		var AppointmentsView = Backbone.View.extend({
 			
 			tagName: "section",
 			className: "span3 column",
 
-			initialize: function () {		
+			initialize: function () {
+
 				this.template = _.template(tmpl);
 				this.collection.on("change", this.render, this);
 			},
-			render: function () {				
+
+			render: function () {
+
 				this.$el.html(this.template);
 				return this;
 			}
@@ -16726,12 +17114,13 @@ define('records/views/records_new_view',[
 
 				this.template = _.template(tmpl);
 
-				this.collection.on("add", this.renderList, this);
+				this.collection.on("change", this.renderList, this);
 
 				this.newRecordViews = [];
 			},
 			
 			events: {
+				
 				"click #new_record": "newRecord"
 			},
 			
@@ -16835,7 +17224,9 @@ define('records/views/records_view',[
 				this.views.push(new RecordsNewView(
 					{collection: this.collection}));
 			},
+
 			render: function () {
+				
 				_.each(
 					this.views,
 					function (view) {this.$el.append(view.render().el);}, 
@@ -16847,14 +17238,15 @@ define('records/views/records_view',[
 		return RecordsView;
 	}
 );
-define('text!modules/records/templates/record.html',[],function () { return '<div class="span4 column" id="left_column"></div>\n<div class="span8 column">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active">\n                    <a href="#consults" data-toggle="tab">\n                        consults\n                    </a>\n                </li>\n                <li>\n                    <a href="#offers" data-toggle="tab">\n                        offertes\n                    </a>\n                </li>\n                <li>\n                    <a href="#treatments" data-toggle="tab">\n                        behandelingen\n                    </a>\n                </li>\n                <li>\n                    <a href="#photos" data-toggle="tab">\n                        foto&#39;s\n                    </a>\n                </li>\n                <li>\n                    <a href="#medicalHistory" data-toggle="tab">\n                        medische geschiedenis\n                    </a>\n                </li>       \n                <li>\n                    <a href="#service" data-toggle="tab">\n                        service\n                    </a>\n                </li>\n                <li>\n                    <a href="#management" data-toggle="tab">\n                        beheer\n                    </a>\n                </li>\n            </ul>\n            <div class="tab-content">\n                <div class="tab-pane active" id="consults">\n                    <div class="row-fluid">\n                        <div class="span6">\n                            <h4>anamnese</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div >\n                        <div class="span6">\n                            <h4>onderzoek</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                    </div>\n                    <div class="row-fluid">\n                        <div class="span6">\n                            <h4>conclusie</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                        <div class="span6">\n                            <h4>beleid</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                    </div>\n                </div>\n                <div class="tab-pane" id="offers">\n                    <p>offertes</p>\n                </div>\n                <div class="tab-pane" id="treatments">\n                    <p>behandelingen</p>\n                </div>\n                <div class="tab-pane" id="photos">\n                    <p>fotos</p>\n                </div>\n                <div class="tab-pane" id="medicalHistory">\n                    <p>medische geschiedenis en waarschuwingen</p>\n                </div>\n                <div class="tab-pane" id="service">\n                    <p>service</p>\n                    <p>newsletter</p>\n                    <p>drinks</p>\n                    <p>promotions</p>\n                </div>\n                <div class="tab-pane" id="management">\n                    <p>beheer</p>\n                    <p>created, viewed, updated</p>\n                    <p>flags, payments due</p>\n                    <p>number of appointments missed, changed, no-shows</p>\n                    <p>exporteren</p>\n                    <p>toestemming om in te zien</p>\n                    <p>toestemming om te delen met een ander systeem</p>\n                    <p>log</p>\n                </div>\n            </div>\n        </div>    \n    </div>\n';});
+define('text!modules/records/templates/record.html',[],function () { return '<div class="span4 column" id="left_column"></div>\n<div class="span8 column">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active">\n                    <a href="#consults" data-toggle="tab">\n                        consults\n                    </a>\n                </li>\n                <li>\n                    <a href="#treatments" data-toggle="tab">\n                        behandelingen\n                    </a>\n                </li>\n                <li>\n                    <a href="#photos" data-toggle="tab">\n                        foto&#39;s\n                    </a>\n                </li>\n                <li>\n                    <a href="#medicalHistory" data-toggle="tab">\n                        medische geschiedenis\n                    </a>\n                </li>       \n                <li>\n                    <a href="#service" data-toggle="tab">\n                        service\n                    </a>\n                </li>\n                <li>\n                    <a href="#management" data-toggle="tab">\n                        beheer\n                    </a>\n                </li>\n            </ul>\n            <div class="tab-content">\n                <div class="tab-pane active" id="consults">\n                    <div class="row-fluid">\n                        <div class="span6">\n                            <h4>anamnese</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div >\n                        <div class="span6">\n                            <h4>onderzoek</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                    </div>\n                    <div class="row-fluid">\n                        <div class="span6">\n                            <h4>conclusie</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                        <div class="span6">\n                            <h4>beleid</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                    </div>\n                </div>\n                <div class="tab-pane" id="treatments">\n                    <p>aantekeningen</p>\n                    <p>tekening</p>\n                    <p>presets</p>\n                    <p>kortingen/prijs</p>\n                    <p>bladeren</p>\n                </div>\n                <div class="tab-pane" id="photos">\n                    <p>fotos</p>\n                </div>\n                <div class="tab-pane" id="medicalHistory">\n                    <p>medische geschiedenis en waarschuwingen</p>\n                </div>\n                <div class="tab-pane" id="service">\n                    <p>service</p>\n                    <p>newsletter</p>\n                    <p>drinks</p>\n                    <p>promotions</p>\n                    <p>netwerk klant</p>\n                </div>\n                <div class="tab-pane" id="management">\n                    <p>beheer</p>\n                    <p>created, viewed, updated</p>\n                    <p>flags, payments due</p>\n                    <p>number of appointments missed, changed, no-shows</p>\n                    <p>exporteren</p>\n                    <p>toestemming om in te zien</p>\n                    <p>toestemming om te delen met een ander systeem</p>\n                    <p>log</p>\n                </div>\n            </div>\n        </div>    \n    </div>\n';});
 
-define('text!records/templates/basic_details.html',[],function () { return '<h3><%= givenName %>&nbsp;<%= familyName%></h3>\n<div class="row-fluid">\n    <img class="passphoto span4" src="http://placehold.it/180x240">\n    <div class="span8">\n        <table class="table">\n            <tbody>\n                <tr>\n                    <td>\n                        <%= sex %> &nbsp;\n                        <%=this.model.formDob()%>\n                        &nbsp;(<%=this.model.age()%>)\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%=this.model.formPhonePreferred()%>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%=emailPreferred%>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <i class="icon-heart"></i>\n                        <i class="icon-heart"></i>\n                        <i class="icon-heart"></i>\n                    </td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>  ';});
+define('text!records/templates/basic_details.html',[],function () { return '<h3><%= givenName %>&nbsp;<%= familyName %></h3>\n<div class="row-fluid">\n    <img class="passphoto span6" src="http://placehold.it/180x240">\n    <div class="span6">\n        <table class="table">\n            <tbody>\n                <tr>\n                    <td>\n                        <%= givenName %>\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= givenName %>"\n                                data-key="givenName">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                       <%= familyName %>\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= familyName %>"\n                                data-key="familyName">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%= dob %> &nbsp;(<%= age %>)\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= dob %>"\n                                data-key="dateOfBirth">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%= phone %>\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= phone %>" \n                                data-key="phonePreferred">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%= mail %>\n                    </td>\n                    <td class="input">\n                        <input  type="text" \n                                value="<%= mail %>" \n                                data-key="emailPreferred">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td class="block-toggle">\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                    </td>\n                </tr>\n                <tr>\n                    <td class="block-toggle">\n                        <i class="icon-heart"></i>\n                        <i class="icon-heart"></i>\n                        <i class="icon-heart"></i>\n                    </td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>  ';});
 
 define('records/views/basic_details_view',[
 	"jquery",
 	"lodash",
 	"backbone",
+	//"helpers/input",
 	"text!records/templates/basic_details.html"
 	], 
 
@@ -16865,6 +17257,13 @@ define('records/views/basic_details_view',[
 			id: "personal",
 			className: "",
 
+			events: {
+
+				"click tr": "toggleRow",
+                "click input": "inputClicked",
+                "keyup input": "processKeyup"
+			},
+
 			initialize: function () {
 				
 				this.template = _.template(tmpl);
@@ -16873,25 +17272,149 @@ define('records/views/basic_details_view',[
 			},
 
 			render: function () {
-				this.$el.html(this.template(this.model.toJSON()));
+				
+				this.$el.html(this.template({
+					givenName: this.model.get("givenName"),
+					familyName: this.model.get("familyName"),
+					dob: this.model.formDob(),
+					age: this.model.age(),
+					phone: this.model.formPhonePreferred(),
+					mail: this.model.get("emailPreferred")
+				}));
 
 				return this;
-			}
+			},
+
+			toggleRow: function (event) {
+
+                var row = $(event.currentTarget);
+                var inputObj = row.find("td > input");
+
+                if (row.hasClass("input-visible")) {
+
+                    this.storeInput(inputObj);
+                    row.toggleClass("input-visible");
+
+
+                } else {
+
+                    row.toggleClass("input-visible");
+                    inputObj.focus();
+
+                }
+
+                //$(event.currentTarget).children("td").toggle();
+                //$(event.currentTarget).find("td > input:visible").focus();
+            },
+
+            inputClicked: function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+            },
+
+            storeInput: function (inputObj) {
+
+                var key = inputObj.data().key;
+                var value = inputObj.val();
+
+                if (this.model.get(key) !== value) {
+                    
+                    this.model.set(key, value);
+                    this.model.save();
+                }               
+                
+            },
+
+            processKeyup: function (event) {
+            
+                // return saves the value and exits the input
+                // shift + return does the same and moves to the
+                // next field. If there are no more fields, it goes
+                // to the next section on the page. No more sections,
+                // it moves to the first
+                if (event.keyCode === 13) {
+
+                    var inputObj = $(event.target);
+                    var row = inputObj.parents(".input-visible");
+
+                    this.storeInput(inputObj); 
+                    row.toggleClass("input-visible");
+                }
+                    /*
+                    $(event.target).focusout();
+                    //this.storeAndToggle(event);
+
+                    if (event.shiftKey) {
+
+                        //move to next field
+                        this.nextField();
+
+                    } 
+                }
+
+                // tab on an input element saves and moves
+                // to the next field. The default behaviour needs
+                // to be intercepted to avoid the normal browser tab
+                if (event.keyCode === 9) {
+
+                    event.preventDefault();
+                    //this.storeAndToggle(event);
+                    this.nextField();
+                }
+
+                // backspace moves the cursor one back and erases a char
+                // shift+backspace saves the value and moves back a field
+                // if there are no more fields it moves back a section. No
+                // more sections, it moves to the last.
+                if (event.keyCode === 8 && event.shiftkey) {
+
+                    event.preventDefault();
+                    //this.storeAndToggle(event);
+                    this.previousField();
+
+                }*/
+                
+            }
+
+            /*
+            previousField: function () {
+
+            },
+
+            nextField: function () {
+
+                //this.toggleInput($("input:focus"));
+
+            },
+
+            storeAndToggle: function (event) {
+
+                console.log("storeAndToggle");
+
+                this.storeInput(event);
+                this.toggleInput($(event.target));
+          
+            }
+            */  
 		});
 
 		return PersonalView;
 	}
 );
-define('text!records/templates/medical_warnings.html',[],function () { return '<h4>medische waarschuwingen</h4>        \n<table class="table">\n    <tbody>\n        <tr id="">\n            <td>gevoeligheid</td>\n            <td>lidocaine</td>\n            <td>22-22-2222</td>\n            <td>actief</td>\n        </tr>\n        <tr id="">\n            <td>allergie</td>\n            <td>antibiotica</td>\n            <td>11-11-1111</td>\n            <td>11-11-1111</td>\n        </tr>\n    </tbody>\n</table>\n   ';});
+define('text!records/templates/medical_warnings.html',[],function () { return '<h4>medische waarschuwingen</h4>        \n<table class="table">\n    <tbody>\n    </tbody>\n</table>\n   ';});
+
+define('text!records/templates/medical_warnings_partial.html',[],function () { return '<tr>\n    <td><%=type%></td>\n    <td><%=subtype%></td>\n    <td><%=start%></td>\n    <td><%=end%></td>\n</tr>\n';});
 
 define('records/views/medical_warnings_view',[
 	"jquery",
 	"lodash",
 	"backbone",
-	"text!records/templates/medical_warnings.html"
+	"text!records/templates/medical_warnings.html",
+	"text!records/templates/medical_warnings_partial.html"
 	], 
 
-	function ($, _, Backbone, tmpl){
+	function ($, _, Backbone, tmpl, partial){
 
 		var MedicalWarningsView = Backbone.View.extend({
 
@@ -16902,12 +17425,22 @@ define('records/views/medical_warnings_view',[
 			initialize: function () {
 
 				this.template = _.template(tmpl);
-				this.model.on('change', this.render, this);
+				this.partial = _.template(partial);
+				
+				this.model.on("change:medicalHistory", this.render, this);
 			},
 
 			render: function () {
 
-				this.$el.html(this.template(this.model.toJSON()));
+				this.$el.html(this.template());
+				this.$("tbody").append(
+					this.partial({
+						type: "type",
+						subtype: "subtype",
+						start: "start",
+						end: "einde"
+					})
+				);
 
 				return this;
 			}
@@ -16916,153 +17449,224 @@ define('records/views/medical_warnings_view',[
 		return MedicalWarningsView;
 	}
 );
-define('records/config',[],
-    function () {
+define('text!records/templates/other_details.html',[],function () { return '<h4>overige persoonsgegevens</h4>\n<table class="table">\n    <tbody></tbody>\n</table>\n<div class="btn-group dropup pull-right" id="add"> \n    <a  class="btn dropdown-toggle" \n        data-toggle="dropdown"\n        data-target="#add">\n        <i class="icon-plus"></i>\n    </a>\n    <ul class="dropdown-menu" id="addMenu">\n        <li><h4>toevoegen</h4></li>\n    </ul>\n</div>\n<div class="btn-group dropup pull-right" id="remove">    \n    <a  class="btn dropdown-toggle"\n        data-toggle="dropdown" \n        data-target="#remove">\n        <i class="icon-minus"></i>\n    </a>\n    <ul class="dropdown-menu" id="removeMenu">\n        <li><h4>verwijderen</h4></li>\n</div>\n\n';});
 
-        var config = {
-            defaults: {
-                givenName: "voornaam",
-                familyName: "achternaam",
-                sex: "geslacht",
-                dateOfBirth: "geboortedatum",
-                phonePreferred: "voorkeurs telefoonnummer",
-                emailPreferred: "voorkeurs emailadres"
-            },
-            nonDefaults: {
-                workEmail: "werk email",
-                privateEmail: "prive email",
-                workPhone: "werk telefoon",
-                privatePhone: "prive telefoon",
-                ice: "ice",
-                facebook: "Facebook",
-                twitter: "Twitter",
-                linkedin: "LinkedIn",
-                website: "website",
-                homeAddress: "thuis adres",
-                workAddress: "werk adres",
-                deliveryAddress: "aflever adres",
-                billingAddress: "factuur adres",
-                idNumber: "BSN",
-                idDocumentNr: "legitimatie nr",
-                idDocumentScr: "scan legitmatie",
-                insuranceCompany: "verzekeraar",
-                insuranceNumber: "polisnummer"
-            }
-        };
+define('text!records/templates/details_menu_item.html',[],function () { return '<li>\n    <a href="#menu-item" data-key=<%=key%>>\n        <%=label%>\n    </a>\n</li>';});
 
-        return config;
-    }
-);
-define('text!records/templates/other_details_item.html',[],function () { return '<td><%=label%></td>\n<td><%=value%></td>';});
+define('text!records/templates/other_details_item.html',[],function () { return '<tr>\n    <th><%=label%></th>\n    <td><%=value%></td>\n    <td class="input">\n        <input  type="text" value="<%=value%>" data-key="<%=key%>"></input>\n    </td>\n    \n</tr>';});
 
-define('records/views/other_details_item_view',[
+define('records/views/other_details_view',[
     "jquery",
     "lodash",
     "backbone",
+    "records/config",
+    //"helpers/input",
+    "text!records/templates/other_details.html",
+    "text!records/templates/details_menu_item.html",
     "text!records/templates/other_details_item.html"
     ], 
 
-    function ($, _, Backbone, tmpl) {
+    function ($, _, Backbone, config, tmpl, menuTmpl, detailTmpl) {
 
-        var OtherDetailsItemView = Backbone.View.extend({
+        var AddressesView = Backbone.View.extend({
 
-            tagName: "tr",
+            tagName: "section",
             className: "",
-            id: this.key,
+            id: "otherDetails",
+
+            events: {
+
+                "click ul#addMenu": "addItem",
+                "click ul#removeMenu": "removeItem",
+                "click tr": "toggleRow",
+                "click input": "inputClicked",
+                "keyup input": "processKeyup"
+            },
 
             initialize: function () {
-
+                
                 this.template = _.template(tmpl);
+                this.menuTmpl = _.template(menuTmpl);
+                this.detailsTmpl = _.template(detailTmpl);
+
+                this.model.on("change", this.render, this);
             },
 
             render: function () {
-                /*
-                this.$el.html(this.template({
-                    label: this.label,
-                    value: this.value
-                }));*/
+
+                this.$el.html(this.template());
+
+                _.each(config.nonRequired, function (label, key) {
+
+                    if (this.model.has(key)) {
+    
+                        this.$("#removeMenu").append(
+                            this.menuTmpl({
+                                key: key,
+                                label: label
+                            })
+                        );
+
+                    } else {
+
+                        this.$("#addMenu").append(
+                            this.menuTmpl({
+                                key: key,
+                                label: label
+                            })
+                        );
+                    }
+
+                }, this);
+
+                _.each(config.otherPersInf, function (label, key) {
+                    
+                    if (this.model.has(key)) {
+
+                        this.$("tbody").append(
+                                this.detailsTmpl({
+                                    label: label,
+                                    key: key,
+                                    value: this.model.get(key)
+                                })
+                            );
+                    }
+
+                }, this);
+
+                return this;
+            },
+
+            addItem: function (event) {
+
+                event.preventDefault();
+                this.model.set(event.target.dataset.key, "");
+                this.model.save();
+            },
+
+            removeItem: function (event) {
+
+                event.preventDefault();
+                this.model.unset(event.target.dataset.key, "");
+                this.model.save();
+            },
+
+            toggleRow: function (event) {
+
+                var row = $(event.currentTarget);
+                var inputObj = row.find("td > input");
+
+                if (row.hasClass("input-visible")) {
+
+                    this.storeInput(inputObj);
+                    row.toggleClass("input-visible");
+
+
+                } else {
+
+                    row.toggleClass("input-visible");
+                    inputObj.focus();
+
+                }
+
+                //$(event.currentTarget).children("td").toggle();
+                //$(event.currentTarget).find("td > input:visible").focus();
+            },
+
+            inputClicked: function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+            },
+
+            storeInput: function (inputObj) {
+
+                var key = inputObj.data().key;
+                var value = inputObj.val();
+
+                if (this.model.get(key) !== value) {
+                    
+                    this.model.set(key, value);
+                    this.model.save();
+                }               
+                
+            },
+
+            processKeyup: function (event) {
+            
+                // return saves the value and exits the input
+                // shift + return does the same and moves to the
+                // next field. If there are no more fields, it goes
+                // to the next section on the page. No more sections,
+                // it moves to the first
+                if (event.keyCode === 13) {
+
+                    var inputObj = $(event.target);
+                    var row = inputObj.parents(".input-visible");
+
+                    this.storeInput(inputObj); 
+                    row.toggleClass("input-visible");
+                }
+                    /*
+                    $(event.target).focusout();
+                    //this.storeAndToggle(event);
+
+                    if (event.shiftKey) {
+
+                        //move to next field
+                        this.nextField();
+
+                    } 
+                }
+
+                // tab on an input element saves and moves
+                // to the next field. The default behaviour needs
+                // to be intercepted to avoid the normal browser tab
+                if (event.keyCode === 9) {
+
+                    event.preventDefault();
+                    //this.storeAndToggle(event);
+                    this.nextField();
+                }
+
+                // backspace moves the cursor one back and erases a char
+                // shift+backspace saves the value and moves back a field
+                // if there are no more fields it moves back a section. No
+                // more sections, it moves to the last.
+                if (event.keyCode === 8 && event.shiftkey) {
+
+                    event.preventDefault();
+                    //this.storeAndToggle(event);
+                    this.previousField();
+
+                }*/
+                
             }
 
+            /*
+            previousField: function () {
 
+            },
+
+            nextField: function () {
+
+                //this.toggleInput($("input:focus"));
+
+            },
+
+            storeAndToggle: function (event) {
+
+                console.log("storeAndToggle");
+
+                this.storeInput(event);
+                this.toggleInput($(event.target));
+          
+            }
+            */  
         });
 
-        return OtherDetailsItemView;
+        return AddressesView;
     }
-);
-define('text!records/templates/other_details.html',[],function () { return '<h4>overige persoonsgegevens</h4>\n<table class="table">\n    <tbody></tbody>\n</table>\n<div class="btn-group dropup pull-right" id="add"> \n    <a  class="btn dropdown-toggle" \n        data-toggle="dropdown"\n        data-target="#add">\n        <i class="icon-plus"></i>\n    </a>\n    <ul class="dropdown-menu" id="addMenu">\n        <li><h4>toevoegen</h4></li>\n    </ul>\n</div>\n<div class="btn-group dropup pull-right" id="remove">    \n    <a  class="btn dropdown-toggle"\n        data-toggle="dropdown" \n        data-target="#remove">\n        <i class="icon-minus"></i>\n    </a>\n    <ul class="dropdown-menu" id="removeMenu">\n        <li><h4>verwijderen</h4></li>\n</div>\n\n';});
-
-define('text!records/templates/details_menu_item.html',[],function () { return '<li id=<%=key%>><a href="#menu-item"><%=label%></a></li>';});
-
-define('records/views/other_details_view',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"records/config",
-	"records/views/other_details_item_view",
-	"text!records/templates/other_details.html",
-	"text!records/templates/details_menu_item.html"
-	], 
-
-	function ($, _, Backbone, config, ItemView, tmpl, menuTmpl) {
-
-		var AddressesView = Backbone.View.extend({
-
-			tagName: "section",
-			className: "",
-			id: "otherDetails",
-
-			initialize: function () {
-				
-				this.template = _.template(tmpl);
-				this.menuTmpl = _.template(menuTmpl);
-
-				this.model.on('change', this.render, this);
-			},
-
-			render: function () {
-
-				var json = this.model.toJSON();
-				var item = {};
-				var attributes = _.keys(json);
-				var itemView;
-
-				this.$el.html();//this.template());
-				/*
-				_.each(config.nonDefaults, function (label, key) {
-
-					if (_.include(attributes, key)) {
-						
-						item = {
-							label: label,
-							key: key,
-							value: json[key]
-						};
-						
-						//this.$("#removeMenu").append(this.menuTmpl(item));
-
-						itemView = new ItemView(item);
-						itemView.render();
-						//this.$("tbody").append(itemView.el);
-
-					} else {
-
-						//this.$("#addMenu").append(this.menuTmpl(item));
-					}
-
-				}, this);*/
-			},
-
-			addItem: function () {
-
-			},
-
-			removeItem: function () {
-
-			}
-		});
-
-		return AddressesView;
-	}
 );
 define('records/views/record_view',[
 	"jquery",
@@ -17087,9 +17691,6 @@ define('records/views/record_view',[
 				
 				
 				this.template = _.template(tmpl);
-
-				this.model.on("change", this.render());
-				this.model.trigger("view", this.model.id);
 
 				this.views = [];
 				this.views.push(new BasicDetailsView({model: this.model}));
@@ -17132,7 +17733,7 @@ define('records/views/record_view',[
 
 
 
-define('records/record_router',[
+define('records/router',[
     "jquery",
     "lodash",
     "remedy",
@@ -17160,8 +17761,7 @@ define('records/record_router',[
 
             showRecords: function () {
 
-                var view;
-                view = new RecordsView({collection: this.collection});
+                var view = new RecordsView({collection: this.collection});
                 this.showView(view);
             },
 
@@ -17224,7 +17824,7 @@ define('records/record_router',[
 
                     this.currentView = view;
                     this.currentView.render();
-                    $('#content').append(this.currentView.el);
+                    $("#content").html(this.currentView.el);
 
                 } catch (e) {
                     console.log(e);
@@ -17245,128 +17845,196 @@ define('records/record_router',[
     }
 );
 
-define('ledgers/models/ledger_row_model',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
+define('text!modules/register/templates/home.html',[],function () { return '<h3>register</h3>';});
 
-	function ($, _, Backbone) {
-
-		var LedgerRowModel = Backbone.Model.extend({
-
-			defaults: {
-				date: "",
-				credit: true,
-				enteredBy: "",
-				amount: "",
-				description: "",
-				group: "" // pin, cash, creditcard or product collection
-			},
-
-			initialize: function () {}
-
-		});
-	
-		return LedgerRowModel;
-	}
-);
-define('ledgers/collections/sales_ledger_collection',[
+define('register/views/home_view',[
     "jquery",
     "lodash",
-    "ledgers/models/ledger_row_model",
     "backbone",
-    "plugins/backbone.localStorage"
 
-    
+    "text!modules/register/templates/home.html"
     ], 
 
-    function ($, _, LedgerRowModel, Backbone){
+    function ($, _, Backbone, tmpl){
 
-        var SalesLedgerCollection = Backbone.Collection.extend({
-
-            model: LedgerRowModel,
+        var HomeView = Backbone.View.extend({
             
-            localStorage: new Backbone.LocalStorage("SalesLedger")
+            id: "register",
+            className: "row-fluid",
+            tagName: "div",
+            
+            initialize: function () {
+                
+                this.template = _.template(tmpl);
+
+                this.views = [];
+            },
+
+            render: function () {
+
+                this.$el.html(this.template);
+
+                return this;
+            }
         });
 
-        return SalesLedgerCollection;
+        return HomeView;
     }
 );
-define('ledgers/ledgers',[
-	"jquery",
-	"lodash",
-	"backbone",
-	"remedy",
-	"ledgers/collections/sales_ledger_collection"
-	],
 
-	function ($, _, Backbone, remedy, SalesLedger) {
 
-		var Ledgers = function () {
-			
-			var salesLedger = new SalesLedger();
 
-			remedy.on("ledgers:addSale", function (saleInformation) {
-				console.log(saleInformation);
-			});
 
-		};
 
-		return Ledgers;
-	}
+
+
+
+
+
+
+define('register/router',[
+    "jquery",
+    "lodash",
+    "backbone",
+    "plugins/backbone.subroute",
+    "register/views/home_view"
+    ], 
+    function ($, _, Backbone, BackboneSubroute, HomeView){
+
+        var Router = Backbone.SubRoute.extend({
+
+            routes: {
+                "": "home"
+            },
+
+            initialize: function (options) {
+
+            },
+
+            home: function () {
+
+                var view = new HomeView();
+
+                this.showView(view);
+            },
+
+            showView: function (view) {
+
+                try {
+
+                    if (this.currentView) {
+
+                        this.currentView.close();
+                    }
+
+                    this.currentView = view;
+                    this.currentView.render();
+                    $("#content").html(this.currentView.el);
+
+                } catch (e) {
+                    console.log(e);
+                }
+            }   
+        });
+
+        return Router;
+    }
 );
-define('records/records',[
-	"jquery",
-	"lodash",
-	"backbone"
-	],
 
-	function ($, _, Backbone) {
+define('text!modules/store/templates/home.html',[],function () { return '<h3>store</h3>';});
 
-		var Records = function (remedy) {
+define('store/views/home_view',[
+    "jquery",
+    "lodash",
+    "backbone",
 
-		};
+    "text!modules/store/templates/home.html"
+    ], 
 
-		return Records;
-	}
+    function ($, _, Backbone, tmpl){
+
+        var HomeView = Backbone.View.extend({
+            
+            id: "register",
+            className: "row-fluid",
+            tagName: "div",
+            
+            initialize: function () {
+                
+                this.template = _.template(tmpl);
+
+                this.views = [];
+            },
+
+            render: function () {
+
+                this.$el.html(this.template);
+
+                return this;
+            }
+        });
+
+        return HomeView;
+    }
 );
-define('router',[
-  "remedy",
-  "records/record_router",
-  "ledgers/ledgers",
-  "records/records"
-],
 
-  function(remedy, RecordRouter, Ledgers, Records) {
 
-    var Router = Backbone.Router.extend({
 
-      routes: {
-       
-        "": "index"
-      },
 
-      initialize: function() {
 
-        var nav = new remedy.navView();
-        nav.render();
 
-        this.subrouters = {};
 
-        remedy.modules.push(new Ledgers());
-        remedy.modules.push(new Records());
 
-      },
 
-      index: function () {
 
-        this.navigate("records", {trigger: true}); 
-      }
-    });
 
-    return Router;
-  }
+define('store/router',[
+    "jquery",
+    "lodash",
+    "backbone",
+    "plugins/backbone.subroute",
+    "store/views/home_view"
+    ], 
+    function ($, _, Backbone, BackboneSubroute, HomeView){
+
+        var Router = Backbone.SubRoute.extend({
+
+            routes: {
+                "": "home"
+            },
+
+            initialize: function (options) {
+
+            },
+
+            home: function () {
+
+                var view = new HomeView();
+
+                this.showView(view);
+            },
+
+            showView: function (view) {
+
+                try {
+
+                    if (this.currentView) {
+
+                        this.currentView.close();
+                    }
+
+                    this.currentView = view;
+                    this.currentView.render();
+                    $("#content").html(this.currentView.el);
+
+                } catch (e) {
+                    console.log(e);
+                }
+            }   
+        });
+
+        return Router;
+    }
 );
 
 require([
@@ -17374,12 +18042,15 @@ require([
   "remedy",
   "requirebootstrap",
 
-  // Main Router.
+  // routers.
   "router",
-  "records/record_router"
+  "records/router",
+  "register/router",
+  "store/router"
 ],
 
-function(remedy, Bootstrap, Router, RecordRouter) {
+function(remedy, Bootstrap, 
+            Router, RecordsRouter, RegisterRouter, StoreRouter) {
 
   // Define your master router on the application namespace and trigger all
   // navigation from this instance.
@@ -17389,10 +18060,16 @@ function(remedy, Bootstrap, Router, RecordRouter) {
   
   Backbone.history.start({ pushState: false, root: remedy.root });
 
-  remedy.recordRouter = new RecordRouter("records",
+  remedy.recordsRouter = new RecordsRouter("records",
+          {createTrailingSlashRoutes: true});
+
+  remedy.registerRouter = new RegisterRouter("register",
+          {createTrailingSlashRoutes: true});
+
+  remedy.storeRouter = new StoreRouter("store",
           {createTrailingSlashRoutes: true});
   
-
+  
   // All navigation that is relative should be passed through the navigate
   // method, to be processed by the router. If the link has a `data-bypass`
   // attribute, bypass the delegation completely.
@@ -17429,6 +18106,7 @@ require.config({
     // JavaScript folders.
     libs: "../assets/js/libs",
     plugins: "../assets/js/plugins",
+    helpers: "helpers",
 
     // Libraries.
     jquery: "../assets/js/libs/jquery",
@@ -17439,9 +18117,9 @@ require.config({
 
     //modules
     records: "modules/records",
-    stores: "modules/stores",
-    ledgers: "modules/ledgers",
-    nest: "modules/nest"
+    store: "modules/store",
+    register: "modules/register"
+    
 
   },
 

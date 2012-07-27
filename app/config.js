@@ -8,6 +8,7 @@ require.config({
     // JavaScript folders.
     libs: "../assets/js/libs",
     plugins: "../assets/js/plugins",
+    helpers: "helpers",
 
     // Libraries.
     jquery: "../assets/js/libs/jquery",
@@ -18,9 +19,9 @@ require.config({
 
     //modules
     records: "modules/records",
-    stores: "modules/stores",
-    ledgers: "modules/ledgers",
-    nest: "modules/nest"
+    store: "modules/store",
+    register: "modules/register"
+    
 
   },
 

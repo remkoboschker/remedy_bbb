@@ -1,35 +1,79 @@
 define([
   "remedy",
-  "records/record_router",
-  "ledgers/ledgers",
-  "records/records"
+  "views/nav_view",
+  "views/home_view",
+  "views/policy_ip_view",
+  "views/policy_privacy_view",
+  "views/policy_terms_view",
+  "views/helpdesk_view"
 ],
 
-  function(remedy, RecordRouter, Ledgers, Records) {
+  function(remedy, NavView, HomeView, IpView, PrivacyView, 
+                                    TermsView, HelpdeskView) {
 
     var Router = Backbone.Router.extend({
 
-      routes: {
-       
-        "": "index"
-      },
+        routes: {
 
-      initialize: function() {
+        // records subrouter
+        // register subrouter
+        // store subrouter
 
-        var nav = new remedy.navView();
-        nav.render();
+            "": "home",
+            "regelingen/voorwaarden": "voorwaarden",
+            "regelingen/ip": "ip",
+            "regelingen/privacy": "privacy",
+            "helpdesk": "helpdesk"
+        },
 
-        this.subrouters = {};
+        initialize: function() {
 
-        remedy.modules.push(new Ledgers());
-        remedy.modules.push(new Records());
+            new NavView({el: "#main"}).render();
+        },
 
-      },
+        home: function () {
+            
+            this.showView(new HomeView());
+        },
 
-      index: function () {
+        voorwaarden: function () {
 
-        this.navigate("records", {trigger: true}); 
-      }
+            this.showView(new TermsView());
+        },
+
+        ip: function () {
+
+            this.showView(new IpView());
+        },
+
+        privacy: function () {
+
+            this.showView(new PrivacyView());
+        },
+
+        helpdesk: function () {
+
+            this.showView(new HelpdeskView());
+        },
+
+        showView: function (view) {
+
+            try {
+
+                if (this.currentView) {
+                    // close removes all events and dom elements
+                    this.currentView.close();
+                }
+
+                this.currentView = view;
+                this.currentView.render();
+                $("#content").html(this.currentView.el);
+
+            } catch (e) {
+
+                console.log(e);
+            }
+        }   
     });
 
     return Router;

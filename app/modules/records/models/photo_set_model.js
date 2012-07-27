@@ -2,7 +2,7 @@ define([
     "jquery",
     "lodash",
     "backbone",
-    "nest/nestCollection",
+    "helpers/nestCollection",
     "records/collections/photo_collection"
     ],
 

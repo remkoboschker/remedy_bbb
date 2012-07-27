@@ -26,8 +26,7 @@ define([
 
             showRecords: function () {
 
-                var view;
-                view = new RecordsView({collection: this.collection});
+                var view = new RecordsView({collection: this.collection});
                 this.showView(view);
             },
 
@@ -57,26 +56,9 @@ define([
                         throw new Error("showRecord: invalid record-id format");
                     }
                 } catch (e) {
+                    // do something more usefull
                     console.log(e);
                 }
-                
-
-
-                /*
-                // first check for a valid record id (or cid)
-                // then check if the record exists
-                
-                
-                if (!panel) {
-                    panel = "consults";
-                }
-
-                if (!item) {
-                    item = 0;
-                }*/
-
-                
-                
             },
 
             showView: function (view) {
@@ -90,9 +72,10 @@ define([
 
                     this.currentView = view;
                     this.currentView.render();
-                    $('#content').append(this.currentView.el);
+                    $("#content").html(this.currentView.el);
 
                 } catch (e) {
+                    
                     console.log(e);
                 }
             },

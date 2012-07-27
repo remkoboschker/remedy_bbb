@@ -89,11 +89,7 @@ define([
 					throw new Error("invalid select value");
 				}
 
-				console.log(recent);
-				
 				this.collection.each(function (record) {
-
-					console.log(record.get("viewed"));
 
 					if (recent < record.get("viewed")) {
 

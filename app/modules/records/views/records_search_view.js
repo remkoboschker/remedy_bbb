@@ -23,7 +23,7 @@ define([
 
 				this.template = _.template(tmpl);
 
-				this.collection.on("change add", this.render, this);
+				this.collection.on("change add", this.renderList, this);
 
 				this.foundRecordViews = [];
 

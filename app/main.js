@@ -3,12 +3,15 @@ require([
   "remedy",
   "requirebootstrap",
 
-  // Main Router.
+  // routers.
   "router",
-  "records/record_router"
+  "records/router",
+  "register/router",
+  "store/router"
 ],
 
-function(remedy, Bootstrap, Router, RecordRouter) {
+function(remedy, Bootstrap, 
+            Router, RecordsRouter, RegisterRouter, StoreRouter) {
 
   // Define your master router on the application namespace and trigger all
   // navigation from this instance.
@@ -18,10 +21,16 @@ function(remedy, Bootstrap, Router, RecordRouter) {
   
   Backbone.history.start({ pushState: false, root: remedy.root });
 
-  remedy.recordRouter = new RecordRouter("records",
+  remedy.recordsRouter = new RecordsRouter("records",
+          {createTrailingSlashRoutes: true});
+
+  remedy.registerRouter = new RegisterRouter("register",
+          {createTrailingSlashRoutes: true});
+
+  remedy.storeRouter = new StoreRouter("store",
           {createTrailingSlashRoutes: true});
   
-
+  
   // All navigation that is relative should be passed through the navigate
   // method, to be processed by the router. If the link has a `data-bypass`
   // attribute, bypass the delegation completely.

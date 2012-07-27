@@ -22,9 +22,6 @@ define([
 				
 				this.template = _.template(tmpl);
 
-				//his.model.on("change", this.render, this);
-				this.model.trigger("view", this.model.id);
-
 				this.views = [];
 				this.views.push(new BasicDetailsView({model: this.model}));
 				this.views.push(new MedicalWarningsView({model: this.model}));

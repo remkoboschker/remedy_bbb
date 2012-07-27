@@ -1,52 +1,66 @@
 <h3><%= givenName %>&nbsp;<%= familyName %></h3>
 <div class="row-fluid">
-    <img class="passphoto span6" src="http://placehold.it/180x240">
+    <img class="passphotoLarge span6" src="assets/img/passphoto_large.jpg">
     <div class="span6">
         <table class="table">
             <tbody>
-                <tr class="inputContainer">
+                <tr>
                     <td>
                         <%= givenName %>
                     </td>
-                    <td style="display: none;">
-                        <input type="text" value=<%= givenName %>></input>
+                    <td class="input">
+                        <input  type="text"
+                                value="<%= givenName %>"
+                                data-key="givenName">
+                        </input>
                     </td>
                 </tr>
-                <tr class="inputContainer">
+                <tr>
                     <td>
                        <%= familyName %>
                     </td>
-                    <td style="display: none;">
-                        <input type="text" value=<%= familyName %>></input>
+                    <td class="input">
+                        <input  type="text"
+                                value="<%= familyName %>"
+                                data-key="familyName">
+                        </input>
                     </td>
                 </tr>
-                <tr class="inputContainer">
+                <tr>
                     <td>
-                        <%= dob %>
-                        &nbsp;(<%= age %>)
+                        <%= dob %> &nbsp;(<%= age %>)
                     </td>
-                    <td style="display: none;">
-                        <input type="text" value=<%= dob %>></input>
+                    <td class="input">
+                        <input  type="text"
+                                value="<%= dob %>"
+                                data-key="dateOfBirth">
+                        </input>
                     </td>
                 </tr>
-                <tr class="inputContainer">
+                <tr>
                     <td>
                         <%= phone %>
                     </td>
-                    <td style="display: none;">
-                        <input type="text" value=<%= phone %>></input>
+                    <td class="input">
+                        <input  type="text"
+                                value="<%= phone %>" 
+                                data-key="phonePreferred">
+                        </input>
                     </td>
                 </tr>
-                <tr class="inputContainer">
+                <tr>
                     <td>
                         <%= mail %>
                     </td>
-                    <td style="display: none;">
-                        <input type="text" value=<%= mail %>></input>
+                    <td class="input">
+                        <input  type="text" 
+                                value="<%= mail %>" 
+                                data-key="emailPreferred">
+                        </input>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td class="block-toggle">
                         <i class="icon-star"></i>
                         <i class="icon-star"></i>
                         <i class="icon-star"></i>
@@ -54,7 +68,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td class="block-toggle">
                         <i class="icon-heart"></i>
                         <i class="icon-heart"></i>
                         <i class="icon-heart"></i>

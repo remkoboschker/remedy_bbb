@@ -1,6 +1,6 @@
 define([
   //template
-  "text!main.html",
+  //"text!main.html",
 
   // Libraries.
   "jquery",
@@ -14,7 +14,7 @@ define([
   "plugins/backbone.subroute"
 ],
 
-function(navTemplate, $, _, Backbone) {
+function($, _, Backbone) {
 
   // Provide a global location to place configuration settings and module
   // creation.
@@ -24,18 +24,6 @@ function(navTemplate, $, _, Backbone) {
     modules: [],
     currentUser: "Remko"
   };
-
-  remedy.navView = Backbone.View.extend({
-    el: '#main',
-    render: function () {
-      var template;
-      
-      template = _.template(navTemplate);
-      this.$el.html(template);
-
-      return this;
-    }
-  });
 
   // remove all references to a view
   Backbone.View.prototype.close = function(){

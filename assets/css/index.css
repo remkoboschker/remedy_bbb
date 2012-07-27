@@ -1,6 +1,6 @@
-/*@import "h5bp.css";
-@import "bootstrap.css";
-@import "bootstrap-responsive.css";*/
+/*@import "h5bp.css";*/
+/*@import "bootstrap.css";*/
+/*@import "bootstrap-responsive.css";*/
 
 footer {
   margin-top: 14px;
@@ -16,15 +16,14 @@ footer {
 td.edit {
   padding: 3px;
 }
-td > input {
+
+td.input > input {
   margin: 0px;
+  width: 95%;
 }
 .well {
   margin-bottom: 0px;
   background-color: #f6f6f6; 
-}
-input {
-  width: 95%;
 }
 
 
@@ -32,10 +31,12 @@ input {
   background-color: #ffffff;
   padding: 0px;
   margin-top: 18px;
+  height: 590px;
+  overflow-x: hidden;
 }
 .listitems > .item {
   padding: 0px 0px;
-  width: 100%;
+  width: 99%;
   border: solid 1px lightgrey;
 }
 
@@ -215,6 +216,24 @@ section {
           border-radius: 8px;
 }
 
+.tab-content > section {
+  -webkit-border-top-left-radius: 0px;
+     -moz-border-top-left-radius: 0px;
+          border-top-left-radius: 0px;
+
+  -webkit-border-top-right-radius: 0px;
+     -moz-border-top-right-radius: 0px;
+          border-top-right-radius: 0px;
+
+  -webkit-border-bottom-left-radius: 8px;
+     -moz-border-bottom-left-radius: 8px;
+          border-bottom-left-radius: 8px;
+
+  -webkit-border-bottom-right-radius: 8px;
+     -moz-border-bottom-right-radius: 8px;
+          border-bottom-right-radius: 8px;
+}
+
 .column > section {
   margin-top: 20px;
 }
@@ -236,7 +255,7 @@ section {
   color: grey;
   font-size: 14px;
   font-weight: bold;
-  line-height: 22px;
+  line-height: 20px;
 }
 
 /*reset p bottom-margin from bootstrap*/
@@ -246,38 +265,6 @@ section {
 
 .basicDetails {
   padding: 8px;
-}
-
-.tab-content {
-  /*
-  border-left: solid 2px whitesmoke;
-  border-right: solid 2px whitesmoke;
-  border-bottom: solid 2px whitesmoke;
-  */
-  border: solid 2px whitesmoke;
-
-  padding: 14px 20px 14px 20px;
-
-  /*-webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;*/
-
-  
-  -webkit-border-top-left-radius: 0px;
-     -moz-border-top-left-radius: 0px;
-          border-top-left-radius: 0px;
-
-  -webkit-border-top-right-radius: 0px;
-     -moz-border-top-right-radius: 0px;
-          border-top-right-radius: 0px;
-
-  -webkit-border-bottom-left-radius: 8px;
-     -moz-border-bottom-left-radius: 8px;
-          border-bottom-left-radius: 8px;
-
-  -webkit-border-bottom-right-radius: 8px;
-     -moz-border-bottom-right-radius: 8px;
-          border-bottom-right-radius: 8px;
 }
 
 .nav {
@@ -314,7 +301,44 @@ li h4 {
   text-align: center;
 }
 
-.hidden {
-  display: none;
-  z-index: 1010;
+.input-visible td {
+    display: none;
 }
+
+.input {
+    display: none;
+}
+
+.input-visible .input {
+    display: table-cell;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.input-visible .block-toggle {
+
+    display: table-cell;
+}
+
+img.passphotoSmall {
+  padding: 2px;
+  height: 102px;
+  width: 74px;
+}
+
+img.passphotoLarge {
+  padding: 0px;
+  height: 230;
+  width: 170;
+}
+
+th {
+  width: 30%;
+}
+
+td {
+  min-height: 18px;
+}
+
+
+
