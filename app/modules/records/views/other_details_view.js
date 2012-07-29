@@ -6,10 +6,13 @@ define([
     //"helpers/input",
     "text!records/templates/other_details.html",
     "text!records/templates/details_menu_item.html",
-    "text!records/templates/other_details_item.html"
+    "text!records/templates/other_details_item.html",
+    "text!records/templates/address.html",
+    "text!records/templates/ice.html"
     ], 
 
-    function ($, _, Backbone, config, tmpl, menuTmpl, detailTmpl) {
+    function ($, _, Backbone, config, 
+                tmpl, menuTmpl, detailTmpl, addressTmpl, iceTmpl) {
 
         var AddressesView = Backbone.View.extend({
 
@@ -24,7 +27,7 @@ define([
                 "click tr": "toggleRow",
                 "click input": "stopEvent",
                 "keyup input": "processKeyup",
-                "blur input": "toggleRow",
+                "blur input": "onBlurInput"
                 
             },
 
@@ -33,6 +36,8 @@ define([
                 this.template = _.template(tmpl);
                 this.menuTmpl = _.template(menuTmpl);
                 this.detailsTmpl = _.template(detailTmpl);
+                this.addressTmpl = _.template(addressTmpl);
+                this.iceTmpl = _.template(iceTmpl);
 
                 this.model.on("change", this.render, this);
             },
@@ -41,40 +46,63 @@ define([
 
                 this.$el.html(this.template());
 
-                _.each(config.nonRequired, function (label, key) {
+                // config.key: {label, type, placeholder, required, basis}
 
-                    if (this.model.has(key)) {
-    
-                        this.$("#removeMenu").append(
-                            this.menuTmpl({
-                                key: key,
-                                label: label
-                            })
-                        );
+                _.each(config, function (settings, key) {
 
-                    } else {
+                    var dataset;
 
-                        this.$("#addMenu").append(
-                            this.menuTmpl({
-                                key: key,
-                                label: label
-                            })
-                        );
+                    if (!settings.required) {
+
+                        if (this.model.has(key)) {
+
+                            this.$("#removeMenu").append(
+                                this.menuTmpl({
+                                    key: key,
+                                    label: settings.label
+                                })
+                            );
+                        } else {
+
+                            this.$("#addMenu").append(
+                                this.menuTmpl({
+                                    key: key,
+                                    label: settings.label
+                                })
+                            );
+                        }
                     }
 
-                }, this);
+                    if (!settings.basic && this.model.has(key)) {
 
-                _.each(config.otherPersInf, function (label, key) {
-                    
-                    if (this.model.has(key)) {
+                        if (settings.type === "address") {
 
-                        this.$("tbody").append(
+                            // nested model
+                            dataset = this.model[key].toJSON();
+                            dataset.model = key;
+                            dataset.label = settings.label;
+
+                            this.$("tbody").append(this.addressTmpl(dataset));
+
+                        } else if (settings.type === "ice") {
+                        
+                            // nested model
+                            dataset = this.model[key].toJSON();
+                            dataset.model = key;
+                            dataset.label = settings.label;
+
+                            this.$("tbody").append(this.iceTmpl(dataset));
+
+                        } else {
+
+                            this.$("tbody").append(
                                 this.detailsTmpl({
-                                    label: label,
+                                    label: settings.label,
                                     key: key,
                                     value: this.model.get(key)
                                 })
                             );
+                        }   
                     }
 
                 }, this);
@@ -84,16 +112,52 @@ define([
 
             addItem: function (event) {
 
+                var key;
+                var settings;
+
                 event.preventDefault();
-                this.model.set(event.target.dataset.key, "");
-                this.model.save();
+
+                key = event.target.dataset.key;
+                settings = config[key];
+
+                if (settings.type === "address") {
+
+                    this.model.addAddress(key);
+                    this.model.save();
+
+                } else {
+                  
+                    this.model.set(key, settings.placeholder);
+                    this.model.save();
+                }  
+                
             },
 
             removeItem: function (event) {
 
+                var key;
+                var settings;
+
                 event.preventDefault();
-                this.model.unset(event.target.dataset.key, "");
-                this.model.save();
+
+                key = event.target.dataset.key;
+                settings = config[key];
+
+                if (settings.type === "address") {
+
+                    this.model.unset(key);
+                    this.model.save();
+                    delete this.model[key];
+                    
+
+                } else {
+                  
+                    this.model.unset(key);
+                    this.model.save();
+                }  
+                
+
+                console.log(this.model);
             },
 
             stopEvent: function (event) {
@@ -102,36 +166,46 @@ define([
                 event.stopPropagation();
             },
 
+            storeInput: function (element) {
+
+                var key = element.dataset.key;
+                var nestedModel = element.dataset.model;
+                var value = element.value;
+                var model;
+
+                if (nestedModel) {
+
+                    model = this.model[nestedModel];
+    
+                } else {
+
+                    model = this.model;
+                }
+
+                if (model.get(key) !== value) {
+
+                    model.set(key, value);
+                    this.model.save();
+                }
+            },
+
             toggleRowVisibility: function (row) {
 
-                var inputObj;
-                var key;
-                var value;
 
                 if (row.hasClass("input-visible")) {
 
-                    inputObj = row.find("input");
+                    _.each(row.find("input"), function (element) {
 
-                    console.log(inputObj.length);
-                    
-                    if(inputObj.length !== 0) {
+                        this.storeInput(element);
 
-                        key = inputObj.data().key;
-                        value = inputObj.val();
-
-                        if (this.model.get(key) !== value) {
-
-                            this.model.set(key, value);
-                            this.model.save();
-                        }
-                    }            
-
+                    }, this);
+                        
                     row.removeClass("input-visible");
 
                 } else {
 
                     row.addClass("input-visible");
-                    row.find("input").focus();
+                    row.find("input").first().focus();
                 }
             },
 
@@ -142,6 +216,16 @@ define([
 
                 this.toggleRowVisibility(row);
                 
+            },
+
+            onBlurInput: function (event) {
+
+                // if a sister element has focus
+                // do not toggle row
+                //if ($(event.target).siblings("input:focus").length === 0) {
+
+                //    this.toggleRow(event);
+                //}
             },
 
             togglePreviousRow: function (event) {
@@ -175,11 +259,15 @@ define([
                 // it moves to the first
                 if (event.keyCode === 13) {
 
-                    this.toggleRow(event);
+                    
+                    if ($(event.target).siblings("input").length === 0) {
+
+                        this.toggleRow(event);
+                    }
 
                     if (event.shiftKey) {
 
-                        this.toggleNextRow(event)
+                        this.toggleNextRow(event);
 
                     } 
                 }

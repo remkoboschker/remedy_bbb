@@ -18,7 +18,7 @@ define([
 				"click tr": "toggleRow",
                 "click input": "stopEvent",
                 "keyup input": "processKeyup",
-                "blur input": "toggleRow",
+                "blur input": "toggleRow"
 			},
 
 			initialize: function () {
@@ -29,7 +29,7 @@ define([
 			},
 
 			render: function () {
-				
+
 				this.$el.html(this.template({
 					givenName: this.model.get("givenName"),
 					familyName: this.model.get("familyName"),
@@ -58,7 +58,7 @@ define([
 
                     inputObj = row.find("input");
 
-                    console.log(inputObj.length);
+                    //console.log(inputObj.length);
                     
                     if(inputObj.length !== 0) {
 
@@ -80,6 +80,7 @@ define([
                     row.find("input").focus();
                 }
             },
+            
             toggleRow: function (event) {
 
                 var target = $(event.target);
@@ -124,7 +125,7 @@ define([
 
                     if (event.shiftKey) {
 
-                        this.toggleNextRow(event)
+                        this.toggleNextRow(event);
 
                     } 
                 }

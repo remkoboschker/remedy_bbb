@@ -1,0 +1,38 @@
+<tr>
+    <th><%=label%></th>
+    <td><%=givenName%>&nbsp;<%=familyName%></td>
+    <td class="input">
+        <input  type="text"
+                value="<%=givenName%>" 
+                data-key="givenName"
+                data-model="<%=model%>">
+        </input>
+        <input  type="text" 
+                value="<%=familyName%>" 
+                data-key="familyName"
+                data-model="<%=model%>">
+        </input>
+    </td>
+</tr> 
+<tr>
+    <th>&nbsp;</th>
+    <td><%=relation%></td>
+    <td class="input">
+        <input  type="text"
+                value="<%=relation%>"
+                data-key="relation"
+                data-model="<%=model%>">
+        </input>
+    </td>
+</tr>
+<tr>
+    <th>&nbsp;</th>
+    <td><%=telecom%></td>
+    <td class="input">
+        <input  type="text"
+                value="<%=telecom%>"
+                data-key="telecom"
+                data-model="<%=model%>">
+        </input>
+    </td>    
+</tr>

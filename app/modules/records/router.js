@@ -83,8 +83,8 @@ define([
             selectRecord: function (id) {
                 
                 if (id) {
-                    this.showRecord(id);
-                    this.navigate("records/" + id);
+                    //this.showRecord(id);
+                    this.navigate("records/" + id, {trigger: true});
                 }
             }
                 

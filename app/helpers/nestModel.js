@@ -6,7 +6,7 @@ define([
 
     var nestModel = function (model, attributeName, nestedModel) {
       
-        model.set(attributeName, nestedModel.toJSON(), {silent: true});
+        model.attributes[attributeName] = nestedModel.attributes;
             //create empty arrays if none
             /*
             nestedModel.bind('add', function (initiative) {

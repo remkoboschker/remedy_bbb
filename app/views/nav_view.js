@@ -10,8 +10,8 @@ define([
 
         var NavView = Backbone.View.extend({
             
-            id: "",
-            className: "",
+            id: "navbar",
+            className: "navbar navbar-fixed-top",
             tagName: "div",
         
             initialize: function () {
@@ -19,8 +19,6 @@ define([
                 Backbone.history.on("route", this.setMenu, this);
                 
                 this.template = _.template(tmpl);
-
-                this.views = [];
             },
 
             render: function () {
@@ -34,8 +32,11 @@ define([
         
                 var hash = Backbone.history.fragment;
 
+                //strip subpaths
+                hash = hash.split("/");
+
                 this.$(".active").removeClass("active");
-                this.$('a[href="#' + hash + '"]').parent().addClass("active");
+                this.$('a[href="#' + hash[0] + '"]').parent().addClass("active");
             }
         });
 

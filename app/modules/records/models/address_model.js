@@ -10,21 +10,18 @@ define([
 
 			//simple attributes get a default value
 			defaults: {
-				street: "",
-				number: "",
-				extension: "",
-				postalcode: "",
-				city: "",
-				provinceOrState: "",
-				country: ""
+				street: "straat",
+				number: "nr",
+				extension: "ext",
+				postalcode: "postcode",
+				city: "stad",
+				province: "provincie",
+				country: "land"
 			},
 
 			initialize: function () {
 
-			},
-
-			fetchAddress: function () {}
-
+			}
 		});
 	
 		return AddressModel;

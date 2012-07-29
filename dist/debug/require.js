@@ -315,6 +315,10 @@ var requirejs, require, define;
 
 this['JST'] = this['JST'] || {};
 
+this['JST']['app/templates/footer.html'] = function(data) { return function (obj,_) {
+var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n            <ul class="nav nav-footer pull-right">\n                <li><a href="/#regelingen/voorwaarden">voorwaarden</a></li>\n                <li><a href="/#regelingen/privacy">privacy</a></li>\n                <li><a href="/#regelingen/ip">intellectueel eigendom</a></li>\n                <li><a href="https://remedy.informatietuin.nl" data-bypass>Remedy</a></li>\n            </ul>\n        </footer>\n    </div>   \n</div>');}return __p.join('');
+}(data, _)};
+
 this['JST']['app/templates/helpdesk.html'] = function(data) { return function (obj,_) {
 var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('<h3>helpdesk</h3>');}return __p.join('');
 }(data, _)};
@@ -328,7 +332,7 @@ var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.pu
 }(data, _)};
 
 this['JST']['app/templates/nav.html'] = function(data) { return function (obj,_) {
-var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('\n<div id="navbar" class="navbar navbar-fixed-top">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav">\n                <li class="active"><a href="/#">home</a></li>\n                <li><a href="/#records">dossiers</a></li>\n                <li><a href="/#register">kassa</a></li>\n                <li><a href="/#store">magazijn</a></li>\n            </ul>\n            <ul class="nav pull-right">\n                <li><a href="/#helpdesk">helpdesk</a></li>\n                <li><a href="" class="navbar-text">test gebruiker</a></li>\n            </ul>\n\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="content" class="container-fluid">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n            <ul class="nav nav-footer pull-right">\n                <li><a href="/#regelingen/voorwaarden">voorwaarden</a></li>\n                <li><a href="/#regelingen/privacy">privacy</a></li>\n                <li><a href="/#regelingen/ip">intellectueel eigendom</a></li>\n                <li><a href="https://remedy.informatietuin.nl" data-bypass>Remedy</a></li>\n            </ul>\n        </footer>\n    </div>   \n</div>');}return __p.join('');
+var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('<div class="navbar-inner">\n    <div class="container-fluid">\n\n        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n            <span class="icon-bar"></span>\n            <span class="icon-bar"></span>\n            <span class="icon-bar"></span>\n        </a>\n\n        <!-- Be sure to leave the brand out there if you want it shown -->\n        <a class="brand" href="#">Dokter Frodo</a>\n        <ul class="nav">\n            <li class="active"><a href="#">home</a></li>\n            <li><a href="#records">dossiers</a></li>\n            <li><a href="#register">kassa</a></li>\n            <li><a href="#store">magazijn</a></li>\n        </ul>\n        <ul class="nav pull-right">\n            <li><a href="#helpdesk">helpdesk</a></li>\n            <li><a href="#">test gebruiker</a></li>\n        </ul>\n\n\n        <!-- Everything you want hidden at 940px or less, place within here -->\n        <div class="nav-collapse">\n        <!-- .nav, .navbar-search, .navbar-form, etc --> \n        </div>\n\n    </div>\n</div>\n');}return __p.join('');
 }(data, _)};
 
 this['JST']['app/templates/privacy.html'] = function(data) { return function (obj,_) {
@@ -15618,7 +15622,7 @@ define('text',['module'], function (module) {
     return text;
 });
 
-define('text!templates/nav.html',[],function () { return '\n<div id="navbar" class="navbar navbar-fixed-top">\n    <div class="navbar-inner">\n        <div class="container-fluid">\n\n            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </a>\n\n            <!-- Be sure to leave the brand out there if you want it shown -->\n            <a class="brand" href="#">Dokter Frodo</a>\n            <ul class="nav">\n                <li class="active"><a href="/#">home</a></li>\n                <li><a href="/#records">dossiers</a></li>\n                <li><a href="/#register">kassa</a></li>\n                <li><a href="/#store">magazijn</a></li>\n            </ul>\n            <ul class="nav pull-right">\n                <li><a href="/#helpdesk">helpdesk</a></li>\n                <li><a href="" class="navbar-text">test gebruiker</a></li>\n            </ul>\n\n\n            <!-- Everything you want hidden at 940px or less, place within here -->\n            <div class="nav-collapse">\n            <!-- .nav, .navbar-search, .navbar-form, etc --> \n            </div>\n\n        </div>\n    </div>\n</div>\n<div id="content" class="container-fluid">         \n    \n</div>\n<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n            <ul class="nav nav-footer pull-right">\n                <li><a href="/#regelingen/voorwaarden">voorwaarden</a></li>\n                <li><a href="/#regelingen/privacy">privacy</a></li>\n                <li><a href="/#regelingen/ip">intellectueel eigendom</a></li>\n                <li><a href="https://remedy.informatietuin.nl" data-bypass>Remedy</a></li>\n            </ul>\n        </footer>\n    </div>   \n</div>';});
+define('text!templates/nav.html',[],function () { return '<div class="navbar-inner">\n    <div class="container-fluid">\n\n        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->\n        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n            <span class="icon-bar"></span>\n            <span class="icon-bar"></span>\n            <span class="icon-bar"></span>\n        </a>\n\n        <!-- Be sure to leave the brand out there if you want it shown -->\n        <a class="brand" href="#">Dokter Frodo</a>\n        <ul class="nav">\n            <li class="active"><a href="#">home</a></li>\n            <li><a href="#records">dossiers</a></li>\n            <li><a href="#register">kassa</a></li>\n            <li><a href="#store">magazijn</a></li>\n        </ul>\n        <ul class="nav pull-right">\n            <li><a href="#helpdesk">helpdesk</a></li>\n            <li><a href="#">test gebruiker</a></li>\n        </ul>\n\n\n        <!-- Everything you want hidden at 940px or less, place within here -->\n        <div class="nav-collapse">\n        <!-- .nav, .navbar-search, .navbar-form, etc --> \n        </div>\n\n    </div>\n</div>\n';});
 
 define('views/nav_view',[
     "jquery",
@@ -15632,15 +15636,15 @@ define('views/nav_view',[
 
         var NavView = Backbone.View.extend({
             
-            id: "",
-            className: "",
+            id: "navbar",
+            className: "navbar navbar-fixed-top",
             tagName: "div",
-            
+        
             initialize: function () {
+
+                Backbone.history.on("route", this.setMenu, this);
                 
                 this.template = _.template(tmpl);
-
-                this.views = [];
             },
 
             render: function () {
@@ -15648,6 +15652,17 @@ define('views/nav_view',[
                 this.$el.html(this.template);
 
                 return this;
+            },
+
+            setMenu: function (event) {
+        
+                var hash = Backbone.history.fragment;
+
+                //strip subpaths
+                hash = hash.split("/");
+
+                this.$(".active").removeClass("active");
+                this.$('a[href="#' + hash[0] + '"]').parent().addClass("active");
             }
         });
 
@@ -15834,6 +15849,8 @@ define('views/helpdesk_view',[
         return IpView;
     }
 );
+define('text!templates/footer.html',[],function () { return '<div id="footer" class="container-fluid">\n    <div class="row-fluid">\n        <footer>\n            <ul class="nav nav-footer pull-right">\n                <li><a href="/#regelingen/voorwaarden">voorwaarden</a></li>\n                <li><a href="/#regelingen/privacy">privacy</a></li>\n                <li><a href="/#regelingen/ip">intellectueel eigendom</a></li>\n                <li><a href="https://remedy.informatietuin.nl" data-bypass>Remedy</a></li>\n            </ul>\n        </footer>\n    </div>   \n</div>';});
+
 define('router',[
   "remedy",
   "views/nav_view",
@@ -15841,11 +15858,12 @@ define('router',[
   "views/policy_ip_view",
   "views/policy_privacy_view",
   "views/policy_terms_view",
-  "views/helpdesk_view"
+  "views/helpdesk_view",
+  "text!templates/footer.html"
 ],
 
   function(remedy, NavView, HomeView, IpView, PrivacyView, 
-                                    TermsView, HelpdeskView) {
+                                    TermsView, HelpdeskView, footer) {
 
     var Router = Backbone.Router.extend({
 
@@ -15864,11 +15882,14 @@ define('router',[
 
         initialize: function() {
 
-            new NavView({el: "#main"}).render();
+            $("#main").append( new NavView().render().el);
+            $("#main").append(
+                '<div id="content" class="container-fluid"></div>');
+            $("#main").append(footer);
         },
 
         home: function () {
-
+            
             this.showView(new HomeView());
         },
 
@@ -15959,7 +15980,7 @@ define('helpers/nestModel',[
 
     var nestModel = function (model, attributeName, nestedModel) {
       
-        model.set(attributeName, nestedModel.toJSON(), {silent: true});
+        model.attributes[attributeName] = nestedModel.attributes;
             //create empty arrays if none
             /*
             nestedModel.bind('add', function (initiative) {
@@ -15988,62 +16009,174 @@ define('records/config',[],
     function () {
 
         var config = {
-            required: {
-                givenName: "voornaam",
-                familyName: "achternaam",
-                dateOfBirth: "1901-01-01",
-                phonePreferred: "00-00-000000",
-                emailPreferred: "mail@provider.com",
-                ice: "ice",
-                homeAddress: "thuis adres"
+            givenName: {
+                label: "voornaam",
+                type: "basic",
+                placeholder: "voornaam",
+                required: true,
+                basic: true
             },
-            nonRequired: {
-                sex: "geslacht",
-                workEmail: "werk email",
-                privateEmail: "prive email",
-                workPhone: "werk telefoon",
-                privatePhone: "prive telefoon",
-                facebook: "Facebook",
-                twitter: "Twitter",
-                linkedin: "LinkedIn",
-                website: "website",    
-                workAddress: "werk adres",
-                deliveryAddress: "aflever adres",
-                billingAddress: "factuur adres",
-                idNumber: "BSN",
-                idDocumentNr: "legitimatie nr",
-                idDocumentScr: "scan legitmatie",
-                insuranceCompany: "verzekeraar",
-                insuranceNumber: "polisnummer"
+            familyName: {
+                label: "achternaam",
+                type: "basic",
+                placeholder: "achternaam",
+                required: true,
+                basic: true
             },
-            basicPersInf: {
-                givenName: "voornaam",
-                familyName: "achternaam",
-                dateOfBirth: "1901-01-01",
-                phonePreferred: "0000000000",
-                emailPreferred: "mail@provider.com"
+            dateOfBirth: {
+                label: "geboortedatum",
+                type: "basic",
+                placeholder: "1901-01-01",
+                required: true,
+                basic: true
             },
-            otherPersInf: {
-                ice: "ice",
-                homeAddress: "thuis adres",
-                sex: "geslacht",
-                workEmail: "werk email",
-                privateEmail: "prive email",
-                workPhone: "werk telefoon",
-                privatePhone: "prive telefoon",
-                facebook: "Facebook",
-                twitter: "Twitter",
-                linkedin: "LinkedIn",
-                website: "website",    
-                workAddress: "werk adres",
-                deliveryAddress: "aflever adres",
-                billingAddress: "factuur adres",
-                idNumber: "BSN",
-                idDocumentNr: "legitimatie nr",
-                idDocumentScr: "scan legitmatie",
-                insuranceCompany: "verzekeraar",
-                insuranceNumber: "polisnummer"
-            }
+            phonePreferred: {
+                label: "verkeurs telefoon",
+                type: "basic",
+                placeholder: "00-00-000000",
+                required: true,
+                basic: true
+            },
+            emailPreferred: {
+                label: "voorkeurs email",
+                type: "basic",
+                placeholder: "mail@provider.com",
+                required: true,
+                basic: true
+            },
+            ice: {
+                label: "ice",
+                type: "ice",
+                placeholder: "ice",
+                required: true,
+                basic: false    
+            },
+            homeAddress: {
+                label: "thuis adres",
+                type: "address",
+                placeholder: "thuis adres",
+                required: true,
+                basic: false
+            },
+            sex: {
+                label: "geslacht",
+                type: "basic",
+                placeholder: "geslacht",
+                required: false,
+                basic: false
+            },
+            workEmail: {
+                label: "werk email",
+                type: "basic",
+                placeholder: "werk email",
+                required: false,
+                basic: false
+            },
+            privateEmail: {
+                label: "prive email",
+                type: "basic",
+                placeholder: "prive email",
+                required: false,
+                basic: false
+            },
+            workPhone: {
+                label: "werk telefoon",
+                type: "basic",
+                placeholder: "werk telefoon",
+                required: false,
+                basic: false
+            },
+            privatePhone: {
+                label: "prive telefoon",
+                type: "basic",
+                placeholder: "prive telefoon",
+                required: false,
+                basic: false
+            },
+            facebook: {
+                label: "Facebook",
+                type: "basic",
+                placeholder: "Facebook",
+                required: false,
+                basic: false
+            },
+            twitter: {
+                label: "Twitter",
+                type: "basic",
+                placeholder: "Twitter",
+                required: false,
+                basic: false
+            },
+            linkedin: {
+                label: "LinkedIn",
+                type: "basic",
+                placeholder: "LinkedIn",
+                required: false,
+                basic: false
+            },
+            website: {
+                label: "website",
+                type: "basic",
+                placeholder: "website",
+                required: false,
+                basic: false
+            },    
+            workAddress: {
+                label: "werk adres",
+                type: "address",
+                placeholder: "werk adres",
+                required: false,
+                basic: false
+            }, 
+            deliveryAddress: {
+                label: "aflever adres",
+                type: "address",
+                placeholder: "aflever adres",
+                required: false,
+                basic: false
+            }, 
+            billingAddress: {
+                label: "factuur adres",
+                type: "address",
+                placeholder: "factuur adres",
+                required: false,
+                basic: false
+            },
+            idNumber: {
+                label: "BSN",
+                type: "basic",
+                placeholder: "BSN",
+                required: false,
+                basic: false
+            }, 
+            idDocumentNr: {
+                label: "legitimatie nr",
+                type: "basic",
+                placeholder: "legitimatie nr",
+                required: false,
+                basic: false
+            }, 
+            idDocumentScr: {
+                label: "scan legitmatie",
+                type: "basic",
+                placeholder: "scan legitmatie",
+                required: false,
+                basic: false
+            }, 
+            insuranceCompany: {
+                label: "verzekeraar",
+                type: "basic",
+                placeholder: "verzekeraar",
+                required: false,
+                basic: false
+            }, 
+            insuranceNumber: {
+                label: "polisnummer",
+                type: "basic",
+                placeholder: "polisnummer",
+                required: false,
+                basic: false
+            } 
         };
 
         return config;
@@ -16525,21 +16658,18 @@ define('records/models/address_model',[
 
 			//simple attributes get a default value
 			defaults: {
-				street: "",
-				number: "",
-				extension: "",
-				postalcode: "",
-				city: "",
-				provinceOrState: "",
-				country: ""
+				street: "straat",
+				number: "nr",
+				extension: "ext",
+				postalcode: "postcode",
+				city: "stad",
+				province: "provincie",
+				country: "land"
 			},
 
 			initialize: function () {
 
-			},
-
-			fetchAddress: function () {}
-
+			}
 		});
 	
 		return AddressModel;
@@ -16557,10 +16687,10 @@ define('records/models/ice_model',[
 
 			//simple attributes get a default value
 			defaults: {
-				givenName: "",
-				familyName: "",
-				relation: "",
-				telecomIdentifier: ""
+				givenName: "voornaam",
+				familyName: "achternaam",
+				relation: "relatie",
+				telecom: "telecom"
 			},
 
 			initialize: function () {}
@@ -16597,6 +16727,13 @@ define('records/models/record_model',[
             //simple attributes get a default value
             defaults: {
 
+                "givenName": "voornaam",
+                "familyName": "achternaam",
+                "dateOfBirth": "1977-03-15T10:06:03.864Z",
+                "emailPreferred": "account@provider.com",
+                "phonePreferred": "31-6-00000000",
+                "satisfaction": 3,
+                "value": 3,
                 "created": 0,
                 "updated": 0,
                 "viewed": 0
@@ -16606,51 +16743,36 @@ define('records/models/record_model',[
             //nested collections need to be initialised
             initialize: function() {
 
-                console.log(config);
+                _.each(config, function (settings, key) {
 
-                _.each(config.required, function (value, key) {
+                    if (settings.required) {
 
-                    console.log(key);
-                    console.log(value);
+                        if(settings.type === "address") {
 
+                            this.addAddress(key);
 
-                    this.set(key, value, {silent: true});
+                        } else if (settings.type === "ice") {
+
+                            this.ice = nestModel(
+                                    this,
+                                    'ice',
+                                    new IceModel(this.get('ice'))
+                            );
+
+                        }
+                    }
                 }, this);
+            
                 
-                this.homeAddress = nestModel(
-                        this,
-                        'homeAddress',
-                        new AddressModel(this.get('homeAddress'))
-                    );
 
-                this.ice = nestModel(
-                        this,
-                        'ice',
-                        new IceModel(this.get('ice'))
-                    );
+                
 
-                this.on("change", this.setUpdated, this);
+                this.on("sync", this.setUpdated, this);
 
                 /*
                 this.medicals = nestCollection(this, 'medicals',
                         new Medicals(this.get('medicals')));
                 this.medicals.add();
-
-                this.ices = nestCollection(this, 'ices',
-                        new Ices(this.get('ices')));
-                this.ices.add();
-
-                this.telecoms = nestCollection(this, 'telecoms',
-                        new Telecoms(this.get('telecoms')));
-                this.telecoms.add();
-
-                this.addresses = nestCollection(this, 'addresses',
-                        new Addresses(this.get('addresses')));
-                this.addresses.add();
-
-                this.consults = nestCollection(this, 'consults',
-                        new Consults(this.get('consults')));
-                this.consults.add();
 
                 this.treatments = nestCollection(this, 'treatments',
                         new Treatments(this.get('treatments')));
@@ -16660,22 +16782,23 @@ define('records/models/record_model',[
                         new PhotoSets(this.get('photoSets')));
                 this.photoSets.add();
 
-                this.notes = nestCollection(this, 'notes',
-                        new Notes(this.get('notes')));
-                this.notes.add();
-
-                this.offers = nestCollection(this, 'offers',
-                        new Offers(this.get('offers')));
-                this.offers.add();
-
-                this.receipts = nestCollection(this, 'receipts',
-                        new Receipts(this.get('receipts')));
-                this.receipts.add();
-
                 this.logs = nestCollection(this, 'logs',
                         new Logs(this.get('logs')));
                 this.logs.add();
                 */
+            },
+
+            addAddress: function (attribute) {
+
+                console.log(attribute);
+
+                this[attribute] = nestModel(
+                        this,
+                        attribute,
+                        new AddressModel(this.get(attribute))
+                    );
+
+                console.log(this);
             },
 
             setUpdated: function () {
@@ -16722,7 +16845,7 @@ define('records/models/record_model',[
 
                 } else {
 
-                    console.log("no match date: ", date);
+                    return "wrong format";
                 }
             },
 
@@ -16738,13 +16861,8 @@ define('records/models/record_model',[
 
                 } else {
 
-                    console.log("no match phonenumber: ", phoneNumber);
+                    return "wrong format";
                 }
-            },
-
-            logEvent: function () {
-
-                console.log("change");
             }
         });
     
@@ -16789,7 +16907,7 @@ define('records/collections/record_collection',[
 
 define('text!modules/records/templates/records_search.html',[],function () { return '<h3> zoeken </h3>\n<input id="search" type="search" placeholder="filter op naam, telefoonnummer of geboortedatum" results="0" incremental="true" autofocus="">\n<div class="listitems" id="search_result"></div>';});
 
-define('text!modules/records/templates/record_mini.html',[],function () { return '<img class="passphoto span5" src="http://placehold.it/70x70">\n<div class="basicDetails span7">\n    <div class="row-fluid emphasised">\n            <p><%= givenName %></p>\n            <p><%= familyName %></p>\n    </div>\n    <div class="row-fluid subdued">\n        <p><%=this.model.formPhonePreferred()%></p>\n        <p>\n            <%=this.model.formDob()%>\n            &nbsp;(<%=this.model.age()%>)\n        </p>\n    </div>\n</div>\n';});
+define('text!modules/records/templates/record_mini.html',[],function () { return '<img class="passphotoSmall span4" src="assets/img/passphoto_small.jpg">\n<div class="basicDetails span8">\n    <div class="row-fluid emphasised">\n            <p><%= givenName %></p>\n            <p><%= familyName %></p>\n    </div>\n    <div class="row-fluid subdued">\n        <p><%=this.model.formPhonePreferred()%></p>\n        <p>\n            <%=this.model.formDob()%>\n            &nbsp;(<%=this.model.age()%>)\n        </p>\n    </div>\n</div>\n';});
 
 define('records/views/record_mini_view',[
 	"jquery",
@@ -16857,7 +16975,7 @@ define('records/views/records_search_view',[
 
 				this.template = _.template(tmpl);
 
-				this.collection.on("change add", this.render, this);
+				this.collection.on("change add", this.renderList, this);
 
 				this.foundRecordViews = [];
 
@@ -17102,9 +17220,10 @@ define('records/views/records_new_view',[
 	"text!modules/records/templates/records_new.html",
 	"records/views/record_mini_view"
 	],
+
 	function ($, _, Backbone, tmpl, RecordMiniView) {
 		
-		var RecordsSearchView = Backbone.View.extend({
+		var RecordsNewView = Backbone.View.extend({
 			
 			tagName: "section",
 			className: "span3 column",
@@ -17114,7 +17233,7 @@ define('records/views/records_new_view',[
 
 				this.template = _.template(tmpl);
 
-				this.collection.on("change", this.renderList, this);
+				this.collection.on("change add", this.renderList, this);
 
 				this.newRecordViews = [];
 			},
@@ -17127,7 +17246,6 @@ define('records/views/records_new_view',[
 			render: function () {
 
 				this.$el.html(this.template);
-
 				this.renderList();
 
 				return this;
@@ -17135,14 +17253,10 @@ define('records/views/records_new_view',[
 			
 			newRecord: function () {
 
-				var datetime = Date.now();
-
 				var newRecord = this.collection.create({	
-						created: datetime,
-						updated: datetime
+						created: Date.now()
 					},
 					{wait: true});
-				console.log(newRecord);
 			},
 
 			renderList: function () {
@@ -17173,15 +17287,9 @@ define('records/views/records_new_view',[
 
 			filter: function () {
 
-				var created;
-				var updated;
-				
 				this.collection.each(function (record) {
 
-					created = record.get("created");
-					updated = record.get("updated");
-
-					if (created === updated) {
+					if (record.get("updated") === 0) {
 
 						this.newRecordViews.push(
 							new RecordMiniView({model: record}));
@@ -17191,7 +17299,7 @@ define('records/views/records_new_view',[
 			}
 		});
 
-		return RecordsSearchView;
+		return RecordsNewView;
 	}
 );
 define('records/views/records_view',[
@@ -17238,9 +17346,9 @@ define('records/views/records_view',[
 		return RecordsView;
 	}
 );
-define('text!modules/records/templates/record.html',[],function () { return '<div class="span4 column" id="left_column"></div>\n<div class="span8 column">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active">\n                    <a href="#consults" data-toggle="tab">\n                        consults\n                    </a>\n                </li>\n                <li>\n                    <a href="#treatments" data-toggle="tab">\n                        behandelingen\n                    </a>\n                </li>\n                <li>\n                    <a href="#photos" data-toggle="tab">\n                        foto&#39;s\n                    </a>\n                </li>\n                <li>\n                    <a href="#medicalHistory" data-toggle="tab">\n                        medische geschiedenis\n                    </a>\n                </li>       \n                <li>\n                    <a href="#service" data-toggle="tab">\n                        service\n                    </a>\n                </li>\n                <li>\n                    <a href="#management" data-toggle="tab">\n                        beheer\n                    </a>\n                </li>\n            </ul>\n            <div class="tab-content">\n                <div class="tab-pane active" id="consults">\n                    <div class="row-fluid">\n                        <div class="span6">\n                            <h4>anamnese</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div >\n                        <div class="span6">\n                            <h4>onderzoek</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                    </div>\n                    <div class="row-fluid">\n                        <div class="span6">\n                            <h4>conclusie</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                        <div class="span6">\n                            <h4>beleid</h4>\n                            <textarea rows="10" cols="40"></textarea>\n                        </div>\n                    </div>\n                </div>\n                <div class="tab-pane" id="treatments">\n                    <p>aantekeningen</p>\n                    <p>tekening</p>\n                    <p>presets</p>\n                    <p>kortingen/prijs</p>\n                    <p>bladeren</p>\n                </div>\n                <div class="tab-pane" id="photos">\n                    <p>fotos</p>\n                </div>\n                <div class="tab-pane" id="medicalHistory">\n                    <p>medische geschiedenis en waarschuwingen</p>\n                </div>\n                <div class="tab-pane" id="service">\n                    <p>service</p>\n                    <p>newsletter</p>\n                    <p>drinks</p>\n                    <p>promotions</p>\n                    <p>netwerk klant</p>\n                </div>\n                <div class="tab-pane" id="management">\n                    <p>beheer</p>\n                    <p>created, viewed, updated</p>\n                    <p>flags, payments due</p>\n                    <p>number of appointments missed, changed, no-shows</p>\n                    <p>exporteren</p>\n                    <p>toestemming om in te zien</p>\n                    <p>toestemming om te delen met een ander systeem</p>\n                    <p>log</p>\n                </div>\n            </div>\n        </div>    \n    </div>\n';});
+define('text!modules/records/templates/record.html',[],function () { return '<div class="span4 column" id="left_column"></div>\n<div class="span8 column">\n        <div class="tabbable">\n            <ul class="nav nav-tabs" id="client_record_panes">\n                <li class="active">\n                    <a href="#treatments" data-toggle="tab">\n                        behandelingen\n                    </a>\n                </li>\n                <li>\n                    <a href="#photos" data-toggle="tab">\n                        foto&#39;s\n                    </a>\n                </li>\n                <li>\n                    <a href="#medicalHistory" data-toggle="tab">\n                        medische geschiedenis\n                    </a>\n                </li>       \n                <li>\n                    <a href="#service" data-toggle="tab">\n                        service\n                    </a>\n                </li>\n                <li>\n                    <a href="#management" data-toggle="tab">\n                        beheer\n                    </a>\n                </li>\n            </ul>\n            <div class="tab-content">\n                <div class="tab-pane active" id="treatments">\n                    <section>\n                        <p>aantekeningen</p>\n                        <p>tekening</p>\n                        <p>presets</p>\n                        <p>kortingen/prijs</p>\n                        <p>bladeren</p>\n                        <div class="row-fluid">\n                            <div class="span6">\n                                <h4>anamnese</h4>\n                                <textarea rows="10" cols="40"></textarea>\n                            </div >\n                            <div class="span6">\n                                <h4>onderzoek</h4>\n                                <textarea rows="10" cols="40"></textarea>\n                            </div>\n                        </div>\n                        <div class="row-fluid">\n                            <div class="span6">\n                                <h4>conclusie</h4>\n                                <textarea rows="10" cols="40"></textarea>\n                            </div>\n                            <div class="span6">\n                                <h4>beleid</h4>\n                                <textarea rows="10" cols="40"></textarea>\n                            </div>\n                        </div>\n                    </section>\n                </div>\n                <div class="tab-pane" id="photos">\n                    <section>\n                        <p>fotos</p>\n                    </section>\n                </div>\n                <div class="tab-pane" id="medicalHistory">\n                    <section>\n                        <p>medische geschiedenis en waarschuwingen</p>\n                    </section>\n                </div>\n                <div class="tab-pane" id="service">\n                    <section>\n                        <p>service</p>\n                        <p>newsletter</p>\n                        <p>drinks</p>\n                        <p>promotions</p>\n                        <p>netwerk klant</p>\n                    </section>\n                </div>\n                <div class="tab-pane" id="management">\n                    <section>\n                        <p>beheer</p>\n                        <p>created, viewed, updated</p>\n                        <p>flags, payments due</p>\n                        <p>number of appointments missed, changed, no-shows</p>\n                        <p>exporteren</p>\n                        <p>toestemming om in te zien</p>\n                        <p>toestemming om te delen met een ander systeem</p>\n                        <p>log</p>\n                    </section>\n                </div>\n            </div>\n        </div>    \n    </div>\n';});
 
-define('text!records/templates/basic_details.html',[],function () { return '<h3><%= givenName %>&nbsp;<%= familyName %></h3>\n<div class="row-fluid">\n    <img class="passphoto span6" src="http://placehold.it/180x240">\n    <div class="span6">\n        <table class="table">\n            <tbody>\n                <tr>\n                    <td>\n                        <%= givenName %>\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= givenName %>"\n                                data-key="givenName">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                       <%= familyName %>\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= familyName %>"\n                                data-key="familyName">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%= dob %> &nbsp;(<%= age %>)\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= dob %>"\n                                data-key="dateOfBirth">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%= phone %>\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= phone %>" \n                                data-key="phonePreferred">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%= mail %>\n                    </td>\n                    <td class="input">\n                        <input  type="text" \n                                value="<%= mail %>" \n                                data-key="emailPreferred">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td class="block-toggle">\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                    </td>\n                </tr>\n                <tr>\n                    <td class="block-toggle">\n                        <i class="icon-heart"></i>\n                        <i class="icon-heart"></i>\n                        <i class="icon-heart"></i>\n                    </td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>  ';});
+define('text!records/templates/basic_details.html',[],function () { return '<h3><%= givenName %>&nbsp;<%= familyName %></h3>\n<div class="row-fluid">\n    <img class="passphotoLarge span6" src="assets/img/passphoto_large.jpg">\n    <div class="span6">\n        <table class="table">\n            <tbody>\n                <tr>\n                    <td>\n                        <%= givenName %>\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= givenName %>"\n                                data-key="givenName">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                       <%= familyName %>\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= familyName %>"\n                                data-key="familyName">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%= dob %> &nbsp;(<%= age %>)\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= dob %>"\n                                data-key="dateOfBirth">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%= phone %>\n                    </td>\n                    <td class="input">\n                        <input  type="text"\n                                value="<%= phone %>" \n                                data-key="phonePreferred">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <%= mail %>\n                    </td>\n                    <td class="input">\n                        <input  type="text" \n                                value="<%= mail %>" \n                                data-key="emailPreferred">\n                        </input>\n                    </td>\n                </tr>\n                <tr>\n                    <td class="block-toggle">\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                        <i class="icon-star"></i>\n                    </td>\n                </tr>\n                <tr>\n                    <td class="block-toggle">\n                        <i class="icon-heart"></i>\n                        <i class="icon-heart"></i>\n                        <i class="icon-heart"></i>\n                    </td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>  ';});
 
 define('records/views/basic_details_view',[
 	"jquery",
@@ -17260,8 +17368,9 @@ define('records/views/basic_details_view',[
 			events: {
 
 				"click tr": "toggleRow",
-                "click input": "inputClicked",
-                "keyup input": "processKeyup"
+                "click input": "stopEvent",
+                "keyup input": "processKeyup",
+                "blur input": "toggleRow"
 			},
 
 			initialize: function () {
@@ -17272,7 +17381,7 @@ define('records/views/basic_details_view',[
 			},
 
 			render: function () {
-				
+
 				this.$el.html(this.template({
 					givenName: this.model.get("givenName"),
 					familyName: this.model.get("familyName"),
@@ -17285,49 +17394,78 @@ define('records/views/basic_details_view',[
 				return this;
 			},
 
-			toggleRow: function (event) {
-
-                var row = $(event.currentTarget);
-                var inputObj = row.find("td > input");
-
-                if (row.hasClass("input-visible")) {
-
-                    this.storeInput(inputObj);
-                    row.toggleClass("input-visible");
-
-
-                } else {
-
-                    row.toggleClass("input-visible");
-                    inputObj.focus();
-
-                }
-
-                //$(event.currentTarget).children("td").toggle();
-                //$(event.currentTarget).find("td > input:visible").focus();
-            },
-
-            inputClicked: function (event) {
+            stopEvent: function (event) {
 
                 event.preventDefault();
                 event.stopPropagation();
             },
 
-            storeInput: function (inputObj) {
+            toggleRowVisibility: function (row) {
 
-                var key = inputObj.data().key;
-                var value = inputObj.val();
+                var inputObj;
+                var key;
+                var value;
 
-                if (this.model.get(key) !== value) {
+                if (row.hasClass("input-visible")) {
+
+                    inputObj = row.find("input");
+
+                    //console.log(inputObj.length);
                     
-                    this.model.set(key, value);
-                    this.model.save();
-                }               
+                    if(inputObj.length !== 0) {
+
+                        key = inputObj.data().key;
+                        value = inputObj.val();
+
+                        if (this.model.get(key) !== value) {
+
+                            this.model.set(key, value);
+                            this.model.save();
+                        }
+                    }            
+
+                    row.removeClass("input-visible");
+
+                } else {
+
+                    row.addClass("input-visible");
+                    row.find("input").focus();
+                }
+            },
+            
+            toggleRow: function (event) {
+
+                var target = $(event.target);
+                var row = target.parents("tr");
+
+                this.toggleRowVisibility(row);
                 
             },
 
+            togglePreviousRow: function (event) {
+
+                var target = $(event.target);
+                var row = target.parents("tr");
+
+                row = row.previous(); 
+
+                this.toggleRowVisibility(row);
+            },
+
+            toggleNextRow: function (event) {
+
+                var target = $(event.target);
+                var row = target.parents("tr");
+
+                row = row.next(); 
+
+                this.toggleRowVisibility(row);
+
+            },
+
+
             processKeyup: function (event) {
-            
+
                 // return saves the value and exits the input
                 // shift + return does the same and moves to the
                 // next field. If there are no more fields, it goes
@@ -17335,20 +17473,11 @@ define('records/views/basic_details_view',[
                 // it moves to the first
                 if (event.keyCode === 13) {
 
-                    var inputObj = $(event.target);
-                    var row = inputObj.parents(".input-visible");
-
-                    this.storeInput(inputObj); 
-                    row.toggleClass("input-visible");
-                }
-                    /*
-                    $(event.target).focusout();
-                    //this.storeAndToggle(event);
+                    this.toggleRow(event);
 
                     if (event.shiftKey) {
 
-                        //move to next field
-                        this.nextField();
+                        this.toggleNextRow(event);
 
                     } 
                 }
@@ -17359,8 +17488,9 @@ define('records/views/basic_details_view',[
                 if (event.keyCode === 9) {
 
                     event.preventDefault();
-                    //this.storeAndToggle(event);
-                    this.nextField();
+
+                    this.toggleRow(event);
+                    this.toggleNextRow(event);
                 }
 
                 // backspace moves the cursor one back and erases a char
@@ -17370,33 +17500,12 @@ define('records/views/basic_details_view',[
                 if (event.keyCode === 8 && event.shiftkey) {
 
                     event.preventDefault();
-                    //this.storeAndToggle(event);
-                    this.previousField();
 
-                }*/
+                    this.toggleRow(event);
+                    this.togglePreviousRow(event);
+                }
                 
             }
-
-            /*
-            previousField: function () {
-
-            },
-
-            nextField: function () {
-
-                //this.toggleInput($("input:focus"));
-
-            },
-
-            storeAndToggle: function (event) {
-
-                console.log("storeAndToggle");
-
-                this.storeInput(event);
-                this.toggleInput($(event.target));
-          
-            }
-            */  
 		});
 
 		return PersonalView;
@@ -17455,6 +17564,10 @@ define('text!records/templates/details_menu_item.html',[],function () { return '
 
 define('text!records/templates/other_details_item.html',[],function () { return '<tr>\n    <th><%=label%></th>\n    <td><%=value%></td>\n    <td class="input">\n        <input  type="text" value="<%=value%>" data-key="<%=key%>"></input>\n    </td>\n    \n</tr>';});
 
+define('text!records/templates/address.html',[],function () { return '<tr>\n    <th><%=label%></th>\n    <td><%=street%>&nbsp;<%=number%>&nbsp;<%=extension%></td>\n    <td class="input">\n        <input  type="text"\n                value="<%=street%>" \n                data-key="street"\n                data-model="<%=model%>">\n        </input>\n        <input  type="text"\n                value="<%=number%>" \n                data-key="number"\n                data-model="<%=model%>">\n        </input>\n        <input  type="text"\n                value="<%=extension%>" \n                data-key="extension"\n                data-model="<%=model%>">\n        </input>\n    </td>\n</tr> \n<tr>\n    <th>&nbsp;</th>\n    <td><%=postalcode%>&nbsp;<%=city%></td>\n    <td class="input">\n        <input  type="text"\n                value="<%=postalcode%>" \n                data-key="postalcode"\n                data-model="<%=model%>">\n        </input>\n        <input  type="text"\n                value="<%=city%>" \n                data-key="city"\n                data-model="<%=model%>">\n        </input>\n    </td>\n</tr>\n<tr>\n    <th>&nbsp;</th>\n    <td><%=province%>&nbsp;<%=country%></td>\n    <td class="input">\n        <input  type="text"\n                value="<%=province%>" \n                data-key="province"\n                data-model="<%=model%>">\n        </input>\n        <input  type="text"\n                value="<%=country%>" \n                data-key="country"\n                data-model="<%=model%>">\n        </input>\n    </td>\n</tr>';});
+
+define('text!records/templates/ice.html',[],function () { return '<tr>\n    <th><%=label%></th>\n    <td><%=givenName%>&nbsp;<%=familyName%></td>\n    <td class="input">\n        <input  type="text"\n                value="<%=givenName%>" \n                data-key="givenName"\n                data-model="<%=model%>">\n        </input>\n        <input  type="text" \n                value="<%=familyName%>" \n                data-key="familyName"\n                data-model="<%=model%>">\n        </input>\n    </td>\n</tr> \n<tr>\n    <th>&nbsp;</th>\n    <td><%=relation%></td>\n    <td class="input">\n        <input  type="text"\n                value="<%=relation%>"\n                data-key="relation"\n                data-model="<%=model%>">\n        </input>\n    </td>\n</tr>\n<tr>\n    <th>&nbsp;</th>\n    <td><%=telecom%></td>\n    <td class="input">\n        <input  type="text"\n                value="<%=telecom%>"\n                data-key="telecom"\n                data-model="<%=model%>">\n        </input>\n    </td>    \n</tr>';});
+
 define('records/views/other_details_view',[
     "jquery",
     "lodash",
@@ -17463,10 +17576,13 @@ define('records/views/other_details_view',[
     //"helpers/input",
     "text!records/templates/other_details.html",
     "text!records/templates/details_menu_item.html",
-    "text!records/templates/other_details_item.html"
+    "text!records/templates/other_details_item.html",
+    "text!records/templates/address.html",
+    "text!records/templates/ice.html"
     ], 
 
-    function ($, _, Backbone, config, tmpl, menuTmpl, detailTmpl) {
+    function ($, _, Backbone, config, 
+                tmpl, menuTmpl, detailTmpl, addressTmpl, iceTmpl) {
 
         var AddressesView = Backbone.View.extend({
 
@@ -17479,8 +17595,10 @@ define('records/views/other_details_view',[
                 "click ul#addMenu": "addItem",
                 "click ul#removeMenu": "removeItem",
                 "click tr": "toggleRow",
-                "click input": "inputClicked",
-                "keyup input": "processKeyup"
+                "click input": "stopEvent",
+                "keyup input": "processKeyup",
+                "blur input": "onBlurInput"
+                
             },
 
             initialize: function () {
@@ -17488,6 +17606,8 @@ define('records/views/other_details_view',[
                 this.template = _.template(tmpl);
                 this.menuTmpl = _.template(menuTmpl);
                 this.detailsTmpl = _.template(detailTmpl);
+                this.addressTmpl = _.template(addressTmpl);
+                this.iceTmpl = _.template(iceTmpl);
 
                 this.model.on("change", this.render, this);
             },
@@ -17496,40 +17616,63 @@ define('records/views/other_details_view',[
 
                 this.$el.html(this.template());
 
-                _.each(config.nonRequired, function (label, key) {
+                // config.key: {label, type, placeholder, required, basis}
 
-                    if (this.model.has(key)) {
-    
-                        this.$("#removeMenu").append(
-                            this.menuTmpl({
-                                key: key,
-                                label: label
-                            })
-                        );
+                _.each(config, function (settings, key) {
 
-                    } else {
+                    var dataset;
 
-                        this.$("#addMenu").append(
-                            this.menuTmpl({
-                                key: key,
-                                label: label
-                            })
-                        );
+                    if (!settings.required) {
+
+                        if (this.model.has(key)) {
+
+                            this.$("#removeMenu").append(
+                                this.menuTmpl({
+                                    key: key,
+                                    label: settings.label
+                                })
+                            );
+                        } else {
+
+                            this.$("#addMenu").append(
+                                this.menuTmpl({
+                                    key: key,
+                                    label: settings.label
+                                })
+                            );
+                        }
                     }
 
-                }, this);
+                    if (!settings.basic && this.model.has(key)) {
 
-                _.each(config.otherPersInf, function (label, key) {
-                    
-                    if (this.model.has(key)) {
+                        if (settings.type === "address") {
 
-                        this.$("tbody").append(
+                            // nested model
+                            dataset = this.model[key].toJSON();
+                            dataset.model = key;
+                            dataset.label = settings.label;
+
+                            this.$("tbody").append(this.addressTmpl(dataset));
+
+                        } else if (settings.type === "ice") {
+                        
+                            // nested model
+                            dataset = this.model[key].toJSON();
+                            dataset.model = key;
+                            dataset.label = settings.label;
+
+                            this.$("tbody").append(this.iceTmpl(dataset));
+
+                        } else {
+
+                            this.$("tbody").append(
                                 this.detailsTmpl({
-                                    label: label,
+                                    label: settings.label,
                                     key: key,
                                     value: this.model.get(key)
                                 })
                             );
+                        }   
                     }
 
                 }, this);
@@ -17539,61 +17682,146 @@ define('records/views/other_details_view',[
 
             addItem: function (event) {
 
+                var key;
+                var settings;
+
                 event.preventDefault();
-                this.model.set(event.target.dataset.key, "");
-                this.model.save();
+
+                key = event.target.dataset.key;
+                settings = config[key];
+
+                if (settings.type === "address") {
+
+                    this.model.addAddress(key);
+                    this.model.save();
+
+                } else {
+                  
+                    this.model.set(key, settings.placeholder);
+                    this.model.save();
+                }  
+                
             },
 
             removeItem: function (event) {
 
+                var key;
+                var settings;
+
                 event.preventDefault();
-                this.model.unset(event.target.dataset.key, "");
-                this.model.save();
-            },
 
-            toggleRow: function (event) {
+                key = event.target.dataset.key;
+                settings = config[key];
 
-                var row = $(event.currentTarget);
-                var inputObj = row.find("td > input");
+                if (settings.type === "address") {
 
-                if (row.hasClass("input-visible")) {
-
-                    this.storeInput(inputObj);
-                    row.toggleClass("input-visible");
-
+                    this.model.unset(key);
+                    this.model.save();
+                    delete this.model[key];
+                    
 
                 } else {
+                  
+                    this.model.unset(key);
+                    this.model.save();
+                }  
+                
 
-                    row.toggleClass("input-visible");
-                    inputObj.focus();
-
-                }
-
-                //$(event.currentTarget).children("td").toggle();
-                //$(event.currentTarget).find("td > input:visible").focus();
+                console.log(this.model);
             },
 
-            inputClicked: function (event) {
+            stopEvent: function (event) {
 
                 event.preventDefault();
                 event.stopPropagation();
             },
 
-            storeInput: function (inputObj) {
+            storeInput: function (element) {
 
-                var key = inputObj.data().key;
-                var value = inputObj.val();
+                var key = element.dataset.key;
+                var nestedModel = element.dataset.model;
+                var value = element.value;
+                var model;
 
-                if (this.model.get(key) !== value) {
-                    
-                    this.model.set(key, value);
+                if (nestedModel) {
+
+                    model = this.model[nestedModel];
+    
+                } else {
+
+                    model = this.model;
+                }
+
+                if (model.get(key) !== value) {
+
+                    model.set(key, value);
                     this.model.save();
-                }               
+                }
+            },
+
+            toggleRowVisibility: function (row) {
+
+
+                if (row.hasClass("input-visible")) {
+
+                    _.each(row.find("input"), function (element) {
+
+                        this.storeInput(element);
+
+                    }, this);
+                        
+                    row.removeClass("input-visible");
+
+                } else {
+
+                    row.addClass("input-visible");
+                    row.find("input").first().focus();
+                }
+            },
+
+            toggleRow: function (event) {
+
+                var target = $(event.target);
+                var row = target.parents("tr");
+
+                this.toggleRowVisibility(row);
                 
             },
 
+            onBlurInput: function (event) {
+
+                // if a sister element has focus
+                // do not toggle row
+                //if ($(event.target).siblings("input:focus").length === 0) {
+
+                //    this.toggleRow(event);
+                //}
+            },
+
+            togglePreviousRow: function (event) {
+
+                var target = $(event.target);
+                var row = target.parents("tr");
+
+                row = row.previous(); 
+
+                this.toggleRowVisibility(row);
+            },
+
+            toggleNextRow: function (event) {
+
+                var target = $(event.target);
+                var row = target.parents("tr");
+
+                row = row.next(); 
+
+                this.toggleRowVisibility(row);
+
+            },
+
+
             processKeyup: function (event) {
-            
+
                 // return saves the value and exits the input
                 // shift + return does the same and moves to the
                 // next field. If there are no more fields, it goes
@@ -17601,20 +17829,15 @@ define('records/views/other_details_view',[
                 // it moves to the first
                 if (event.keyCode === 13) {
 
-                    var inputObj = $(event.target);
-                    var row = inputObj.parents(".input-visible");
+                    
+                    if ($(event.target).siblings("input").length === 0) {
 
-                    this.storeInput(inputObj); 
-                    row.toggleClass("input-visible");
-                }
-                    /*
-                    $(event.target).focusout();
-                    //this.storeAndToggle(event);
+                        this.toggleRow(event);
+                    }
 
                     if (event.shiftKey) {
 
-                        //move to next field
-                        this.nextField();
+                        this.toggleNextRow(event);
 
                     } 
                 }
@@ -17625,8 +17848,9 @@ define('records/views/other_details_view',[
                 if (event.keyCode === 9) {
 
                     event.preventDefault();
-                    //this.storeAndToggle(event);
-                    this.nextField();
+
+                    this.toggleRow(event);
+                    this.toggleNextRow(event);
                 }
 
                 // backspace moves the cursor one back and erases a char
@@ -17636,33 +17860,12 @@ define('records/views/other_details_view',[
                 if (event.keyCode === 8 && event.shiftkey) {
 
                     event.preventDefault();
-                    //this.storeAndToggle(event);
-                    this.previousField();
 
-                }*/
+                    this.toggleRow(event);
+                    this.togglePreviousRow(event);
+                }
                 
             }
-
-            /*
-            previousField: function () {
-
-            },
-
-            nextField: function () {
-
-                //this.toggleInput($("input:focus"));
-
-            },
-
-            storeAndToggle: function (event) {
-
-                console.log("storeAndToggle");
-
-                this.storeInput(event);
-                this.toggleInput($(event.target));
-          
-            }
-            */  
         });
 
         return AddressesView;
@@ -17791,26 +17994,9 @@ define('records/router',[
                         throw new Error("showRecord: invalid record-id format");
                     }
                 } catch (e) {
+                    // do something more usefull
                     console.log(e);
                 }
-                
-
-
-                /*
-                // first check for a valid record id (or cid)
-                // then check if the record exists
-                
-                
-                if (!panel) {
-                    panel = "consults";
-                }
-
-                if (!item) {
-                    item = 0;
-                }*/
-
-                
-                
             },
 
             showView: function (view) {
@@ -17827,6 +18013,7 @@ define('records/router',[
                     $("#content").html(this.currentView.el);
 
                 } catch (e) {
+                    
                     console.log(e);
                 }
             },
@@ -17834,8 +18021,8 @@ define('records/router',[
             selectRecord: function (id) {
                 
                 if (id) {
-                    this.showRecord(id);
-                    this.navigate("records/" + id);
+                    //this.showRecord(id);
+                    this.navigate("records/" + id, {trigger: true});
                 }
             }
                 

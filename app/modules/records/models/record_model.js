@@ -25,6 +25,13 @@ define([
             //simple attributes get a default value
             defaults: {
 
+                "givenName": "voornaam",
+                "familyName": "achternaam",
+                "dateOfBirth": "1977-03-15T10:06:03.864Z",
+                "emailPreferred": "account@provider.com",
+                "phonePreferred": "31-6-00000000",
+                "satisfaction": 3,
+                "value": 3,
                 "created": 0,
                 "updated": 0,
                 "viewed": 0
@@ -34,46 +41,36 @@ define([
             //nested collections need to be initialised
             initialize: function() {
 
-                _.each(config.required, function (value, key) {
+                _.each(config, function (settings, key) {
 
-                    this.set(key, value, {silent: true});
-                    
+                    if (settings.required) {
+
+                        if(settings.type === "address") {
+
+                            this.addAddress(key);
+
+                        } else if (settings.type === "ice") {
+
+                            this.ice = nestModel(
+                                    this,
+                                    'ice',
+                                    new IceModel(this.get('ice'))
+                            );
+
+                        }
+                    }
                 }, this);
-                /*
-                this.homeAddress = nestModel(
-                        this,
-                        'homeAddress',
-                        new AddressModel(this.get('homeAddress'))
-                    );
+            
+                
 
-                this.ice = nestModel(
-                        this,
-                        'ice',
-                        new IceModel(this.get('ice'))
-                    );
-*/
+                
+
                 this.on("sync", this.setUpdated, this);
 
                 /*
                 this.medicals = nestCollection(this, 'medicals',
                         new Medicals(this.get('medicals')));
                 this.medicals.add();
-
-                this.ices = nestCollection(this, 'ices',
-                        new Ices(this.get('ices')));
-                this.ices.add();
-
-                this.telecoms = nestCollection(this, 'telecoms',
-                        new Telecoms(this.get('telecoms')));
-                this.telecoms.add();
-
-                this.addresses = nestCollection(this, 'addresses',
-                        new Addresses(this.get('addresses')));
-                this.addresses.add();
-
-                this.consults = nestCollection(this, 'consults',
-                        new Consults(this.get('consults')));
-                this.consults.add();
 
                 this.treatments = nestCollection(this, 'treatments',
                         new Treatments(this.get('treatments')));
@@ -83,22 +80,23 @@ define([
                         new PhotoSets(this.get('photoSets')));
                 this.photoSets.add();
 
-                this.notes = nestCollection(this, 'notes',
-                        new Notes(this.get('notes')));
-                this.notes.add();
-
-                this.offers = nestCollection(this, 'offers',
-                        new Offers(this.get('offers')));
-                this.offers.add();
-
-                this.receipts = nestCollection(this, 'receipts',
-                        new Receipts(this.get('receipts')));
-                this.receipts.add();
-
                 this.logs = nestCollection(this, 'logs',
                         new Logs(this.get('logs')));
                 this.logs.add();
                 */
+            },
+
+            addAddress: function (attribute) {
+
+                console.log(attribute);
+
+                this[attribute] = nestModel(
+                        this,
+                        attribute,
+                        new AddressModel(this.get(attribute))
+                    );
+
+                console.log(this);
             },
 
             setUpdated: function () {
@@ -145,7 +143,7 @@ define([
 
                 } else {
 
-                    return "wrong format"
+                    return "wrong format";
                 }
             },
 
@@ -161,7 +159,7 @@ define([
 
                 } else {
 
-                    return "wrong format"
+                    return "wrong format";
                 }
             }
         });

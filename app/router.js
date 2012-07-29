@@ -5,11 +5,12 @@ define([
   "views/policy_ip_view",
   "views/policy_privacy_view",
   "views/policy_terms_view",
-  "views/helpdesk_view"
+  "views/helpdesk_view",
+  "text!templates/footer.html"
 ],
 
   function(remedy, NavView, HomeView, IpView, PrivacyView, 
-                                    TermsView, HelpdeskView) {
+                                    TermsView, HelpdeskView, footer) {
 
     var Router = Backbone.Router.extend({
 
@@ -28,7 +29,10 @@ define([
 
         initialize: function() {
 
-            new NavView({el: "#main"}).render();
+            $("#main").append( new NavView().render().el);
+            $("#main").append(
+                '<div id="content" class="container-fluid"></div>');
+            $("#main").append(footer);
         },
 
         home: function () {

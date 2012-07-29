@@ -10,10 +10,10 @@ define([
 
 			//simple attributes get a default value
 			defaults: {
-				givenName: "",
-				familyName: "",
-				relation: "",
-				telecomIdentifier: ""
+				givenName: "voornaam",
+				familyName: "achternaam",
+				relation: "relatie",
+				telecom: "telecom"
 			},
 
 			initialize: function () {}
