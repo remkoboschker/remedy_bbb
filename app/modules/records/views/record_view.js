@@ -23,6 +23,8 @@ define([
 				this.template = _.template(tmpl);
 
 				this.views = [];
+				
+				//this.views.push(new PersonalDetailsView({model: this.model}));
 				this.views.push(new BasicDetailsView({model: this.model}));
 				this.views.push(new MedicalWarningsView({model: this.model}));
 				this.views.push(new OtherDetailsView({model: this.model}));

@@ -10,7 +10,6 @@ define([
   // Plugins.
   //"plugins/backbone.layoutmanager",
   "plugins/backbone.localStorage",
-  "plugins/backbone.validations",
   "plugins/backbone.subroute"
 ],
 

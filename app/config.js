@@ -37,10 +37,7 @@ require.config({
       exports: "jquery"
     },
 
-    // Backbone.LayoutManager depends on Backbone.
-    //"plugins/backbone.layoutmanager": ["backbone"],
     "plugins/backbone.localStorage": ["backbone"],
-    "plugins/backbone.validations": ["backbone"],
     "plugins/backbone.subroute": ["backbone"]
   }
 

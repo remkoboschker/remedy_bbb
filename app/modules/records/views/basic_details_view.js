@@ -9,6 +9,7 @@ define([
 	function ($, _, Backbone, tmpl){
 
 		var PersonalView = Backbone.View.extend({
+
 			tagName: "section",
 			id: "personal",
 			className: "",
@@ -24,21 +25,23 @@ define([
 			initialize: function () {
 				
 				this.template = _.template(tmpl);
-				
+			
 				this.model.on("change", this.render, this);
 			},
 
 			render: function () {
 
 				this.$el.html(this.template({
+
 					givenName: this.model.get("givenName"),
 					familyName: this.model.get("familyName"),
 					dob: this.model.formDob(),
 					age: this.model.age(),
 					phone: this.model.formPhonePreferred(),
 					mail: this.model.get("emailPreferred")
-				}));
 
+				}));
+               
 				return this;
 			},
 
@@ -46,39 +49,55 @@ define([
 
                 event.preventDefault();
                 event.stopPropagation();
+
             },
 
-            toggleRowVisibility: function (row) {
+            toggleInput: function (row) {
 
-                var inputObj;
+                var input = row.find("input");
                 var key;
                 var value;
 
                 if (row.hasClass("input-visible")) {
 
-                    inputObj = row.find("input");
+                    if (input.length !== 0) {
 
-                    //console.log(inputObj.length);
-                    
-                    if(inputObj.length !== 0) {
+                        key = input.data().key;
+                        
+                        value = input.val();
+                        value = value.toString();
+                        value = value.trim();
 
-                        key = inputObj.data().key;
-                        value = inputObj.val();
-
-                        if (this.model.get(key) !== value) {
-
-                            this.model.set(key, value);
-                            this.model.save();
-                        }
-                    }            
-
-                    row.removeClass("input-visible");
-
+                        console.log(value);
+                            
+                        this.store(key, value, input);
+                    }     
+                        
                 } else {
 
-                    row.addClass("input-visible");
-                    row.find("input").focus();
+                  row.addClass("input-visible");
+                  input.focus();
                 }
+            },
+
+            store: function (key, value, input) {
+
+                return this.model.save(key, value,
+                    {
+                        input: input,
+
+                        error: function (model, response) {
+
+                            response.input.addClass('error');
+                            response.input.tooltip({
+                                title: response.msg,
+                                placement: 'right',
+                                trigger: 'manual'
+                            });
+                            response.input.tooltip('show');
+                        }
+                    }
+                );
             },
             
             toggleRow: function (event) {
@@ -86,7 +105,7 @@ define([
                 var target = $(event.target);
                 var row = target.parents("tr");
 
-                this.toggleRowVisibility(row);
+                this.toggleInput(row);
                 
             },
 
@@ -97,7 +116,7 @@ define([
 
                 row = row.previous(); 
 
-                this.toggleRowVisibility(row);
+                this.toggleInput(row);
             },
 
             toggleNextRow: function (event) {
@@ -107,7 +126,7 @@ define([
 
                 row = row.next(); 
 
-                this.toggleRowVisibility(row);
+                this.toggleInput(row);
 
             },
 

@@ -340,5 +340,16 @@ td {
   height: 18px;
 }
 
+input.error {
+  color: #b94a48;
+  border-color: #b94a48;
+}
+
+input.error:focus {
+  border-color: #953b39;
+  -webkit-box-shadow: 0 0 6px #d59392;
+  -moz-box-shadow: 0 0 6px #d59392;
+  box-shadow: 0 0 6px #d59392;
+}
 
 
